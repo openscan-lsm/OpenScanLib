@@ -3,10 +3,12 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
+
 
 OSc_Error OSc_Device_Get_Name(OSc_Device *device, const char **name)
 {
-	if (!device->name)
+	if (!strlen(device->name))
 		OSc_Return_If_Error(device->impl->GetName(device, device->name));
 
 	*name = device->name;
@@ -16,7 +18,7 @@ OSc_Error OSc_Device_Get_Name(OSc_Device *device, const char **name)
 
 OSc_Error OSc_Device_Get_Display_Name(OSc_Device *device, const char **name)
 {
-	if (!device->displayName)
+	if (!strlen(device->displayName))
 	{
 		const char *modelName;
 		OSc_Return_If_Error(device->impl->GetModelName(&modelName));
@@ -33,7 +35,11 @@ OSc_Error OSc_Device_Get_Display_Name(OSc_Device *device, const char **name)
 OSc_Error OSc_Device_Open(OSc_Device *device, OSc_LSM *lsm)
 {
 	if (device->isOpen)
+	{
+		if (device->associatedLSM == lsm)
+			return OSc_Error_OK;
 		return OSc_Error_Device_Already_Open;
+	}
 
 	OSc_Return_If_Error(device->impl->Open(device));
 	device->isOpen = true;

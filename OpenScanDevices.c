@@ -42,6 +42,7 @@ static void EnumerateDevices()
 		size_t oldCount = g_deviceCount;
 		if (!g_devices)
 		{
+			++g_deviceCount;
 			g_devices = malloc(implCount * sizeof(OSc_Device *));
 		}
 		else
