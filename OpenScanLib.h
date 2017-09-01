@@ -128,7 +128,7 @@ typedef struct OSc_Setting OSc_Setting;
 typedef struct OSc_Acquisition OSc_Acquisition;
 
 typedef void (*OSc_Log_Func)(const char *message, OSc_Log_Level level, void *data);
-typedef bool (*OSc_Frame_Callback)(OSc_Acquisition *acq, uint32_t channel, void *pixels);
+typedef bool (*OSc_Frame_Callback)(OSc_Acquisition *acq, uint32_t channel, void *pixels, void *data);
 
 
 void OSc_API OSc_Set_Log_Func(OSc_Log_Func func, void *data);
@@ -188,7 +188,7 @@ OSc_Error OSc_API OSc_Setting_Get_Enum_Num_Values(OSc_Setting *setting, uint32_t
 OSc_Error OSc_API OSc_Setting_Get_Enum_Name_For_Value(OSc_Setting *setting, uint32_t value, char *name);
 OSc_Error OSc_API OSc_Setting_Get_Enum_Value_For_Name(OSc_Setting *setting, uint32_t *value, const char *name);
 
-OSc_Error OSc_API OSc_Acquisition_Create(OSc_Acquisition **acq, OSc_Scanner *scanner, OSc_Detector *detector);
+OSc_Error OSc_API OSc_Acquisition_Create(OSc_Acquisition **acq, OSc_LSM *lsm);
 OSc_Error OSc_API OSc_Acquisition_Destroy(OSc_Acquisition *acq);
 OSc_Error OSc_API OSc_Acquisition_Set_Number_Of_Frames(OSc_Acquisition *acq, uint32_t numberOfFrames);
 OSc_Error OSc_API OSc_Acquisition_Set_Trigger_Source(OSc_Acquisition *acq, OSc_Trigger_Source source);

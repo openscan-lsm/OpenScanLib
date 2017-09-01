@@ -2,14 +2,14 @@
 #include "OpenScanDeviceImpl.h"
 
 
-OSc_Error OSc_Acquisition_Create(OSc_Acquisition **acq, OSc_Scanner *scanner, OSc_Detector *detector)
+OSc_Error OSc_Acquisition_Create(OSc_Acquisition **acq, OSc_LSM *lsm)
 {
 	*acq = calloc(1, sizeof(OSc_Acquisition));
 
-	// TODO Use dummy for null scanner or detector
+	// TODO Use dummy for null scanner or detector?
 
-	(*acq)->scanner = scanner;
-	(*acq)->detector = detector;
+	(*acq)->scanner = lsm->scanner;
+	(*acq)->detector = lsm->detector;
 	(*acq)->numberOfFrames = 1;
 	(*acq)->triggerSource = OSc_Trigger_Source_External;
 	return OSc_Error_OK;
