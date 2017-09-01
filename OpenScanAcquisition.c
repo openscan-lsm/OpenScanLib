@@ -101,3 +101,11 @@ OSc_Error OSc_Acquisition_Stop(OSc_Acquisition *acq)
 
 	return OSc_Error_OK;
 }
+
+
+OSc_Error OSc_Acquisition_Wait(OSc_Acquisition *acq)
+{
+	acq->scanner->device->impl->Wait(acq->scanner->device);
+	acq->detector->device->impl->Wait(acq->detector->device);
+	return OSc_Error_OK;
+}

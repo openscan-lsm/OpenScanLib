@@ -199,6 +199,7 @@ OSc_Error OSc_API OSc_Acquisition_Set_Data(OSc_Acquisition *acq, void *data);
 OSc_Error OSc_API OSc_Acquisition_Arm(OSc_Acquisition *acq);
 OSc_Error OSc_API OSc_Acquisition_Start(OSc_Acquisition *acq);
 OSc_Error OSc_API OSc_Acquisition_Stop(OSc_Acquisition *acq);
+OSc_Error OSc_API OSc_Acquisition_Wait(OSc_Acquisition *acq);
 
 
 #ifdef __cplusplus
