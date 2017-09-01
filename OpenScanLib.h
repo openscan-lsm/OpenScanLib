@@ -140,6 +140,7 @@ OSc_Error OSc_API OSc_LSM_Get_Scanner(OSc_LSM *lsm, OSc_Scanner **scanner);
 OSc_Error OSc_API OSc_LSM_Set_Scanner(OSc_LSM *lsm, OSc_Scanner *scanner);
 OSc_Error OSc_API OSc_LSM_Get_Detector(OSc_LSM *lsm, OSc_Detector **detector);
 OSc_Error OSc_API OSc_LSM_Set_Detector(OSc_LSM *lsm, OSc_Detector *detector);
+OSc_Error OSc_API OSc_LSM_Is_Running_Acquisition(OSc_LSM *lsm, bool *isRunning);
 
 OSc_Error OSc_API OSc_Devices_Get_All(OSc_Device ***devices, size_t *count);
 OSc_Error OSc_API OSc_Devices_Get_Count(size_t *count);

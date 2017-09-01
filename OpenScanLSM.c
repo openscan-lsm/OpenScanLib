@@ -1,4 +1,5 @@
 #include "OpenScanLibPrivate.h"
+#include "OpenScanDeviceImpl.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -155,5 +156,19 @@ OSc_Error OSc_LSM_Is_Device_Associated(OSc_LSM *lsm, OSc_Device *device, bool *i
 		}
 	}
 
+	return OSc_Error_OK;
+}
+
+
+OSc_Error OSc_LSM_Is_Running_Acquisition(OSc_LSM *lsm, bool *isRunning)
+{
+	*isRunning = false;
+	for (int i = 0; i < lsm->associatedDeviceCount; ++i)
+	{
+		OSc_Device *device = lsm->associatedDevices[i];
+		OSc_Return_If_Error(device->impl->IsRunning(device, isRunning));
+		if (isRunning)
+			return OSc_Error_OK;
+	}
 	return OSc_Error_OK;
 }

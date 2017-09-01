@@ -30,6 +30,8 @@ struct OSc_Device_Impl
 	OSc_Error (*ArmDetector)(OSc_Device *device, OSc_Acquisition *acq);
 	OSc_Error (*StartDetector)(OSc_Device *device, OSc_Acquisition *acq);
 	OSc_Error (*StopDetector)(OSc_Device *device, OSc_Acquisition *acq);
+
+	OSc_Error (*IsRunning)(OSc_Device *device, bool *isRunning);
 };
 
 
