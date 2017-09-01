@@ -32,6 +32,7 @@ struct OSc_Device
 	size_t numSettings;
 
 	char name[OSc_MAX_STR_LEN + 1];
+	char displayName[OSc_MAX_STR_LEN + 1];
 };
 
 struct OSc_LSM

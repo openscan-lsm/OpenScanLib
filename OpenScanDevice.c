@@ -2,6 +2,7 @@
 #include "OpenScanDeviceImpl.h"
 
 #include <stdlib.h>
+#include <stdio.h>
 
 OSc_Error OSc_Device_Get_Name(OSc_Device *device, const char **name)
 {
@@ -9,6 +10,23 @@ OSc_Error OSc_Device_Get_Name(OSc_Device *device, const char **name)
 		OSc_Return_If_Error(device->impl->GetName(device, device->name));
 
 	*name = device->name;
+	return OSc_Error_OK;
+}
+
+
+OSc_Error OSc_Device_Get_Display_Name(OSc_Device *device, const char **name)
+{
+	if (!device->displayName)
+	{
+		const char *modelName;
+		OSc_Return_If_Error(device->impl->GetModelName(&modelName));
+		const char *deviceName;
+		OSc_Return_If_Error(OSc_Device_Get_Name(device, &deviceName));
+		snprintf(device->displayName, OSc_MAX_STR_LEN, "%s@%s",
+			modelName, deviceName);
+	}
+
+	*name = device->displayName;
 	return OSc_Error_OK;
 }
 

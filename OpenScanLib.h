@@ -23,7 +23,7 @@ extern "C" {
  *
  * Note that the buffer size must be OSc_MAX_STR_LEN + 1.
  */
-#define OSc_MAX_STR_LEN 512
+#define OSc_MAX_STR_LEN 511
 
 
 typedef int32_t OSc_Log_Level;
@@ -145,6 +145,7 @@ OSc_Error OSc_API OSc_Devices_Get_All(OSc_Device ***devices, size_t *count);
 OSc_Error OSc_API OSc_Devices_Get_Count(size_t *count);
 
 OSc_Error OSc_API OSc_Device_Get_Name(OSc_Device *device, const char **name);
+OSc_Error OSc_API OSc_Device_Get_Display_Name(OSc_Device *device, const char **name);
 OSc_Error OSc_API OSc_Device_Open(OSc_Device *device, OSc_LSM *lsm);
 OSc_Error OSc_API OSc_Device_Close(OSc_Device *device);
 OSc_Error OSc_API OSc_Device_Has_Scanner(OSc_Device *device, bool *hasScanner);
