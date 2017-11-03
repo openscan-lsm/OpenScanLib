@@ -143,6 +143,13 @@ OSc_Error OSc_Device_Get_Detector(OSc_Device *device, OSc_Detector **detector)
 
 OSc_Error OSc_Device_Get_Settings(OSc_Device *device, OSc_Setting ***settings, size_t *count)
 {
+	if (device->settings == NULL)
+	{
+		OSc_Return_If_Error(device->impl->GetSettings(device, settings, count));
+		device->settings = *settings;
+		device->numSettings = *count;
+		return OSc_Error_OK;
+	}
 	*settings = device->settings;
 	*count = device->numSettings;
 	return OSc_Error_OK;

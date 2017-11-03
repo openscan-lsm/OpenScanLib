@@ -17,7 +17,7 @@ struct OSc_Device_Impl
 	OSc_Error (*HasScanner)(OSc_Device *device, bool *hasScanner);
 	OSc_Error (*HasDetector)(OSc_Device *device, bool *hasDetector);
 
-	OSc_Error (*GetSettings)(OSc_Device *device, OSc_Setting ***settings);
+	OSc_Error (*GetSettings)(OSc_Device *device, OSc_Setting ***settings, size_t *count);
 
 	OSc_Error (*GetImageSize)(OSc_Device *device, uint32_t *width, uint32_t *height);
 	OSc_Error (*GetNumberOfChannels)(OSc_Device *device, uint32_t *nChannels);

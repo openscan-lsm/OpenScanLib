@@ -162,6 +162,7 @@ OSc_Error OSc_API OSc_Detector_Get_Image_Size(OSc_Detector *detector, uint32_t *
 OSc_Error OSc_API OSc_Detector_Get_Number_Of_Channels(OSc_Detector *detector, uint32_t *nChannels);
 OSc_Error OSc_API OSc_Detector_Get_Bytes_Per_Sample(OSc_Detector *detector, uint32_t *bytesPerSample);
 
+OSc_Error OSc_API OSc_Setting_Get_Name(OSc_Setting *setting, char *name);
 OSc_Error OSc_API OSc_Setting_Get_Value_Type(OSc_Setting *setting, OSc_Value_Type *valueType);
 OSc_Error OSc_API OSc_Setting_Is_Enabled(OSc_Setting *setting, bool *enabled);
 OSc_Error OSc_API OSc_Setting_Is_Writable(OSc_Setting *setting, bool *writable);

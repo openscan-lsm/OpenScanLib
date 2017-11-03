@@ -5,6 +5,13 @@
 #include <string.h>
 
 
+OSc_Error OSc_API OSc_Setting_Get_Name(OSc_Setting *setting, char *name)
+{
+	strncpy(name, setting->name, OSc_MAX_STR_LEN);
+	return OSc_Error_OK;
+}
+
+
 OSc_Error OSc_Setting_Get_Value_Type(OSc_Setting *setting, OSc_Value_Type *valueType)
 {
 	*valueType = setting->valueType;
