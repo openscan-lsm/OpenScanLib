@@ -156,6 +156,13 @@ OSc_Error OSc_Device_Get_Settings(OSc_Device *device, OSc_Setting ***settings, s
 }
 
 
+OSc_Error OSc_Device_Get_Allowed_resolutions(OSc_Device *device, size_t **widths, size_t **heights, size_t *count)
+{
+	OSc_Return_If_Error(device->impl->GetAllowedResolutions(device, widths, heights, count));
+	return OSc_Error_OK;
+}
+
+
 OSc_Error OSc_Device_Create(OSc_Device **device, struct OSc_Device_Impl *impl, void *data)
 {
 	*device = calloc(1, sizeof(OSc_Device));

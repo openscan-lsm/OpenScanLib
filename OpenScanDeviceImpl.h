@@ -19,6 +19,10 @@ struct OSc_Device_Impl
 
 	OSc_Error (*GetSettings)(OSc_Device *device, OSc_Setting ***settings, size_t *count);
 
+	OSc_Error (*GetAllowedResolutions)(OSc_Device *device, size_t **widths, size_t **heights, size_t *count);
+	OSc_Error (*GetResolution)(OSc_Device *device, size_t *width, size_t *height);
+	OSc_Error (*SetResolution)(OSc_Device *device, size_t width, size_t height);
+
 	OSc_Error (*GetImageSize)(OSc_Device *device, uint32_t *width, uint32_t *height);
 	OSc_Error (*GetNumberOfChannels)(OSc_Device *device, uint32_t *nChannels);
 	OSc_Error (*GetBytesPerSample)(OSc_Device *device, uint32_t *bytesPerSample);
