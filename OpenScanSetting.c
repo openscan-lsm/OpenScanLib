@@ -434,3 +434,17 @@ OSc_Error OSc_Setting_Create(OSc_Setting **setting, OSc_Device *device, const ch
 	(*setting)->implData = data;
 	return OSc_Error_OK;
 }
+
+
+OSc_Error OSc_Setting_NumericConstraintRange(OSc_Setting *setting, OSc_Value_Constraint *constraintType)
+{
+	*constraintType = OSc_Value_Constraint_Range;
+	return OSc_Error_OK;
+}
+
+
+OSc_Error OSc_Setting_NumericConstraintDiscreteValues(OSc_Setting *setting, OSc_Value_Constraint *constraintType)
+{
+	*constraintType = OSc_Value_Constraint_Discrete_Values;
+	return OSc_Error_OK;
+}

@@ -99,3 +99,7 @@ OSc_Error OSc_Device_Destroy(OSc_Device *device);
 
 OSc_Error OSc_Setting_Create(OSc_Setting **setting, OSc_Device *device, const char *name, OSc_Value_Type valueType,
 	struct OSc_Setting_Impl *impl, void *data);
+
+
+OSc_Error OSc_Setting_NumericConstraintRange(OSc_Setting *setting, OSc_Value_Constraint *constraintType);
+OSc_Error OSc_Setting_NumericConstraintDiscreteValues(OSc_Setting *setting, OSc_Value_Constraint *constraintType);
