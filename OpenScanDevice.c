@@ -156,9 +156,23 @@ OSc_Error OSc_Device_Get_Settings(OSc_Device *device, OSc_Setting ***settings, s
 }
 
 
-OSc_Error OSc_Device_Get_Allowed_resolutions(OSc_Device *device, size_t **widths, size_t **heights, size_t *count)
+OSc_Error OSc_Device_Get_Allowed_Resolutions(OSc_Device *device, size_t **widths, size_t **heights, size_t *count)
 {
 	OSc_Return_If_Error(device->impl->GetAllowedResolutions(device, widths, heights, count));
+	return OSc_Error_OK;
+}
+
+
+OSc_Error OSc_Device_Get_Resolution(OSc_Device *device, size_t *width, size_t *height)
+{
+	OSc_Return_If_Error(device->impl->GetResolution(device, width, height));
+	return OSc_Error_OK;
+}
+
+
+OSc_Error OSc_Device_Set_Resolution(OSc_Device *device, size_t width, size_t height)
+{
+	OSc_Return_If_Error(device->impl->SetResolution(device, width, height));
 	return OSc_Error_OK;
 }
 
