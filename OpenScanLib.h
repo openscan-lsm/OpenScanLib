@@ -40,7 +40,7 @@ typedef int32_t OSc_Error;
 enum
 {
 	OSc_Error_OK,
-	OSc_Error_Unknown,
+	OSc_Error_Unknown = 10000,
 	OSc_Error_Unsupported_Operation,
 	OSc_Error_Illegal_Argument,
 	OSc_Error_Driver_Not_Available,
