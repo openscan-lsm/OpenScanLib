@@ -167,7 +167,7 @@ OSc_Error OSc_LSM_Is_Running_Acquisition(OSc_LSM *lsm, bool *isRunning)
 	{
 		OSc_Device *device = lsm->associatedDevices[i];
 		OSc_Return_If_Error(device->impl->IsRunning(device, isRunning));
-		if (isRunning)
+		if (*isRunning)
 			return OSc_Error_OK;
 	}
 	return OSc_Error_OK;
