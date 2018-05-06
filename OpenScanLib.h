@@ -158,6 +158,8 @@ OSc_Error OSc_API OSc_Device_Get_Allowed_Resolutions(OSc_Device *device,
 	size_t **widths, size_t **heights, size_t *count);
 OSc_Error OSc_API OSc_Device_Get_Resolution(OSc_Device *device, size_t *width, size_t *height);
 OSc_Error OSc_API OSc_Device_Set_Resolution(OSc_Device *device, size_t width, size_t height);
+OSc_Error OSc_API OSc_Device_Get_Magnification(OSc_Device *device, double *magnification);
+OSc_Error OSc_API OSc_Device_Set_Magnification(OSc_Device *device);
 
 OSc_Error OSc_API OSc_Scanner_Get_Device(OSc_Scanner *scanner, OSc_Device **device);
 

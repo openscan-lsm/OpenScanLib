@@ -176,6 +176,19 @@ OSc_Error OSc_Device_Set_Resolution(OSc_Device *device, size_t width, size_t hei
 	return OSc_Error_OK;
 }
 
+OSc_Error OSc_Device_Get_Magnification(OSc_Device *device, double *magnification)
+{
+	OSc_Return_If_Error(device->impl->GetMagnification(device, magnification));
+	return OSc_Error_OK;
+}
+
+
+OSc_Error OSc_Device_Set_Magnification(OSc_Device *device)
+{
+	OSc_Return_If_Error(device->impl->SetMagnification(device));
+	return OSc_Error_OK;
+}
+
 
 OSc_Error OSc_Device_Create(OSc_Device **device, struct OSc_Device_Impl *impl, void *data)
 {
