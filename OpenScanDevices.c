@@ -1,19 +1,12 @@
 #include "OpenScanLibPrivate.h"
 #include "OpenScanDeviceImpl.h"
 
-#include "OScNIFPGADevice.h"
-#include "OScNIDAQDevice.h"
-#include "BH_SPC150.h"
-
 #include <string.h>
 
 static OSc_Device **g_devices;
 static size_t g_deviceCount;
 
 static struct OSc_Device_Impl *implementations[] = {
-	&OpenScan_NIFPGA_Device_Impl,
-	// &OpenScan_NIDAQ_Device_Impl,
-	&BH_TCSCP150_Device_Impl,
 	NULL,
 };
 

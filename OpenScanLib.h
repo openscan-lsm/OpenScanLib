@@ -11,7 +11,7 @@
 extern "C" {
 #endif
 
-#ifdef OPENSCAN_DLLEXPORT
+#ifdef OPENSCANLIB_EXPORTS
 #define OSc_API __declspec(dllexport)
 #else
 #define OSc_API __declspec(dllimport)
