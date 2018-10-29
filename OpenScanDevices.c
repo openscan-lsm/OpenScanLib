@@ -1,63 +1,66 @@
 #include "OpenScanLibPrivate.h"
+
 #include "OpenScanDeviceImpl.h"
+#include "OpenScanDeviceModules.h"
 
 #include <string.h>
+
 
 static OSc_Device **g_devices;
 static size_t g_deviceCount;
 
-static struct OSc_Device_Impl *implementations[] = {
-	NULL,
-};
 
-
-static void EnumerateDevices()
+static OSc_Error EnumerateDevices(void)
 {
+	// For now, enumerate once and for all
 	if (g_devices)
-		return;
+		return OSc_Error_OK;
 
-	g_deviceCount = 0;
-	for (int i = 0; implementations[i] != NULL; ++i)
+	size_t nModules;
+	OSc_Return_If_Error(OSc_DeviceModule_Get_Count(&nModules));
+	char **moduleNames = malloc(sizeof(void *) * nModules);
+	OSc_Error err;
+	if (OSc_Check_Error(err, OSc_DeviceModule_Get_Names(moduleNames, &nModules)))
 	{
-		OSc_Device **implDevices;
-		size_t implCount;
-		OSc_Error err;
-		if (OSc_Check_Error(err, implementations[i]->GetInstances(&implDevices, &implCount)))
-		{
-			char msg[OSc_MAX_STR_LEN + 1] = "Cannot enumerate devices: ";
-			const char *model = NULL;
-			implementations[i]->GetModelName(&model);
-			strcat(msg, model ? model : "(unknown)");
-			OSc_Log_Warning(NULL, msg);
-			continue;
-		}
+		free(moduleNames);
+		return err;
+	}
 
-		if (implCount == 0)
-			continue;
+	for (size_t i = 0; i < nModules; ++i)
+	{
+		OSc_Device **devices;
+		size_t deviceCount;
+		if (OSc_Check_Error(err, OSc_DeviceModule_Get_Devices(moduleNames[i], &devices, &deviceCount)))
+		{
+			// TODO This leaves a partially populated g_devices
+			free(moduleNames);
+			return err;
+		}
 
 		size_t oldCount = g_deviceCount;
 		if (!g_devices)
 		{
-			++g_deviceCount;
-			g_devices = malloc(implCount * sizeof(OSc_Device *));
+			g_deviceCount = deviceCount;
+			g_devices = malloc(sizeof(void *) * deviceCount);
 		}
 		else
 		{
-			g_deviceCount += implCount;
-			g_devices = realloc(g_devices, g_deviceCount * sizeof(OSc_Device *));
+			g_deviceCount += deviceCount;
+			g_devices = realloc(g_devices, sizeof(void *) * g_deviceCount);
 		}
 
-		for (int j = 0; j < implCount; ++j)
-		{
-			g_devices[oldCount + j] = implDevices[j];
-		}
+		for (size_t j = 0; j < deviceCount; ++j)
+			g_devices[oldCount + j] = devices[j];
 	}
+
+	free(moduleNames);
+	return OSc_Error_OK;
 }
 
 
 OSc_Error OSc_Devices_Get_All(OSc_Device ***devices, size_t *count)
 {
-	EnumerateDevices();
+	OSc_Return_If_Error(EnumerateDevices());
 
 	*devices = g_devices;
 	*count = g_deviceCount;

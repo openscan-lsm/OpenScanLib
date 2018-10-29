@@ -4,6 +4,11 @@
 
 #include <stdlib.h>
 
+
+#define OSc_ENTRY_POINT_FUNC_NAME OpenScanDeviceModuleEntryPoint
+#define OSc_ENTRY_POINT_FUNC __declspec(dllexport) OSc_ENTRY_POINT_FUNC_NAME
+
+
 struct OSc_Device_Impl
 {
 	OSc_Error (*GetModelName)(const char **name);

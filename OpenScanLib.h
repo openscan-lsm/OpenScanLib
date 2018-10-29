@@ -43,6 +43,8 @@ enum
 	OSc_Error_Unknown = 10000,
 	OSc_Error_Unsupported_Operation,
 	OSc_Error_Illegal_Argument,
+	OSc_Error_Device_Module_Already_Exists,
+	OSc_Error_No_Such_Device_Module,
 	OSc_Error_Driver_Not_Available,
 	OSc_Error_Device_Already_Open,
 	OSc_Error_Device_Not_Opened_For_LSM,
@@ -133,6 +135,8 @@ typedef bool (*OSc_Frame_Callback)(OSc_Acquisition *acq, uint32_t channel, void 
 
 void OSc_API OSc_Set_Log_Func(OSc_Log_Func func, void *data);
 void OSc_API OSc_Log_Set_Device_Log_Func(OSc_Device *device, OSc_Log_Func func, void *data);
+
+void OSc_API OSc_DeviceModule_Set_Search_Paths(char **paths);
 
 OSc_Error OSc_API OSc_LSM_Create(OSc_LSM **lsm);
 OSc_Error OSc_API OSc_LSM_Destroy(OSc_LSM *lsm);
