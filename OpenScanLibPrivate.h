@@ -68,7 +68,7 @@ struct OSc_Acquisition
 
 // Internal functions
 
-void OSc_Log(OSc_Device *device, OSc_Log_Level level, const char *message);
+void OSc_API OSc_Log(OSc_Device *device, OSc_Log_Level level, const char *message);
 
 static inline void OSc_Log_Debug(OSc_Device *device, const char *message)
 {
@@ -97,9 +97,9 @@ OSc_Error OSc_LSM_Is_Device_Associated(OSc_LSM *lsm, OSc_Device *device, bool *i
 OSc_Error OSc_API OSc_Device_Create(OSc_Device **device, struct OSc_Device_Impl *impl, void *data);
 OSc_Error OSc_Device_Destroy(OSc_Device *device);
 
-OSc_Error OSc_Setting_Create(OSc_Setting **setting, OSc_Device *device, const char *name, OSc_Value_Type valueType,
+OSc_Error OSc_API OSc_Setting_Create(OSc_Setting **setting, OSc_Device *device, const char *name, OSc_Value_Type valueType,
 	struct OSc_Setting_Impl *impl, void *data);
 
 
-OSc_Error OSc_Setting_NumericConstraintRange(OSc_Setting *setting, OSc_Value_Constraint *constraintType);
-OSc_Error OSc_Setting_NumericConstraintDiscreteValues(OSc_Setting *setting, OSc_Value_Constraint *constraintType);
+OSc_Error OSc_API OSc_Setting_NumericConstraintRange(OSc_Setting *setting, OSc_Value_Constraint *constraintType);
+OSc_Error OSc_API OSc_Setting_NumericConstraintDiscreteValues(OSc_Setting *setting, OSc_Value_Constraint *constraintType);
