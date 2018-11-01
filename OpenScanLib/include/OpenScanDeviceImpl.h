@@ -71,3 +71,35 @@ struct OSc_Setting_Impl
 	OSc_Error (*GetEnumNameForValue)(OSc_Setting *setting, uint32_t value, char *name);
 	OSc_Error (*GetEnumValueForName)(OSc_Setting *setting, uint32_t *value, const char *name);
 };
+
+
+void OSc_API OSc_Log(OSc_Device *device, OSc_Log_Level level, const char *message);
+
+static inline void OSc_Log_Debug(OSc_Device *device, const char *message)
+{
+	OSc_Log(device, OSc_Log_Level_Debug, message);
+}
+
+static inline void OSc_Log_Info(OSc_Device *device, const char *message)
+{
+	OSc_Log(device, OSc_Log_Level_Info, message);
+}
+
+static inline void OSc_Log_Warning(OSc_Device *device, const char *message)
+{
+	OSc_Log(device, OSc_Log_Level_Warning, message);
+}
+
+static inline void OSc_Log_Error(OSc_Device *device, const char *message)
+{
+	OSc_Log(device, OSc_Log_Level_Error, message);
+}
+
+OSc_Error OSc_API OSc_Device_Create(OSc_Device **device, struct OSc_Device_Impl *impl, void *data);
+
+OSc_Error OSc_API OSc_Setting_Create(OSc_Setting **setting, OSc_Device *device, const char *name, OSc_Value_Type valueType,
+	struct OSc_Setting_Impl *impl, void *data);
+
+
+OSc_Error OSc_API OSc_Setting_NumericConstraintRange(OSc_Setting *setting, OSc_Value_Constraint *constraintType);
+OSc_Error OSc_API OSc_Setting_NumericConstraintDiscreteValues(OSc_Setting *setting, OSc_Value_Constraint *constraintType);
