@@ -81,6 +81,13 @@ static void LoadAdaptersAtPath(const char *path)
 
 static void LoadAdapters()
 {
+	if (!g_adapterPaths)
+	{
+		// Default to no paths
+		g_adapterPaths = malloc(sizeof(void *));
+		g_adapterPaths[0] = NULL;
+	}
+
 	for (const char **p = g_adapterPaths; *p; ++p)
 		LoadAdaptersAtPath(*p);
 }
@@ -197,6 +204,7 @@ OSc_Error OSc_DeviceModule_Get_Devices(const char *module, OSc_Device ***devices
 		if (deviceCount == 0)
 			continue;
 
+		// Append the devices from this implementation to the list of all devices
 		size_t oldCount = *count;
 		if (!*devices)
 		{
@@ -210,7 +218,7 @@ OSc_Error OSc_DeviceModule_Get_Devices(const char *module, OSc_Device ***devices
 		}
 
 		for (size_t j = 0; j < deviceCount; ++j)
-			*devices[oldCount + j] = implDevices[j];
+			(*devices)[oldCount + j] = implDevices[j];
 	}
 
 	free(deviceImpls);
