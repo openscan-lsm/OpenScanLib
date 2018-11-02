@@ -205,3 +205,9 @@ OSc_Error OSc_Device_Destroy(OSc_Device *device)
 	free(device);
 	return OSc_Error_OK;
 }
+
+
+void *OSc_Device_GetImplData(OSc_Device *device)
+{
+	return device->implData;
+}

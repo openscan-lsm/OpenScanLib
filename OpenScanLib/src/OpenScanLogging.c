@@ -1,3 +1,4 @@
+#include "OpenScanDeviceImpl.h"
 #include "OpenScanLibPrivate.h"
 
 #include <stdio.h>

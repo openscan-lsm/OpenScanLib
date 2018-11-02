@@ -130,6 +130,8 @@ typedef struct OSc_Setting OSc_Setting;
 typedef struct OSc_Acquisition OSc_Acquisition;
 
 typedef void (*OSc_Log_Func)(const char *message, OSc_Log_Level level, void *data);
+
+// Returns true normally, or false to halt the acquisition
 typedef bool (*OSc_Frame_Callback)(OSc_Acquisition *acq, uint32_t channel, void *pixels, void *data);
 
 

@@ -448,3 +448,15 @@ OSc_Error OSc_Setting_NumericConstraintDiscreteValues(OSc_Setting *setting, OSc_
 	*constraintType = OSc_Value_Constraint_Discrete_Values;
 	return OSc_Error_OK;
 }
+
+
+void *OSc_Setting_GetDevice(OSc_Setting *setting)
+{
+	return setting->device;
+}
+
+
+void *OSc_Setting_GetImplData(OSc_Setting *setting)
+{
+	return setting->implData;
+}

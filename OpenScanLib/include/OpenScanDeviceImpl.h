@@ -97,9 +97,16 @@ static inline void OSc_Log_Error(OSc_Device *device, const char *message)
 
 OSc_Error OSc_API OSc_Device_Create(OSc_Device **device, struct OSc_Device_Impl *impl, void *data);
 
+void OSc_API *OSc_Device_GetImplData(OSc_Device *device);
+
 OSc_Error OSc_API OSc_Setting_Create(OSc_Setting **setting, OSc_Device *device, const char *name, OSc_Value_Type valueType,
 	struct OSc_Setting_Impl *impl, void *data);
 
+void OSc_API *OSc_Setting_GetDevice(OSc_Setting *setting);
+void OSc_API *OSc_Setting_GetImplData(OSc_Setting *setting);
 
 OSc_Error OSc_API OSc_Setting_NumericConstraintRange(OSc_Setting *setting, OSc_Value_Constraint *constraintType);
 OSc_Error OSc_API OSc_Setting_NumericConstraintDiscreteValues(OSc_Setting *setting, OSc_Value_Constraint *constraintType);
+
+OSc_Error OSc_API OSc_Acquisition_GetNumberOfFrames(OSc_Acquisition *acq, uint32_t *numberOfFrames);
+bool OSc_API OSc_Acquisition_CallFrameCallback(OSc_Acquisition *acq, uint32_t channel, void *pixels);
