@@ -1,8 +1,8 @@
 #include "OpenScanLibPrivate.h"
 
-#include "OpenScanDeviceImpl.h"
 #include "OpenScanDeviceModules.h"
 
+#include <stdlib.h>
 #include <string.h>
 
 

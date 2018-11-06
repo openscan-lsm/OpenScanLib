@@ -18,6 +18,7 @@ tags
 *.vcproj.*.user
 *.vcxproj.user
 ipch/
+.vs/
 # GNU build system
 *.la
 *.lo
@@ -50,3 +51,4 @@ test-driver
 # Build
 Debug/
 Release/
+**/doc/doxygen/

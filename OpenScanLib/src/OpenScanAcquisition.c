@@ -1,5 +1,6 @@
 #include "OpenScanLibPrivate.h"
-#include "OpenScanDeviceImpl.h"
+
+#include <stdlib.h>
 
 
 OSc_Error OSc_Acquisition_Create(OSc_Acquisition **acq, OSc_LSM *lsm)

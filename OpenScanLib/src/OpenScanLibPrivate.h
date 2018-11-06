@@ -1,6 +1,7 @@
 #pragma once
 
 #include "OpenScanLib.h"
+#include "OpenScanDeviceLib.h"
 
 
 struct OSc_Scanner
@@ -15,7 +16,7 @@ struct OSc_Detector
 
 struct OSc_Device
 {
-	struct OSc_Device_Impl *impl;
+	struct OScDev_DeviceImpl *impl;
 	void *implData;
 
 	OSc_Log_Func logFunc;
@@ -49,7 +50,7 @@ struct OSc_Setting
 	OSc_Device *device;
 	OSc_Value_Type valueType;
 
-	struct OSc_Setting_Impl *impl;
+	struct OScDev_SettingImpl *impl;
 	void *implData;
 
 	char name[OSc_MAX_STR_LEN + 1];
@@ -68,8 +69,33 @@ struct OSc_Acquisition
 
 // Internal functions
 
+void OSc_Log(OSc_Device *device, OSc_Log_Level level, const char *message);
+
+static inline OSc_Log_Debug(OSc_Device *device, const char *message)
+{
+	OSc_Log(device, OSc_Log_Level_Debug, message);
+}
+
+static inline OSc_Log_Info(OSc_Device *device, const char *message)
+{
+	OSc_Log(device, OSc_Log_Level_Info, message);
+}
+
+static inline OSc_Log_Warning(OSc_Device *device, const char *message)
+{
+	OSc_Log(device, OSc_Log_Level_Warning, message);
+}
+
+static inline OSc_Log_Error(OSc_Device *device, const char *message)
+{
+	OSc_Log(device, OSc_Log_Level_Error, message);
+}
+
 OSc_Error OSc_LSM_Associate_Device(OSc_LSM *lsm, OSc_Device *device);
 OSc_Error OSc_LSM_Dissociate_Device(OSc_LSM *lsm, OSc_Device *device);
 OSc_Error OSc_LSM_Is_Device_Associated(OSc_LSM *lsm, OSc_Device *device, bool *isAssociated);
 
+OSc_Error OSc_Device_Create(OSc_Device **device, struct OScDev_DeviceImpl *impl, void *data);
 OSc_Error OSc_Device_Destroy(OSc_Device *device);
+
+OSc_Error OSc_Setting_Create(OSc_Setting **setting, OSc_Device *device, const char *name, OSc_Value_Type valueType, struct OScDev_SettingImpl *impl, void *data);

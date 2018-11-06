@@ -1,5 +1,4 @@
 #include "OpenScanLibPrivate.h"
-#include "OpenScanDeviceImpl.h"
 
 
 OSc_Error OSc_Detector_Get_Device(OSc_Detector *detector, OSc_Device **device)

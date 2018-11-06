@@ -44,6 +44,9 @@
     <ClCompile Include="OpenScanLib\src\OpenScanSetting.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="OpenScanLib\src\DeviceInterface.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="OpenScanLib\include\OpenScanLib.h">
@@ -58,8 +61,8 @@
     <ClInclude Include="OpenScanLib\src\OpenScanLibPrivate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="OpenScanLib\include\OpenScanDeviceImpl.h">
-      <Filter>Public Headers</Filter>
+    <ClInclude Include="OpenScanLib\src\DeviceInterface.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

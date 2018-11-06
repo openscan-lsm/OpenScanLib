@@ -1,7 +1,10 @@
 #include "OpenScanDeviceModules.h"
 
+#include "DeviceInterface.h"
 #include "Modules.h"
-#include "OpenScanDeviceImpl.h"
+
+#define OScDevInternal_BUILDING_OPENSCANLIB
+#include "OpenScanDeviceLibPrivate.h"
 
 
 // Array of strings; each element _and_ the array itself must be freed when
@@ -17,11 +20,6 @@ struct Module
 static struct Module *g_loadedAdapters;
 static size_t g_loadedAdapterCount;
 static size_t g_loadedAdaptersCap;
-
-
-#define STRINGIFY_EXPANSION(s) STRINGIFY(s)
-#define STRINGIFY(s) #s
-#define OSc_ENTRY_POINT_FUNC_NAME_STRING STRINGIFY_EXPANSION(OSc_ENTRY_POINT_FUNC_NAME)
 
 
 static OSc_Error LoadAdapter(const char *path, const char *name)
@@ -166,16 +164,31 @@ OSc_Error OSc_DeviceModule_Get_Devices(const char *module, OSc_Device ***devices
 	if (!mod)
 		return OSc_Error_No_Such_Device_Module;
 
-	OSc_EntryPointFunc entryPoint;
-	OSc_Return_If_Error(GetEntryPoint(mod->handle, OSc_ENTRY_POINT_FUNC_NAME_STRING, &entryPoint));
+	OScDevInternal_EntryPointPtr entryPoint;
+	OSc_Return_If_Error(GetEntryPoint(mod->handle, OScDevInternal_ENTRY_POINT_NAME, (void *)&entryPoint));
+
+	struct OScDevInternal_Interface **funcTablePtr;
+	struct OScDev_ModuleImpl *modImpl;
+	uint32_t dpiVersion = entryPoint(&funcTablePtr, &modImpl);
+	if (dpiVersion != OScDevInternal_ABI_VERSION)
+	{
+		// TODO We could support non-exact version matches.
+		return OSc_Error_Unknown;
+	}
+
+	*funcTablePtr = &DeviceInterfaceFunctionTable;
+
+	if (modImpl->Open)
+		OSc_Return_If_Error(modImpl->Open());
+	// TODO We need to also call Close() when shutting down
 
 	size_t implsSize = 16;
-	struct OSc_Device_Impl **deviceImpls = malloc(sizeof(void *) * implsSize);
+	struct OScDev_DeviceImpl **deviceImpls = malloc(sizeof(void *) * implsSize);
 	size_t implsCount = 0;
 	for (;;)
 	{
 		size_t count = implsSize;
-		OSc_Return_If_Error(entryPoint(deviceImpls, &count));
+		OSc_Return_If_Error(modImpl->GetDeviceImpls(deviceImpls, &count));
 		if (count < implsSize)
 		{
 			implsCount = count;
@@ -188,7 +201,7 @@ OSc_Error OSc_DeviceModule_Get_Devices(const char *module, OSc_Device ***devices
 	*count = 0;
 	for (size_t i = 0; i < implsCount; ++i)
 	{
-		OSc_Device **implDevices;
+		struct OSc_Device **implDevices;
 		size_t deviceCount;
 		OSc_Error err;
 		if (OSc_Check_Error(err, deviceImpls[i]->GetInstances(&implDevices, &deviceCount)))
@@ -218,7 +231,7 @@ OSc_Error OSc_DeviceModule_Get_Devices(const char *module, OSc_Device ***devices
 		}
 
 		for (size_t j = 0; j < deviceCount; ++j)
-			(*devices)[oldCount + j] = implDevices[j];
+			(*devices)[oldCount + j] = (OSc_Device *)implDevices[j];
 	}
 
 	free(deviceImpls);

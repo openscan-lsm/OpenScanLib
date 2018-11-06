@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2050
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenScanLib", "OpenScanLib.vcxproj", "{E10D1CA0-4F18-447B-8A08-966FA0887B36}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestDeviceModule", "TestDeviceModule\TestDeviceModule.vcxproj", "{BC07980E-9C36-4683-BF1C-2936B5E0DF36}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ModuleLoadTest", "ModuleLoadTest\ModuleLoadTest.vcxproj", "{A6D864D4-DF37-4A9C-BF1D-142CAD2F7AFB}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenScanDeviceLib", "OpenScanDeviceLib\OpenScanDeviceLib.vcxproj", "{22D83709-EDC3-428D-9FCF-E6A5C2DB61CC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,8 +43,19 @@ Global
 		{A6D864D4-DF37-4A9C-BF1D-142CAD2F7AFB}.Release|x64.Build.0 = Release|x64
 		{A6D864D4-DF37-4A9C-BF1D-142CAD2F7AFB}.Release|x86.ActiveCfg = Release|Win32
 		{A6D864D4-DF37-4A9C-BF1D-142CAD2F7AFB}.Release|x86.Build.0 = Release|Win32
+		{22D83709-EDC3-428D-9FCF-E6A5C2DB61CC}.Debug|x64.ActiveCfg = Debug|x64
+		{22D83709-EDC3-428D-9FCF-E6A5C2DB61CC}.Debug|x64.Build.0 = Debug|x64
+		{22D83709-EDC3-428D-9FCF-E6A5C2DB61CC}.Debug|x86.ActiveCfg = Debug|Win32
+		{22D83709-EDC3-428D-9FCF-E6A5C2DB61CC}.Debug|x86.Build.0 = Debug|Win32
+		{22D83709-EDC3-428D-9FCF-E6A5C2DB61CC}.Release|x64.ActiveCfg = Release|x64
+		{22D83709-EDC3-428D-9FCF-E6A5C2DB61CC}.Release|x64.Build.0 = Release|x64
+		{22D83709-EDC3-428D-9FCF-E6A5C2DB61CC}.Release|x86.ActiveCfg = Release|Win32
+		{22D83709-EDC3-428D-9FCF-E6A5C2DB61CC}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {33361F1F-04C4-4802-A167-5A26E9310CF0}
 	EndGlobalSection
 EndGlobal

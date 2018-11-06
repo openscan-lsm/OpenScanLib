@@ -92,9 +92,9 @@ OSc_Error LoadModuleLibrary(const char *path, OSc_Module_Handle *module)
 }
 
 
-OSc_Error GetEntryPoint(OSc_Module_Handle module, const char *funcName, OSc_EntryPointFunc *func)
+OSc_Error GetEntryPoint(OSc_Module_Handle module, const char *funcName, void **func)
 {
-	*func = (OSc_EntryPointFunc) GetProcAddress(module, funcName);
+	*func = GetProcAddress(module, funcName);
 	if (!*func)
 		return OSc_Error_Unknown;
 	return OSc_Error_OK;
