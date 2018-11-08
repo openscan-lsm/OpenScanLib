@@ -13,9 +13,19 @@ extern "C" {
 #endif
 
 #ifdef OPENSCANLIB_EXPORTS
-#define OSc_API __declspec(dllexport)
+#	ifdef _MSC_VER
+#		define OSc_API __declspec(dllexport)
+#	else
+#		define OSc_API
+#		error
+#	endif
 #else
-#define OSc_API __declspec(dllimport)
+#	ifdef _MSC_VER
+#		define OSc_API __declspec(dllimport)
+#	else
+#		define OSc_API
+#		error
+#	endif
 #endif
 
 
