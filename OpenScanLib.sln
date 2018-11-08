@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2050
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenScanLib", "OpenScanLib.vcxproj", "{E10D1CA0-4F18-447B-8A08-966FA0887B36}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenScanLib", "OpenScanLib\OpenScanLib.vcxproj", "{E10D1CA0-4F18-447B-8A08-966FA0887B36}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TestDeviceModule", "TestDeviceModule\TestDeviceModule.vcxproj", "{BC07980E-9C36-4683-BF1C-2936B5E0DF36}"
 EndProject

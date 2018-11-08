@@ -19,24 +19,24 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="OpenScanLib\src\DeviceInterface.c" />
-    <ClCompile Include="OpenScanLib\src\Modules.c" />
-    <ClCompile Include="OpenScanLib\src\OpenScanAcquisition.c" />
-    <ClCompile Include="OpenScanLib\src\OpenScanDetector.c" />
-    <ClCompile Include="OpenScanLib\src\OpenScanDevice.c" />
-    <ClCompile Include="OpenScanLib\src\OpenScanDeviceModules.c" />
-    <ClCompile Include="OpenScanLib\src\OpenScanDevices.c" />
-    <ClCompile Include="OpenScanLib\src\OpenScanLogging.c" />
-    <ClCompile Include="OpenScanLib\src\OpenScanLSM.c" />
-    <ClCompile Include="OpenScanLib\src\OpenScanScanner.c" />
-    <ClCompile Include="OpenScanLib\src\OpenScanSetting.c" />
+    <ClCompile Include="src\DeviceInterface.c" />
+    <ClCompile Include="src\Modules.c" />
+    <ClCompile Include="src\OpenScanAcquisition.c" />
+    <ClCompile Include="src\OpenScanDetector.c" />
+    <ClCompile Include="src\OpenScanDevice.c" />
+    <ClCompile Include="src\OpenScanDeviceModules.c" />
+    <ClCompile Include="src\OpenScanDevices.c" />
+    <ClCompile Include="src\OpenScanLogging.c" />
+    <ClCompile Include="src\OpenScanLSM.c" />
+    <ClCompile Include="src\OpenScanScanner.c" />
+    <ClCompile Include="src\OpenScanSetting.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="OpenScanLib\include\OpenScanLib.h" />
-    <ClInclude Include="OpenScanLib\src\DeviceInterface.h" />
-    <ClInclude Include="OpenScanLib\src\Modules.h" />
-    <ClInclude Include="OpenScanLib\src\OpenScanDeviceModules.h" />
-    <ClInclude Include="OpenScanLib\src\OpenScanLibPrivate.h" />
+    <ClInclude Include="include\OpenScanLib.h" />
+    <ClInclude Include="src\DeviceInterface.h" />
+    <ClInclude Include="src\Modules.h" />
+    <ClInclude Include="src\OpenScanDeviceModules.h" />
+    <ClInclude Include="src\OpenScanLibPrivate.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{E10D1CA0-4F18-447B-8A08-966FA0887B36}</ProjectGuid>
@@ -109,7 +109,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;_USRDLL;OPENSCANLIB_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>OpenScanDeviceLib;OpenScanDeviceLib/include;OpenScanLib/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../OpenScanDeviceLib;../OpenScanDeviceLib/include;$(ProjectDir)/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -124,7 +124,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;_WINDOWS;_USRDLL;OPENSCANLIB_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>OpenScanDeviceLib;OpenScanDeviceLib/include;OpenScanLib/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../OpenScanDeviceLib;../OpenScanDeviceLib/include;$(ProjectDir)/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -141,7 +141,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;_USRDLL;OPENSCANLIB_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>OpenScanDeviceLib;OpenScanDeviceLib/include;OpenScanLib/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../OpenScanDeviceLib;../OpenScanDeviceLib/include;$(ProjectDir)/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -160,7 +160,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NDEBUG;_WINDOWS;_USRDLL;OPENSCANLIB_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>OpenScanDeviceLib;OpenScanDeviceLib/include;OpenScanLib/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../OpenScanDeviceLib;../OpenScanDeviceLib/include;$(ProjectDir)/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

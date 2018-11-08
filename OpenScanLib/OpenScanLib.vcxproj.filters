@@ -14,54 +14,54 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="OpenScanLib\src\Modules.c">
+    <ClCompile Include="src\Modules.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OpenScanLib\src\OpenScanAcquisition.c">
+    <ClCompile Include="src\OpenScanAcquisition.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OpenScanLib\src\OpenScanDetector.c">
+    <ClCompile Include="src\OpenScanDetector.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OpenScanLib\src\OpenScanDevice.c">
+    <ClCompile Include="src\OpenScanDevice.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OpenScanLib\src\OpenScanDeviceModules.c">
+    <ClCompile Include="src\OpenScanDeviceModules.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OpenScanLib\src\OpenScanDevices.c">
+    <ClCompile Include="src\OpenScanDevices.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OpenScanLib\src\OpenScanLogging.c">
+    <ClCompile Include="src\OpenScanLogging.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OpenScanLib\src\OpenScanLSM.c">
+    <ClCompile Include="src\OpenScanLSM.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OpenScanLib\src\OpenScanScanner.c">
+    <ClCompile Include="src\OpenScanScanner.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OpenScanLib\src\OpenScanSetting.c">
+    <ClCompile Include="src\OpenScanSetting.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OpenScanLib\src\DeviceInterface.c">
+    <ClCompile Include="src\DeviceInterface.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="OpenScanLib\include\OpenScanLib.h">
+    <ClInclude Include="include\OpenScanLib.h">
       <Filter>Public Headers</Filter>
     </ClInclude>
-    <ClInclude Include="OpenScanLib\src\Modules.h">
+    <ClInclude Include="src\Modules.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="OpenScanLib\src\OpenScanDeviceModules.h">
+    <ClInclude Include="src\OpenScanDeviceModules.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="OpenScanLib\src\OpenScanLibPrivate.h">
+    <ClInclude Include="src\OpenScanLibPrivate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="OpenScanLib\src\DeviceInterface.h">
+    <ClInclude Include="src\DeviceInterface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

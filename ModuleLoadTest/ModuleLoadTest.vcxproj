@@ -153,7 +153,7 @@
     <ClCompile Include="main.c" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\OpenScanLib.vcxproj">
+    <ProjectReference Include="..\OpenScanLib\OpenScanLib.vcxproj">
       <Project>{e10d1ca0-4f18-447b-8a08-966fa0887b36}</Project>
     </ProjectReference>
   </ItemGroup>
