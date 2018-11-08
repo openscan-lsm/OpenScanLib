@@ -47,11 +47,10 @@ struct OSc_LSM
 
 struct OSc_Setting
 {
-	OSc_Device *device;
-	OSc_Value_Type valueType;
-
 	struct OScDev_SettingImpl *impl;
 	void *implData;
+
+	OSc_Value_Type valueType;
 
 	char name[OSc_MAX_STR_LEN + 1];
 };
@@ -98,4 +97,4 @@ OSc_Error OSc_LSM_Is_Device_Associated(OSc_LSM *lsm, OSc_Device *device, bool *i
 OSc_Error OSc_Device_Create(OSc_Device **device, struct OScDev_DeviceImpl *impl, void *data);
 OSc_Error OSc_Device_Destroy(OSc_Device *device);
 
-OSc_Error OSc_Setting_Create(OSc_Setting **setting, OSc_Device *device, const char *name, OSc_Value_Type valueType, struct OScDev_SettingImpl *impl, void *data);
+OSc_Error OSc_Setting_Create(OSc_Setting **setting, const char *name, OSc_Value_Type valueType, struct OScDev_SettingImpl *impl, void *data);

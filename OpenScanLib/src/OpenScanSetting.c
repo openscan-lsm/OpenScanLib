@@ -366,7 +366,7 @@ static OSc_Error DefaultGetEnumNameForValue(OSc_Setting *setting, uint32_t value
 		return OSc_Error_Wrong_Value_Type;
 
 	// TODO Check range
-	
+
 	snprintf(name, OSc_MAX_STR_LEN, "Value-%u", value);
 	return OSc_Error_OK;
 }
@@ -390,7 +390,7 @@ static OSc_Error DefaultGetEnumValueForName(OSc_Setting *setting, uint32_t *valu
 }
 
 
-OSc_Error OSc_Setting_Create(OSc_Setting **setting, OSc_Device *device, const char *name, OSc_Value_Type valueType,
+OSc_Error OSc_Setting_Create(OSc_Setting **setting, const char *name, OSc_Value_Type valueType,
 	struct OScDev_SettingImpl *impl, void *data)
 {
 	if (impl->IsEnabled == NULL)
@@ -433,11 +433,10 @@ OSc_Error OSc_Setting_Create(OSc_Setting **setting, OSc_Device *device, const ch
 		impl->GetEnumValueForName = DefaultGetEnumValueForName;
 
 	*setting = calloc(1, sizeof(OSc_Setting));
-	(*setting)->device = device;
-	(*setting)->valueType = valueType;
-	strncpy((*setting)->name, name, OSc_MAX_STR_LEN);
 	(*setting)->impl = impl;
 	(*setting)->implData = data;
+	(*setting)->valueType = valueType;
+	strncpy((*setting)->name, name, OSc_MAX_STR_LEN);
 	return OSc_Error_OK;
 }
 
@@ -453,12 +452,6 @@ OSc_Error OSc_Setting_NumericConstraintDiscreteValues(OSc_Setting *setting, OSc_
 {
 	*constraintType = OSc_Value_Constraint_Discrete_Values;
 	return OSc_Error_OK;
-}
-
-
-void *OSc_Setting_GetDevice(OSc_Setting *setting)
-{
-	return setting->device;
 }
 
 

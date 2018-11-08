@@ -215,8 +215,7 @@ struct OScDevInternal_Interface
 	OScDev_Error (*Device_Create)(struct OScDev_ModuleImpl *modImpl, OScDev_Device **device, struct OScDev_DeviceImpl *impl, void *data);
 	void *(*Device_GetImplData)(struct OScDev_ModuleImpl *modImpl, OScDev_Device *device);
 
-	OScDev_Error (*Setting_Create)(struct OScDev_ModuleImpl *modImpl, OScDev_Setting **setting, OScDev_Device *device, const char *name, enum OScDev_ValueType valueType, struct OScDev_SettingImpl *impl, void *data);
-	OScDev_Device *(*Setting_GetDevice)(struct OScDev_ModuleImpl *modImpl, OScDev_Setting *setting);
+	OScDev_Error (*Setting_Create)(struct OScDev_ModuleImpl *modImpl, OScDev_Setting **setting, const char *name, enum OScDev_ValueType valueType, struct OScDev_SettingImpl *impl, void *data);
 	void *(*Setting_GetImplData)(struct OScDev_ModuleImpl *modImpl, OScDev_Setting *setting);
 
 	OScDev_Error (*Acquisition_GetNumberOfFrames)(struct OScDev_ModuleImpl *modImpl, OScDev_Acquisition *acq, uint32_t *numberOfFrames);
@@ -405,14 +404,9 @@ OScDevInternal_INLINE void *OScDev_Device_GetImplData(OScDev_Device *device)
 	return OScDevInternal_FunctionTable->Device_GetImplData(&OScDevInternal_TheModuleImpl, device);
 }
 
-OScDevInternal_INLINE OScDev_Error OScDev_Setting_Create(OScDev_Setting **setting, OScDev_Device *device, const char *name, enum OScDev_ValueType valueType, struct OScDev_SettingImpl *impl, void *data)
+OScDevInternal_INLINE OScDev_Error OScDev_Setting_Create(OScDev_Setting **setting, const char *name, enum OScDev_ValueType valueType, struct OScDev_SettingImpl *impl, void *data)
 {
-	return OScDevInternal_FunctionTable->Setting_Create(&OScDevInternal_TheModuleImpl, setting, device, name, valueType, impl, data);
-}
-
-OScDevInternal_INLINE OScDev_Device *OScDev_Setting_GetDevice(OScDev_Setting *setting)
-{
-	return OScDevInternal_FunctionTable->Setting_GetDevice(&OScDevInternal_TheModuleImpl, setting);
+	return OScDevInternal_FunctionTable->Setting_Create(&OScDevInternal_TheModuleImpl, setting, name, valueType, impl, data);
 }
 
 OScDevInternal_INLINE void *OScDev_Setting_GetImplData(OScDev_Setting *setting)

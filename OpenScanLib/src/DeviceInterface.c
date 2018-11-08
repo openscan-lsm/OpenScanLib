@@ -29,16 +29,9 @@ static void *Device_GetImplData(struct OScDev_ModuleImpl *modImpl, OScDev_Device
 
 
 // TODO: Replace with a SettingsCreateContext-based method
-static OScDev_Error Setting_Create(struct OScDev_ModuleImpl *modImpl, OScDev_Setting **setting, OScDev_Device *device, const char *name, enum OScDev_ValueType valueType, struct OScDev_SettingImpl *impl, void *data)
+static OScDev_Error Setting_Create(struct OScDev_ModuleImpl *modImpl, OScDev_Setting **setting, const char *name, enum OScDev_ValueType valueType, struct OScDev_SettingImpl *impl, void *data)
 {
-	return OSc_Setting_Create(setting, device, name, valueType, impl, data);
-}
-
-
-// TODO: Remove Device ptr from Setting
-static OScDev_Device *Setting_GetDevice(struct OScDev_ModuleImpl *modImpl, OScDev_Setting *setting)
-{
-	return setting->device;
+	return OSc_Setting_Create(setting, name, valueType, impl, data);
 }
 
 
@@ -66,7 +59,6 @@ struct OScDevInternal_Interface DeviceInterfaceFunctionTable = {
 	.Device_Create = Device_Create,
 	.Device_GetImplData = Device_GetImplData,
 	.Setting_Create = Setting_Create,
-	.Setting_GetDevice = Setting_GetDevice,
 	.Setting_GetImplData = Setting_GetImplData,
 	.Acquisition_GetNumberOfFrames = Acquisition_GetNumberOfFrames,
 	.Acquisition_CallFrameCallback = Acquisition_CallFrameCallback,
