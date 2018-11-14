@@ -371,25 +371,25 @@ OScDevInternal_INLINE void OScDev_Log(OScDev_Device *device, enum OScDev_LogLeve
 }
 
 /// Log a debug-level message
-OScDevInternal_INLINE void OScDev_LogDebug(OScDev_Device *device, const char *message)
+OScDevInternal_INLINE void OScDev_Log_Debug(OScDev_Device *device, const char *message)
 {
 	OScDev_Log(device, OScDev_LogLevel_Debug, message);
 }
 
 /// Log an info-level message
-OScDevInternal_INLINE void OScDev_LogInfo(OScDev_Device *device, const char *message)
+OScDevInternal_INLINE void OScDev_Log_Info(OScDev_Device *device, const char *message)
 {
 	OScDev_Log(device, OScDev_LogLevel_Info, message);
 }
 
 /// Log a warning-level message
-OScDevInternal_INLINE void OScDev_LogWarning(OScDev_Device *device, const char *message)
+OScDevInternal_INLINE void OScDev_Log_Warning(OScDev_Device *device, const char *message)
 {
 	OScDev_Log(device, OScDev_LogLevel_Warning, message);
 }
 
 /// Log an error-level message
-OScDevInternal_INLINE void OScDev_LogError(OScDev_Device *device, const char *message)
+OScDevInternal_INLINE void OScDev_Log_Error(OScDev_Device *device, const char *message)
 {
 	OScDev_Log(device, OScDev_LogLevel_Error, message);
 }
