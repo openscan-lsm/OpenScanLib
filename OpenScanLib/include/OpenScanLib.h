@@ -51,6 +51,11 @@ typedef int32_t OSc_Error;
 enum
 {
 	OSc_Error_OK,
+
+	// WARNING: These must match exactly the definitions of OScDev_Error_* in
+	// OpenScanDeviceLib.h (normaly we would ensure that a common definition is
+	// used, but these codes are temporary and will be replaced soon by a new
+	// error handling mechanism).
 	OSc_Error_Unknown = 10000,
 	OSc_Error_Unsupported_Operation,
 	OSc_Error_Illegal_Argument,

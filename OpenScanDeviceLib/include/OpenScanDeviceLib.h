@@ -125,7 +125,36 @@ enum OScDev_LogLevel
  * This will be replaced with an opaque type in the future.
  */
 typedef int32_t OScDev_Error;
-enum { OScDev_OK = 0 };
+enum {
+	OScDev_OK = 0,
+
+	// For now, we define a number of standard error codes here. Error handling
+	// will be upgraded soon to use rich error reporting.
+
+	// WARNING: Do not edit these without correctly incrementing the device
+	// interface version.
+	// WARNING 2: These must exactly match the OSc_Error_* constants defined
+	// in OpenScanLib.h.
+	OScDev_Error_Unknown = 10000,
+	OScDev_Error_Unsupported_Operation,
+	OScDev_Error_Illegal_Argument,
+	OScDev_Error_Device_Module_Already_Exists,
+	OScDev_Error_No_Such_Device_Module,
+	OScDev_Error_Driver_Not_Available,
+	OScDev_Error_Device_Already_Open,
+	OScDev_Error_Device_Not_Opened_For_LSM,
+	OScDev_Error_Device_Does_Not_Support_Scanner,
+	OScDev_Error_Device_Does_Not_Support_Detector,
+	OScDev_Error_Wrong_Value_Type,
+	OScDev_Error_Setting_Not_Writable,
+	OScDev_Error_Wrong_Constraint_Type,
+	OScDev_Error_Unknown_Enum_Value_Name,
+	OScDev_Error_Acquisition_Running,
+	OScDev_Error_Not_Armed,
+	OScDev_Error_Waveform_Out_Of_Range,
+	OScDev_Error_Waveform_Memory_Size_Mismatch,
+	OScDev_Error_Data_Left_In_Fifo_After_Reading_Image,
+};
 
 
 /// Convenience macro for checking error return values.
