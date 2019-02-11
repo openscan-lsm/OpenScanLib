@@ -18,6 +18,26 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\DeviceInterface.c" />
+    <ClCompile Include="src\Modules.c" />
+    <ClCompile Include="src\OpenScanAcquisition.c" />
+    <ClCompile Include="src\OpenScanDetector.c" />
+    <ClCompile Include="src\OpenScanDevice.c" />
+    <ClCompile Include="src\OpenScanDeviceModules.c" />
+    <ClCompile Include="src\OpenScanDevices.c" />
+    <ClCompile Include="src\OpenScanLogging.c" />
+    <ClCompile Include="src\OpenScanLSM.c" />
+    <ClCompile Include="src\OpenScanScanner.c" />
+    <ClCompile Include="src\OpenScanSetting.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\OpenScanLib.h" />
+    <ClInclude Include="src\DeviceInterface.h" />
+    <ClInclude Include="src\Modules.h" />
+    <ClInclude Include="src\OpenScanDeviceModules.h" />
+    <ClInclude Include="src\OpenScanLibPrivate.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{E10D1CA0-4F18-447B-8A08-966FA0887B36}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
@@ -89,6 +109,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;_USRDLL;OPENSCANLIB_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>../OpenScanDeviceLib;../OpenScanDeviceLib/include;$(ProjectDir)/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -103,6 +124,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;_WINDOWS;_USRDLL;OPENSCANLIB_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>../OpenScanDeviceLib;../OpenScanDeviceLib/include;$(ProjectDir)/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -119,6 +141,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;_USRDLL;OPENSCANLIB_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>../OpenScanDeviceLib;../OpenScanDeviceLib/include;$(ProjectDir)/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -137,6 +160,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NDEBUG;_WINDOWS;_USRDLL;OPENSCANLIB_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>../OpenScanDeviceLib;../OpenScanDeviceLib/include;$(ProjectDir)/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -145,25 +169,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="Modules.c" />
-    <ClCompile Include="OpenScanAcquisition.c" />
-    <ClCompile Include="OpenScanDetector.c" />
-    <ClCompile Include="OpenScanDevice.c" />
-    <ClCompile Include="OpenScanDeviceModules.c" />
-    <ClCompile Include="OpenScanDevices.c" />
-    <ClCompile Include="OpenScanLogging.c" />
-    <ClCompile Include="OpenScanLSM.c" />
-    <ClCompile Include="OpenScanScanner.c" />
-    <ClCompile Include="OpenScanSetting.c" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Modules.h" />
-    <ClInclude Include="OpenScanDeviceImpl.h" />
-    <ClInclude Include="OpenScanDeviceModules.h" />
-    <ClInclude Include="OpenScanLib.h" />
-    <ClInclude Include="OpenScanLibPrivate.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

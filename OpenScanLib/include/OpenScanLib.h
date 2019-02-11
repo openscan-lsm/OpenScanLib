@@ -4,17 +4,28 @@
 
 #pragma once
 
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
+#include <stdlib.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 #ifdef OPENSCANLIB_EXPORTS
-#define OSc_API __declspec(dllexport)
+#	ifdef _MSC_VER
+#		define OSc_API __declspec(dllexport)
+#	else
+#		define OSc_API
+#		error
+#	endif
 #else
-#define OSc_API __declspec(dllimport)
+#	ifdef _MSC_VER
+#		define OSc_API __declspec(dllimport)
+#	else
+#		define OSc_API
+#		error
+#	endif
 #endif
 
 
@@ -40,6 +51,11 @@ typedef int32_t OSc_Error;
 enum
 {
 	OSc_Error_OK,
+
+	// WARNING: These must match exactly the definitions of OScDev_Error_* in
+	// OpenScanDeviceLib.h (normaly we would ensure that a common definition is
+	// used, but these codes are temporary and will be replaced soon by a new
+	// error handling mechanism).
 	OSc_Error_Unknown = 10000,
 	OSc_Error_Unsupported_Operation,
 	OSc_Error_Illegal_Argument,
@@ -130,6 +146,8 @@ typedef struct OSc_Setting OSc_Setting;
 typedef struct OSc_Acquisition OSc_Acquisition;
 
 typedef void (*OSc_Log_Func)(const char *message, OSc_Log_Level level, void *data);
+
+// Returns true normally, or false to halt the acquisition
 typedef bool (*OSc_Frame_Callback)(OSc_Acquisition *acq, uint32_t channel, void *pixels, void *data);
 
 

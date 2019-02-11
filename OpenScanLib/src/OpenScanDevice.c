@@ -1,5 +1,4 @@
 #include "OpenScanLibPrivate.h"
-#include "OpenScanDeviceImpl.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -190,7 +189,7 @@ OSc_Error OSc_Device_Set_Magnification(OSc_Device *device)
 }
 
 
-OSc_Error OSc_Device_Create(OSc_Device **device, struct OSc_Device_Impl *impl, void *data)
+OSc_Error OSc_Device_Create(OSc_Device **device, struct OScDev_DeviceImpl *impl, void *data)
 {
 	*device = calloc(1, sizeof(OSc_Device));
 	(*device)->impl = impl;

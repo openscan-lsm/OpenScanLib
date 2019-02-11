@@ -1,5 +1,6 @@
 #include "OpenScanLibPrivate.h"
-#include "OpenScanDeviceImpl.h"
+
+#include <stdlib.h>
 
 
 OSc_Error OSc_Acquisition_Create(OSc_Acquisition **acq, OSc_LSM *lsm)
@@ -108,4 +109,17 @@ OSc_Error OSc_Acquisition_Wait(OSc_Acquisition *acq)
 	acq->scanner->device->impl->Wait(acq->scanner->device);
 	acq->detector->device->impl->Wait(acq->detector->device);
 	return OSc_Error_OK;
+}
+
+
+OSc_Error OSc_Acquisition_GetNumberOfFrames(OSc_Acquisition *acq, uint32_t *numberOfFrames)
+{
+	*numberOfFrames = acq->numberOfFrames;
+	return OSc_Error_OK;
+}
+
+
+bool OSc_Acquisition_CallFrameCallback(OSc_Acquisition *acq, uint32_t channel, void *pixels)
+{
+	return acq->frameCallback(acq, channel, pixels, acq->data);
 }
