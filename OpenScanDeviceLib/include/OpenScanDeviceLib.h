@@ -318,7 +318,9 @@ struct OScDev_DeviceImpl
 	OScDev_Error (*Open)(OScDev_Device *device);
 	OScDev_Error (*Close)(OScDev_Device *device);
 
+	/// Return true if this device can perform scanning.
 	OScDev_Error (*HasScanner)(OScDev_Device *device, bool *hasScanner);
+	/// Return true if this device can perform detection.
 	OScDev_Error (*HasDetector)(OScDev_Device *device, bool *hasDetector);
 
 	OScDev_Error (*GetSettings)(OScDev_Device *device, OScDev_Setting ***settings, size_t *count);
@@ -334,11 +336,29 @@ struct OScDev_DeviceImpl
 	OScDev_Error (*GetNumberOfChannels)(OScDev_Device *device, uint32_t *nChannels);
 	OScDev_Error (*GetBytesPerSample)(OScDev_Device *device, uint32_t *bytesPerSample);
 
+	/// Prepare the scanner to listen to the clock.
+	/**
+	 * This is only called when an external trigger/clock is used, or when the
+	 * detector (whether this device or another) provides the clock.
+	 */
 	OScDev_Error (*ArmScanner)(OScDev_Device *device, OScDev_Acquisition *acq);
+	/// Start the scanner using this device as clock.
+	/**
+	 * `ArmScanner()` is *not* called prior to calling this function.
+	 */
 	OScDev_Error (*StartScanner)(OScDev_Device *device, OScDev_Acquisition *acq);
 	OScDev_Error (*StopScanner)(OScDev_Device *device, OScDev_Acquisition *acq);
 
+	/// Prepare the detector to listen to the clock.
+	/**
+	 * This is only called when an external trigger/clock is used, or when the
+	 * scanner (whether this device or another) provides the clock.
+	 */
 	OScDev_Error (*ArmDetector)(OScDev_Device *device, OScDev_Acquisition *acq);
+	/// Start the detector using this device as clock.
+	/**
+	 * `ArmDetector()` is *not* called prior to calling this function.
+	 */
 	OScDev_Error (*StartDetector)(OScDev_Device *device, OScDev_Acquisition *acq);
 	OScDev_Error (*StopDetector)(OScDev_Device *device, OScDev_Acquisition *acq);
 
