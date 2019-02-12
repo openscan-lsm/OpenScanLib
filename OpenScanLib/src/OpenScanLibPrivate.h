@@ -4,6 +4,11 @@
 #include "OpenScanDeviceLib.h"
 
 
+struct OSc_Clock
+{
+	OSc_Device *device;
+};
+
 struct OSc_Scanner
 {
 	OSc_Device *device;
@@ -24,6 +29,7 @@ struct OSc_Device
 
 	bool isOpen;
 
+	OSc_Clock *clock;
 	OSc_Scanner *scanner;
 	OSc_Detector *detector;
 
@@ -38,6 +44,7 @@ struct OSc_Device
 
 struct OSc_LSM
 {
+	OSc_Clock *clock;
 	OSc_Scanner *scanner;
 	OSc_Detector *detector;
 
@@ -55,14 +62,26 @@ struct OSc_Setting
 	char name[OSc_MAX_STR_LEN + 1];
 };
 
+struct OSc_AcquisitionForDevice
+{
+	OSc_Device *device;
+	OSc_Acquisition *acq;
+};
+
 struct OSc_Acquisition
 {
+	OSc_Clock *clock;
 	OSc_Scanner *scanner;
 	OSc_Detector *detector;
 	uint32_t numberOfFrames;
-	OSc_Trigger_Source triggerSource;
 	OSc_Frame_Callback frameCallback;
 	void *data;
+
+	// We can pass opaque pointers to these structs to devices, so that we can
+	// handle acquisition-related calls in a device-specific manner.
+	struct OSc_AcquisitionForDevice acqForClockDevice;
+	struct OSc_AcquisitionForDevice acqForScannerDevice;
+	struct OSc_AcquisitionForDevice acqForDetectorDevice;
 };
 
 

@@ -36,6 +36,34 @@ OSc_Error OSc_LSM_Destroy(OSc_LSM *lsm)
 }
 
 
+OSc_Error OSc_LSM_Get_Clock(OSc_LSM *lsm, OSc_Clock **clock)
+{
+	if (!lsm || !clock)
+		return OSc_Error_Illegal_Argument;
+
+	*clock = lsm->clock;
+	return OSc_Error_OK;
+}
+
+
+OSc_Error OSc_LSM_Set_Clock(OSc_LSM *lsm, OSc_Clock *clock)
+{
+	if (!lsm || !clock)
+		return OSc_Error_Illegal_Argument;
+
+	OSc_Device *clockDevice;
+	OSc_Return_If_Error(OSc_Clock_Get_Device(clock, &clockDevice));
+
+	bool isAssociated = false;
+	OSc_Return_If_Error(OSc_LSM_Is_Device_Associated(lsm, clockDevice, &isAssociated));
+	if (!isAssociated)
+		return OSc_Error_Device_Not_Opened_For_LSM;
+
+	lsm->clock = clock;
+	return OSc_Error_OK;
+}
+
+
 OSc_Error OSc_LSM_Get_Scanner(OSc_LSM *lsm, OSc_Scanner **scanner)
 {
 	if (!lsm || !scanner)

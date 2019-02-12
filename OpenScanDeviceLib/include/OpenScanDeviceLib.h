@@ -83,7 +83,7 @@ extern "C" {
  * The major version must be incremented (and the minor version reset to 0)
  * when any other change is made.
  */
-#define OScDevInternal_ABI_VERSION OScDevInternal_MAKE_VERSION(0, 0)
+#define OScDevInternal_ABI_VERSION OScDevInternal_MAKE_VERSION(1, 0)
 
 
 /** \addtogroup dpi
@@ -105,7 +105,7 @@ struct OScDev_SettingImpl;
 // functions.
 typedef struct OSc_Device OScDev_Device;
 typedef struct OSc_Setting OScDev_Setting;
-typedef struct OSc_Acquisition OScDev_Acquisition;
+typedef struct OSc_AcquisitionForDevice OScDev_Acquisition;
 
 
 /// Log level.
@@ -143,6 +143,7 @@ enum {
 	OScDev_Error_Driver_Not_Available,
 	OScDev_Error_Device_Already_Open,
 	OScDev_Error_Device_Not_Opened_For_LSM,
+	OScDev_Error_Device_Does_Not_Support_Clock,
 	OScDev_Error_Device_Does_Not_Support_Scanner,
 	OScDev_Error_Device_Does_Not_Support_Detector,
 	OScDev_Error_Wrong_Value_Type,
@@ -173,6 +174,20 @@ enum {
 // Note: There is no OScDev_RETURN_IF_ERROR macro because it tends to
 // encourage poor coding practices. Often, locally allocated resources need to
 // be freed before returning with an error.
+
+
+enum OScDev_TriggerSource
+{
+	OScDev_TriggerSource_Software,
+	OScDev_TriggerSource_External,
+};
+
+
+enum OScDev_ClockSource
+{
+	OScDev_ClockSource_Internal,
+	OScDev_ClockSource_External,
+};
 
 
 enum OScDev_ValueType
@@ -248,6 +263,11 @@ struct OScDevInternal_Interface
 	void *(*Setting_GetImplData)(struct OScDev_ModuleImpl *modImpl, OScDev_Setting *setting);
 
 	OScDev_Error (*Acquisition_GetNumberOfFrames)(struct OScDev_ModuleImpl *modImpl, OScDev_Acquisition *acq, uint32_t *numberOfFrames);
+	OScDev_Error (*Acquisition_IsClockRequested)(struct OScDev_ModuleImpl *modImpl, OScDev_Acquisition *acq, bool *isRequested);
+	OScDev_Error (*Acquisition_IsScannerRequested)(struct OScDev_ModuleImpl *modImpl, OScDev_Acquisition *acq, bool *isRequested);
+	OScDev_Error (*Acquisition_IsDetectorRequested)(struct OScDev_ModuleImpl *modImpl, OScDev_Acquisition *acq, bool *isRequested);
+	OScDev_Error (*Acquisition_GetClockStartTriggerSource)(struct OScDev_ModuleImpl *modImpl, OScDev_Acquisition *acq, enum OScDev_TriggerSource *startTrigger);
+	OScDev_Error (*Acquisition_GetClockSource)(struct OScDev_ModuleImpl *modImpl, OScDev_Acquisition *acq, enum OScDev_ClockSource *clock);
 	bool (*Acquisition_CallFrameCallback)(struct OScDev_ModuleImpl *modImpl, OScDev_Acquisition *acq, uint32_t channel, void *pixels);
 };
 
@@ -318,8 +338,21 @@ struct OScDev_DeviceImpl
 	OScDev_Error (*Open)(OScDev_Device *device);
 	OScDev_Error (*Close)(OScDev_Device *device);
 
+	/// Return true if this device can provide the clock for scanning and detection.
+	/**
+	 * The clock can be any reference against which the scanning and detection
+	 * are synchronized. When the scanner and detector belong to the same device,
+	 * the clock can be entirely internal. When the scanner and detector belong
+	 * to separate devices, typically one or the other device also provides the
+	 * clock, and the other device receives the clock through a hardware
+	 * connection (most commonly a TTL line clock, but this need not be the
+	 * case).
+	 */
+	OScDev_Error (*HasClock)(OScDev_Device *device, bool *hasClock);
+
 	/// Return true if this device can perform scanning.
 	OScDev_Error (*HasScanner)(OScDev_Device *device, bool *hasScanner);
+
 	/// Return true if this device can perform detection.
 	OScDev_Error (*HasDetector)(OScDev_Device *device, bool *hasDetector);
 
@@ -336,33 +369,52 @@ struct OScDev_DeviceImpl
 	OScDev_Error (*GetNumberOfChannels)(OScDev_Device *device, uint32_t *nChannels);
 	OScDev_Error (*GetBytesPerSample)(OScDev_Device *device, uint32_t *bytesPerSample);
 
-	/// Prepare the scanner to listen to the clock.
+	/// Prepare the clock, scanner, and/or detector for an acquisition.
 	/**
-	 * This is only called when an external trigger/clock is used, or when the
-	 * detector (whether this device or another) provides the clock.
+	 * The acquisition object (`acq`) specifies whether to use the clock,
+	 * scanner, and/or detector of this device, and the clock and start trigger
+	 * configuration.
 	 */
-	OScDev_Error (*ArmScanner)(OScDev_Device *device, OScDev_Acquisition *acq);
-	/// Start the scanner using this device as clock.
-	/**
-	 * `ArmScanner()` is *not* called prior to calling this function.
-	 */
-	OScDev_Error (*StartScanner)(OScDev_Device *device, OScDev_Acquisition *acq);
-	OScDev_Error (*StopScanner)(OScDev_Device *device, OScDev_Acquisition *acq);
+	OScDev_Error (*Arm)(OScDev_Device *device, OScDev_Acquisition *acq);
 
-	/// Prepare the detector to listen to the clock.
+	/// Start the clock from software.
 	/**
-	 * This is only called when an external trigger/clock is used, or when the
-	 * scanner (whether this device or another) provides the clock.
+	 * Before this function is called, `Arm()` would have been called with the
+	 * clock source set to `OScDev_ClockSource_Internal` and the start trigger
+	 * source set to `OScDev_TriggerSource_Software`.
 	 */
-	OScDev_Error (*ArmDetector)(OScDev_Device *device, OScDev_Acquisition *acq);
-	/// Start the detector using this device as clock.
-	/**
-	 * `ArmDetector()` is *not* called prior to calling this function.
-	 */
-	OScDev_Error (*StartDetector)(OScDev_Device *device, OScDev_Acquisition *acq);
-	OScDev_Error (*StopDetector)(OScDev_Device *device, OScDev_Acquisition *acq);
+	OScDev_Error (*Start)(OScDev_Device *device);
 
+	/// Stop the current acquisition and disarm.
+	/**
+	 * If there is no acquisition running and the device is not armed, then this
+	 * function must succeed with no effect.
+	 *
+	 * TODO We need to specify whether this function should just signal a stop
+	 * and return as soon as possible, or block until `IsRunning()` is false.
+     * (The former, asynchronous behavior is a better design.)
+	 */
+	OScDev_Error (*Stop)(OScDev_Device *device);
+
+	/// Return true if this device is armed or running an acquisition.
+	/**
+	 * Note that the device may exit the "running" state on its own (e.g. after
+	 * completing a specified number of frames), or as the result of a call to
+	 * `StopAcquisition()`.
+	 *
+	 * In all cases, this function should not return `false` until all aspects
+	 * of the acquisition have completed and the device is ready to arm for a new
+	 * acquisition.
+	 */
 	OScDev_Error (*IsRunning)(OScDev_Device *device, bool *isRunning);
+
+	/// Wait for any current acquisition to finish.
+	/**
+	 * As soon as this function returns, `IsRunning()` must return `false` until
+	 * `Arm()` is called again.
+	 *
+	 * This function should return immediately if `IsRunning()` is already false.
+	 */
 	OScDev_Error (*Wait)(OScDev_Device *device);
 };
 
@@ -463,15 +515,69 @@ OScDevInternal_INLINE void *OScDev_Setting_GetImplData(OScDev_Setting *setting)
 	return OScDevInternal_FunctionTable->Setting_GetImplData(&OScDevInternal_TheModuleImpl, setting);
 }
 
+/// Determine the requested number of frames for the given acquisition.
 OScDevInternal_INLINE OScDev_Error OScDev_Acquisition_GetNumberOfFrames(OScDev_Acquisition *acq, uint32_t *numberOfFrames)
 {
 	return OScDevInternal_FunctionTable->Acquisition_GetNumberOfFrames(&OScDevInternal_TheModuleImpl, acq, numberOfFrames);
 }
 
+/// Determine whether this device should provide the clock for the given acquisition.
+OScDevInternal_INLINE OScDev_Error OScDev_Acquisition_IsClockRequested(OScDev_Acquisition *acq, bool *isRequested)
+{
+	return OScDevInternal_FunctionTable->Acquisition_IsClockRequested(&OScDevInternal_TheModuleImpl, acq, isRequested);
+}
+
+/// Determine whether this device should perform scanning for the given acquisition.
+OScDevInternal_INLINE OScDev_Error OScDev_Acquisition_IsScannerRequested(OScDev_Acquisition *acq, bool *isRequested)
+{
+	return OScDevInternal_FunctionTable->Acquisition_IsScannerRequested(&OScDevInternal_TheModuleImpl, acq, isRequested);
+}
+
+/// Determine whether this device should perform detection for the given acquisition.
+OScDevInternal_INLINE OScDev_Error OScDev_Acquisition_IsDetectorRequested(OScDev_Acquisition *acq, bool *isRequested)
+{
+	return OScDevInternal_FunctionTable->Acquisition_IsDetectorRequested(&OScDevInternal_TheModuleImpl, acq, isRequested);
+}
+
+/// Determine the start trigger source for the clock for the given acquisition.
+/**
+ * This function is only useful when the clock is requested for the acquisition
+ * (see `OScDev_Acquisition_IsClockRequested()`).
+ *
+ * \param[in] acq the acquisition
+ * \param[out] startTrigger the clock start trigger; either software or external
+ */
+OScDevInternal_INLINE OScDev_Error OScDev_Acquisition_GetClockStartTriggerSource(OScDev_Acquisition *acq, enum OScDev_TriggerSource *startTrigger)
+{
+	return OScDevInternal_FunctionTable->Acquisition_GetClockStartTriggerSource(&OScDevInternal_TheModuleImpl, acq, startTrigger);
+}
+
+/// Determine the scanner and detector clock source for the given acquisition.
+/**
+ * This function is only useful when the scanner and/or detector is requested
+ * for the acquisition (see `OScDev_Acquisition_IsScannerRequested()` and
+ * `OScDev_Acquisition_IsDetectorRequested()`).
+ */
+OScDevInternal_INLINE OScDev_Error OScDev_Acquisition_GetClockSource(OScDev_Acquisition *acq, enum OScDev_ClockSource *clock)
+{
+	return OScDevInternal_FunctionTable->Acquisition_GetClockSource(&OScDevInternal_TheModuleImpl, acq, clock);
+}
+
+/// Send acquired data for one channel of a frame.
+/**
+ * This function must be called during an acquisition by the device that owns
+ * the detector for the acquisition.
+ *
+ * The data pointed to by `pixels` must not change during the call to this
+ * function.
+ *
+ * \param[in] acq the acquisition that was given when arming this device
+ * \param[in] channel the channel index
+ * \param[in] pixels the raw pixel data for the channel
+ */
 OScDevInternal_INLINE bool OScDev_Acquisition_CallFrameCallback(OScDev_Acquisition *acq, uint32_t channel, void *pixels)
 {
 	return OScDevInternal_FunctionTable->Acquisition_CallFrameCallback(&OScDevInternal_TheModuleImpl, acq, channel, pixels);
 }
-
 
 /** @} */ // addtogroup dpi
