@@ -130,15 +130,6 @@ enum
 };
 
 
-typedef int32_t OSc_Trigger_Source;
-enum
-{
-	OSc_Trigger_Source_Scanner,  ///< Scanner generates trigger for detector
-	OSc_Trigger_Source_Detector, ///< Detector generates trigger for scanner
-	OSc_Trigger_Source_External, ///< Both scanner and detector are driven by an external trigger
-};
-
-
 typedef struct OSc_LSM OSc_LSM;
 typedef struct OSc_Device OSc_Device;
 typedef struct OSc_Clock OSc_Clock;
