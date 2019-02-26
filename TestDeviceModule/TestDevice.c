@@ -65,6 +65,13 @@ static OScDev_Error TestClose(OScDev_Device *device)
 }
 
 
+static OScDev_Error TestHasClock(OScDev_Device *device, bool *hasClock)
+{
+	*hasClock = false;
+	return OScDev_OK;
+}
+
+
 static OScDev_Error TestHasScanner(OScDev_Device *device, bool *hasScanner)
 {
 	*hasScanner = false;
@@ -86,8 +93,10 @@ struct OScDev_DeviceImpl g_TestDeviceImpl = {
 	.GetName = TestGetName,
 	.Open = TestOpen,
 	.Close = TestClose,
+	.HasClock = TestHasClock,
 	.HasScanner = TestHasScanner,
 	.HasDetector = TestHasDetector,
+	// Other required methods omitted.
 };
 
 

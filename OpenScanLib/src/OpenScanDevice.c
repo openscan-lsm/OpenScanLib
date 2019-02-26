@@ -45,6 +45,15 @@ OSc_Error OSc_Device_Open(OSc_Device *device, OSc_LSM *lsm)
 
 	OSc_Error err;
 
+	bool hasClock;
+	if (OSc_Check_Error(err, OSc_Device_Has_Clock(device, &hasClock)))
+		goto Error;
+	if (hasClock)
+	{
+		device->clock = calloc(1, sizeof(OSc_Clock));
+		device->clock->device = device;
+	}
+
 	bool hasScanner;
 	if (OSc_Check_Error(err, OSc_Device_Has_Scanner(device, &hasScanner)))
 		goto Error;
@@ -82,6 +91,8 @@ OSc_Error OSc_Device_Close(OSc_Device *device)
 	if (device->associatedLSM)
 		OSc_Return_If_Error(OSc_LSM_Dissociate_Device(device->associatedLSM, device));
 
+	if (device->clock)
+		free(device->clock);
 	if (device->scanner)
 		free(device->scanner);
 	if (device->detector)
@@ -93,6 +104,14 @@ OSc_Error OSc_Device_Close(OSc_Device *device)
 	device->isOpen = false;
 
 	return OSc_Error_OK;
+}
+
+
+OSc_Error OSc_Device_Has_Clock(OSc_Device *device, bool *hasClock)
+{
+	*hasClock = false;
+
+	return device->impl->HasClock(device, hasClock);
 }
 
 
@@ -109,6 +128,20 @@ OSc_Error OSc_Device_Has_Detector(OSc_Device *device, bool *hasDetector)
 	*hasDetector = false;
 
 	return device->impl->HasDetector(device, hasDetector);
+}
+
+
+OSc_Error OSc_Device_Get_Clock(OSc_Device *device, OSc_Clock **clock)
+{
+	*clock = NULL;
+
+	bool hasClock = false;
+	OSc_Return_If_Error(OSc_Device_Has_Clock(device, &hasClock));
+	if (!hasClock)
+		return OSc_Error_Device_Does_Not_Support_Clock;
+
+	*clock = device->clock;
+	return OSc_Error_OK;
 }
 
 

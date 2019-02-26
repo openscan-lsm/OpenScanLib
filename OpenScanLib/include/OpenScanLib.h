@@ -64,6 +64,7 @@ enum
 	OSc_Error_Driver_Not_Available,
 	OSc_Error_Device_Already_Open,
 	OSc_Error_Device_Not_Opened_For_LSM,
+	OSc_Error_Device_Does_Not_Support_Clock,
 	OSc_Error_Device_Does_Not_Support_Scanner,
 	OSc_Error_Device_Does_Not_Support_Detector,
 	OSc_Error_Wrong_Value_Type,
@@ -140,6 +141,7 @@ enum
 
 typedef struct OSc_LSM OSc_LSM;
 typedef struct OSc_Device OSc_Device;
+typedef struct OSc_Clock OSc_Clock;
 typedef struct OSc_Scanner OSc_Scanner;
 typedef struct OSc_Detector OSc_Detector;
 typedef struct OSc_Setting OSc_Setting;
@@ -158,6 +160,8 @@ void OSc_API OSc_DeviceModule_Set_Search_Paths(char **paths);
 
 OSc_Error OSc_API OSc_LSM_Create(OSc_LSM **lsm);
 OSc_Error OSc_API OSc_LSM_Destroy(OSc_LSM *lsm);
+OSc_Error OSc_API OSc_LSM_Get_Clock(OSc_LSM *lsm, OSc_Clock **clock);
+OSc_Error OSc_API OSc_LSM_Set_Clock(OSc_LSM *lsm, OSc_Clock *clock);
 OSc_Error OSc_API OSc_LSM_Get_Scanner(OSc_LSM *lsm, OSc_Scanner **scanner);
 OSc_Error OSc_API OSc_LSM_Set_Scanner(OSc_LSM *lsm, OSc_Scanner *scanner);
 OSc_Error OSc_API OSc_LSM_Get_Detector(OSc_LSM *lsm, OSc_Detector **detector);
@@ -171,8 +175,10 @@ OSc_Error OSc_API OSc_Device_Get_Name(OSc_Device *device, const char **name);
 OSc_Error OSc_API OSc_Device_Get_Display_Name(OSc_Device *device, const char **name);
 OSc_Error OSc_API OSc_Device_Open(OSc_Device *device, OSc_LSM *lsm);
 OSc_Error OSc_API OSc_Device_Close(OSc_Device *device);
+OSc_Error OSc_API OSc_Device_Has_Clock(OSc_Device *device, bool *hasClock);
 OSc_Error OSc_API OSc_Device_Has_Scanner(OSc_Device *device, bool *hasScanner);
 OSc_Error OSc_API OSc_Device_Has_Detector(OSc_Device *device, bool *hasDetector);
+OSc_Error OSc_API OSc_Device_Get_Clock(OSc_Device *device, OSc_Clock **clock);
 OSc_Error OSc_API OSc_Device_Get_Scanner(OSc_Device *device, OSc_Scanner **scanner);
 OSc_Error OSc_API OSc_Device_Get_Detector(OSc_Device *device, OSc_Detector **detector);
 OSc_Error OSc_API OSc_Device_Get_Settings(OSc_Device *device, OSc_Setting ***settings, size_t *count);
@@ -182,6 +188,8 @@ OSc_Error OSc_API OSc_Device_Get_Resolution(OSc_Device *device, size_t *width, s
 OSc_Error OSc_API OSc_Device_Set_Resolution(OSc_Device *device, size_t width, size_t height);
 OSc_Error OSc_API OSc_Device_Get_Magnification(OSc_Device *device, double *magnification);
 OSc_Error OSc_API OSc_Device_Set_Magnification(OSc_Device *device);
+
+OSc_Error OSc_API OSc_Clock_Get_Device(OSc_Clock *clock, OSc_Device **device);
 
 OSc_Error OSc_API OSc_Scanner_Get_Device(OSc_Scanner *scanner, OSc_Device **device);
 
@@ -221,7 +229,6 @@ OSc_Error OSc_API OSc_Setting_Get_Enum_Value_For_Name(OSc_Setting *setting, uint
 OSc_Error OSc_API OSc_Acquisition_Create(OSc_Acquisition **acq, OSc_LSM *lsm);
 OSc_Error OSc_API OSc_Acquisition_Destroy(OSc_Acquisition *acq);
 OSc_Error OSc_API OSc_Acquisition_Set_Number_Of_Frames(OSc_Acquisition *acq, uint32_t numberOfFrames);
-OSc_Error OSc_API OSc_Acquisition_Set_Trigger_Source(OSc_Acquisition *acq, OSc_Trigger_Source source);
 OSc_Error OSc_API OSc_Acquisition_Set_Frame_Callback(OSc_Acquisition *acq, OSc_Frame_Callback callback);
 OSc_Error OSc_API OSc_Acquisition_Get_Data(OSc_Acquisition *acq, void **data);
 OSc_Error OSc_API OSc_Acquisition_Set_Data(OSc_Acquisition *acq, void *data);
