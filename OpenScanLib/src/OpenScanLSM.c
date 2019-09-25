@@ -18,19 +18,30 @@ OSc_Error OSc_LSM_Destroy(OSc_LSM *lsm)
 
 	OSc_Error err;
 
+	// We need to close each associated device, but doing so in turn dissociates
+	// that device, so we need to make a copy of the list of associated devices
+	// first.
+	size_t nDevices = lsm->associatedDeviceCount;
+	OSc_Device **devicesToClose = malloc(nDevices * sizeof(OSc_Device));
 	for (int i = 0; i < lsm->associatedDeviceCount; ++i)
 	{
-		OSc_Device *device = lsm->associatedDevices[i];
+		devicesToClose[i] = lsm->associatedDevices[i];
+	}
+
+	for (int i = 0; i < nDevices; ++i)
+	{
+		OSc_Device *device = devicesToClose[i];
 		if (OSc_Check_Error(err, OSc_Device_Close(device)))
 		{
 			char msg[OSc_MAX_STR_LEN + 1] = "Error while closing device ";
 			const char *name = NULL;
 			OSc_Device_Get_Name(device, &name);
 			strcat(msg, name ? name : "(unknown)");
-			OSc_Log_Error(lsm->associatedDevices[i], msg);
+			OSc_Log_Error(device, msg);
 		}
 	}
 
+	free(devicesToClose);
 	free(lsm);
 	return OSc_Error_OK;
 }
