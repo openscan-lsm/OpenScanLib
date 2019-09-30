@@ -71,6 +71,12 @@ extern "C" {
  * The version number is a 32-bit unsigned integer, with the high 16 bits
  * representing the major version and the low 16 bits the minor version.
  *
+ * Device modules written for version `x.y` will continue to work with a
+ * version of OpenScanLib with device ABI version `x.z` where `z >= y`,
+ * without any special handling. However, it will not work with an
+ * OpenScanLib with device ABI version `x.w` where `w < y`. This intent
+ * leads to the following policy (which may not cover all edge cases):
+ *
  * The minor version must be incremented when one of the following changes
  * are made:
  * - A module-to-OpenScanLib call is added at the end of
@@ -371,28 +377,83 @@ struct OScDev_DeviceImpl
 
 	/// Prepare the clock, scanner, and/or detector for an acquisition.
 	/**
-	 * The acquisition object (`acq`) specifies whether to use the clock,
-	 * scanner, and/or detector of this device, and the clock and start trigger
-	 * configuration.
+	 * An implementation of this function should first query the acquisition
+	 * object `acq` to learn whether the device should provide the clock,
+	 * scanner, and/or detector for the acquisition.
+	 *
+	 * If providing the clock, the clock should be set up to immediately start
+	 * upon receiving the start trigger. The start trigger may be external
+	 * (hardware input) or software (a call to the `Start` function); call
+	 * OScDev_Acquisition_GetClockStartTriggerSource() to determine which.
+	 *
+	 * If providing the scanner, the scanner should be set up to scan according
+	 * to clock signals. The clock may be internal (i.e. provided by this same
+	 * device) or external (hardware input); call
+	 * OScDev_Acquisition_GetClockSource() to determine which.
+	 *
+	 * If providing the detector, the detector should be set up to acquire
+	 * according to clock signals. The clock may be internal (i.e. provided by
+	 * this same device) or external (hardware input); call
+	 * OScDev_Acquisition_GetClockSource() to determine which.
+	 *
+	 * In some integrated devices, the separation between the clock, scanner,
+	 * and detector may not be clear. The implementation should behave _as if_
+	 * the three components were separate and behaved as specified above.
+	 *
+	 * \todo Currently, state change after the device is armed is handled in a
+	 * variable way depending on what triggers the state change (especially
+	 * stop of acquisition). We should replace this with a simpler interface
+	 * where the device calls new functions `OScDev_Acquisition_NotifyStart()`
+	 * and `OScDev_Acquisition_NotifyStop()`. The start notification will be
+	 * purely informational, used e.g. so that the GUI can show "waiting for
+	 * start trigger" vs "acquisition running". The stop trigger will indicate
+	 * that all action has finished and the device is ready to be disarmed.
+	 * (`Disarm()` should be a mandatory function distinct from `Stop()`, which
+	 * should behave as a software trigger for cancellation.) There should also
+	 * be a way for a device to declare that it is not capable of issuing a
+	 * start notification (in which case arrival of data can be used as a proxy
+	 * for display purposes). `Stop()`, unlike `Disarm()`, need not be called
+	 * when OpenScanLib has already received a stop notification.
 	 */
 	OScDev_Error (*Arm)(OScDev_Device *device, OScDev_Acquisition *acq);
 
 	/// Start the clock from software.
 	/**
+	 * A call to this function is how a software start trigger to the clock is
+	 * implemented.
+	 *
 	 * Before this function is called, `Arm()` would have been called with the
 	 * clock source set to `OScDev_ClockSource_Internal` and the start trigger
 	 * source set to `OScDev_TriggerSource_Software`.
+	 *
+	 * It should be noted that a device that is not providing the clock will
+	 * _not_ receive a call to this function.
+	 *
+	 * \todo Better to rename to `SoftwareTriggerStart()`?
 	 */
 	OScDev_Error (*Start)(OScDev_Device *device);
 
 	/// Stop the current acquisition and disarm.
 	/**
+	 * Unlike `Start`, this function is called for all devices participating in
+	 * an acquisition, not just the device providing the clock. In this sense,
+	 * `Stop` is the counterpart of `Arm`, not `Start`.
+	 *
 	 * If there is no acquisition running and the device is not armed, then this
 	 * function must succeed with no effect.
 	 *
-	 * TODO We need to specify whether this function should just signal a stop
-	 * and return as soon as possible, or block until `IsRunning()` is false.
-     * (The former, asynchronous behavior is a better design.)
+	 * Currently, this function must wait for the stopping process to complete
+	 * and return only when the device is ready to be armed again with a new
+	 * acquisition.
+	 *
+	 * \todo This function should be split into two separate functions,
+	 * `SoftwareTriggerStop()` and `Disarm()`, with very different roles.
+	 * The former should merely be an asynchronous signal that the device
+	 * should ignore any subsequent start triggers and stop as soon as
+	 * possible. Actual completion of stopping should be notified via a
+	 * callback (see Todo at Arm). The latter (`Disarm()`) should mainly
+	 * handle cleanup, and should be guaranteed to be called exactly once per
+	 * armed acquisition, after all processes have stopped.
 	 */
 	OScDev_Error (*Stop)(OScDev_Device *device);
 
@@ -405,6 +466,9 @@ struct OScDev_DeviceImpl
 	 * In all cases, this function should not return `false` until all aspects
 	 * of the acquisition have completed and the device is ready to arm for a new
 	 * acquisition.
+	 *
+	 * \todo This function should be replaced with a callback-based interface
+	 * to avoid polling and simplify device module implementation.
 	 */
 	OScDev_Error (*IsRunning)(OScDev_Device *device, bool *isRunning);
 
@@ -414,6 +478,10 @@ struct OScDev_DeviceImpl
 	 * `Arm()` is called again.
 	 *
 	 * This function should return immediately if `IsRunning()` is already false.
+	 *
+	 * \todo This function should be removed, because it leads to reinvention of
+	 * condition variable code in each device module. Better to report state
+	 * changes using a callback interface.
 	 */
 	OScDev_Error (*Wait)(OScDev_Device *device);
 };
