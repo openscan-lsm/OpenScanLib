@@ -8,7 +8,7 @@ static OScDev_Device **g_devices;
 static size_t g_deviceCount;
 
 
-struct OScDev_DeviceImpl g_TestDeviceImpl;
+static struct OScDev_DeviceImpl g_TestDeviceImpl;
 
 
 static OScDev_Error TestGetModelName(const char **name)
@@ -86,7 +86,7 @@ static OScDev_Error TestHasDetector(OScDev_Device *device, bool *hasDetector)
 }
 
 
-struct OScDev_DeviceImpl g_TestDeviceImpl = {
+static struct OScDev_DeviceImpl g_TestDeviceImpl = {
 	.GetModelName = TestGetModelName,
 	.GetInstances = TestGetInstances,
 	.ReleaseInstance = TestReleaseInstance,
@@ -100,13 +100,15 @@ struct OScDev_DeviceImpl g_TestDeviceImpl = {
 };
 
 
-OScDev_Error TestGetDeviceImpls(struct OScDev_DeviceImpl **impls, size_t *implCount)
+OScDev_Error TestGetDeviceImpls(const OScDev_PtrArray **deviceImpls)
 {
-	if (*implCount < 1)
-		return OScDev_OK;
+	static struct OScDev_DeviceImpl *arr[] = {
+		&g_TestDeviceImpl
+	};
 
-	impls[0] = &g_TestDeviceImpl;
-	*implCount = 1;
+	OScDev_STATIC_PTR_ARRAY(impls, arr);
+
+	*deviceImpls = &impls;
 	return OScDev_OK;
 }
 

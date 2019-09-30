@@ -150,7 +150,7 @@ OSc_Error OSc_DeviceModule_Get_Names(const char **modules, size_t *count)
 }
 
 
-OSc_Error OSc_DeviceModule_Get_Devices(const char *module, OSc_Device ***devices, size_t *count)
+OSc_Error OSc_DeviceModule_GetDeviceImpls(const char *module, const OScDev_PtrArray **deviceImpls)
 {
 	struct Module *mod = NULL;
 	for (size_t i = 0; i < g_loadedAdapterCount; ++i)
@@ -182,58 +182,6 @@ OSc_Error OSc_DeviceModule_Get_Devices(const char *module, OSc_Device ***devices
 		OSc_Return_If_Error(modImpl->Open());
 	// TODO We need to also call Close() when shutting down
 
-	size_t implsSize = 16;
-	struct OScDev_DeviceImpl **deviceImpls = malloc(sizeof(void *) * implsSize);
-	size_t implsCount = 0;
-	for (;;)
-	{
-		size_t count = implsSize;
-		OSc_Return_If_Error(modImpl->GetDeviceImpls(deviceImpls, &count));
-		if (count < implsSize)
-		{
-			implsCount = count;
-			break;
-		}
-		deviceImpls = realloc(deviceImpls, sizeof(void *) * (implsSize *= 2));
-	}
-
-	*devices = NULL;
-	*count = 0;
-	for (size_t i = 0; i < implsCount; ++i)
-	{
-		struct OSc_Device **implDevices;
-		size_t deviceCount;
-		OSc_Error err;
-		if (OSc_Check_Error(err, deviceImpls[i]->GetInstances(&implDevices, &deviceCount)))
-		{
-			char msg[OSc_MAX_STR_LEN + 1] = "Cannot enumerate devics: ";
-			const char *model = NULL;
-			deviceImpls[i]->GetModelName(&model);
-			strcat(msg, model ? model : "(unknown)");
-			OSc_Log_Warning(NULL, msg);
-			continue;
-		}
-
-		if (deviceCount == 0)
-			continue;
-
-		// Append the devices from this implementation to the list of all devices
-		size_t oldCount = *count;
-		if (!*devices)
-		{
-			*count = deviceCount;
-			*devices = malloc(sizeof(void *) * deviceCount);
-		}
-		else
-		{
-			*count += deviceCount;
-			*devices = realloc(*devices, sizeof(void *) * *count);
-		}
-
-		for (size_t j = 0; j < deviceCount; ++j)
-			(*devices)[oldCount + j] = (OSc_Device *)implDevices[j];
-	}
-
-	free(deviceImpls);
+	OSc_Return_If_Error(modImpl->GetDeviceImpls(deviceImpls));
 	return OSc_Error_OK;
 }

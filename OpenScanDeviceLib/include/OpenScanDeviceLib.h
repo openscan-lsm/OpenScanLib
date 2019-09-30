@@ -93,7 +93,7 @@ extern "C" {
  * set of changes is to be made over multiple commits, the version number
  * can be set to `(-1, 0)` in intermediate commits to indicate "experimental".
  */
-#define OScDevInternal_ABI_VERSION OScDevInternal_MAKE_VERSION(2, 0)
+#define OScDevInternal_ABI_VERSION OScDevInternal_MAKE_VERSION(3, 0)
 
 
 /** \addtogroup dpi
@@ -398,17 +398,20 @@ struct OScDev_ModuleImpl
 	 */
 	OScDev_Error (*Close)(void);
 
-	// TODO We need to use DeviceLoader(?) objects to handle flexible device
-	// enumeration. For now, we temporarily continue to directly enumerate
-	// (pre-created) devices.
-	/// Enumerate and create all devices.
+	/// Return the device implementations available in this module.
 	/**
-	 * Note: The device enumeration mechanism will likely change in the near
-	 * future.
+	 * A device implementation defines the code to handle a particular type of
+	 * device. Many modules will only have one device implementation.
 	 *
 	 * **Required**
+	 *
+	 * `deviceImpls` must be an array of `struct` ::OScDev_DeviceImpl objects.
+	 * OpenScanLib takes ownership of the array (unless the array is statically
+	 * defined). The device implementation objects must remain valid while this
+	 * module remains loaded (i.e. indefinitely since we do not support
+	 * unloading).
 	 */
-	OScDev_Error (*GetDeviceImpls)(struct OScDev_DeviceImpl **impls, size_t *implCount);
+	OScDev_Error (*GetDeviceImpls)(const OScDev_PtrArray **deviceImpls);
 };
 
 
