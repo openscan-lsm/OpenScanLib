@@ -109,6 +109,10 @@ static inline OSc_Log_Error(OSc_Device *device, const char *message)
 	OSc_Log(device, OSc_Log_Level_Error, message);
 }
 
+OScDev_PtrArray *OSc_PtrArray_Create(void);
+void OSc_PtrArray_Destroy(const OScDev_PtrArray *arr);
+void OSc_PtrArray_Append(OScDev_PtrArray *arr, void *obj);
+
 OSc_Error OSc_LSM_Associate_Device(OSc_LSM *lsm, OSc_Device *device);
 OSc_Error OSc_LSM_Dissociate_Device(OSc_LSM *lsm, OSc_Device *device);
 OSc_Error OSc_LSM_Is_Device_Associated(OSc_LSM *lsm, OSc_Device *device, bool *isAssociated);

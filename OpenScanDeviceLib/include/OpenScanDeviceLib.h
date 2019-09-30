@@ -88,8 +88,12 @@ extern "C" {
  *
  * The major version must be incremented (and the minor version reset to 0)
  * when any other change is made.
+ *
+ * Version numbers should be set correctly for each Git commit. If a related
+ * set of changes is to be made over multiple commits, the version number
+ * can be set to `(-1, 0)` in intermediate commits to indicate "experimental".
  */
-#define OScDevInternal_ABI_VERSION OScDevInternal_MAKE_VERSION(1, 0)
+#define OScDevInternal_ABI_VERSION OScDevInternal_MAKE_VERSION(2, 0)
 
 
 /** \addtogroup dpi
@@ -217,6 +221,73 @@ enum OScDev_ValueConstraint
 /** @} */ // addtogroup dpi
 
 
+/** \ingroup internal
+ * \brief Internal implementation of OScDev_PtrArray.
+ *
+ * Device modules must _not_ access fields of this structure directly.
+ *
+ * \sa OScDev_PtrArray
+ * \sa OScDev_STATIC_PTR_ARRAY
+ */
+struct OScDevInternal_PtrArray {
+	void **ptr; // Array of void*
+	size_t size;
+	size_t capacity;
+	bool isDynamic;
+};
+
+
+/** \addtogroup dpi
+* @{
+*/
+
+
+/// Dynamic or static array of pointers.
+/**
+ * This data type is used to pass lists of objects from device modules to
+ * OpenScanLib.
+ *
+ * Whether the pointers contained in the array are "owned" (in the
+ * resource-management sense) by the array depends on the usage context; make
+ * sure to check the documentation of the function accepting or returning the
+ * array.
+ *
+ * An array can be created dynamically by calling OScDev_PtrArray_Create(),
+ * or can be defined statically using #OScDev_STATIC_PTR_ARRAY.
+ *
+ * (Because this type is intended solely for passing short lists, the only
+ * available operation is appending elements.)
+ */
+typedef struct OScDevInternal_PtrArray OScDev_PtrArray;
+
+
+/// Define a static array of objects.
+/**
+ * This defines a static ::OScDev_PtrArray.
+ *
+ * For example,
+ *
+ *     static const MyObject* const list[] = { definitions... };
+ *     OScDev_STATIC_PTR_ARRAY(myArray, list);
+ *     // Now &myArray can be passed where an OScDev_PtrArray* is required.
+ *
+ * When the array is defined statically using this macro, every object pointed
+ * to by the array must also be statically defined. Modifying a statically
+ * defined array will almost certainly result in bugs and should be avoided.
+ *
+ * Note that \p arr _must_ be the name of a static array of pointers, _not_
+ * any other kind of pointer.
+ *
+ * \param name the name of the static pointer array
+ * \param arr name of the raw array containing the pointers to elements
+ */
+#define OScDev_STATIC_PTR_ARRAY(name, arr) \
+static const OScDev_PtrArray name = { .size = sizeof(arr) / sizeof(void*), .ptr = (arr) }
+
+
+/** @} */ // addtogroup dpi
+
+
 /// Pointer to the interface function table provided by OpenScanLib.
 /** \ingroup internal
  */
@@ -260,7 +331,14 @@ extern struct OScDev_ModuleImpl OScDevInternal_TheModuleImpl;
  */
 struct OScDevInternal_Interface
 {
+	// All functions take a pointer to the module implementation, even if not
+	// needed in the implementation, because it may help with debugging.
+
 	void (*Log)(struct OScDev_ModuleImpl *modImpl, OScDev_Device *device, enum OScDev_LogLevel level, const char *message);
+
+	OScDev_PtrArray *(*PtrArray_Create)(struct OScDev_ModuleImpl *modImpl);
+	void (*PtrArray_Destroy)(struct OScDev_ModuleImpl *modImpl, OScDev_PtrArray *arr);
+	void (*PtrArray_Append)(struct OScDev_ModuleImpl *modImpl, OScDev_PtrArray *arr, void *obj);
 
 	OScDev_Error (*Device_Create)(struct OScDev_ModuleImpl *modImpl, OScDev_Device **device, struct OScDev_DeviceImpl *impl, void *data);
 	void *(*Device_GetImplData)(struct OScDev_ModuleImpl *modImpl, OScDev_Device *device);
@@ -537,6 +615,24 @@ struct OScDev_SettingImpl
 OScDevInternal_INLINE void OScDev_Log(OScDev_Device *device, enum OScDev_LogLevel level, const char *message)
 {
 	OScDevInternal_FunctionTable->Log(&OScDevInternal_TheModuleImpl, device, level, message);
+}
+
+/// Create an array of objects.
+OScDevInternal_INLINE OScDev_PtrArray *OScDev_PtrArray_Create(void)
+{
+	return OScDevInternal_FunctionTable->PtrArray_Create(&OScDevInternal_TheModuleImpl);
+}
+
+/// Destroy (free) an array of objects.
+OScDevInternal_INLINE void OScDev_PtrArray_Destroy(OScDev_PtrArray *arr)
+{
+	OScDevInternal_FunctionTable->PtrArray_Destroy(&OScDevInternal_TheModuleImpl, arr);
+}
+
+/// Append an object to an array.
+OScDevInternal_INLINE void OScDev_PtrArray_Append(OScDev_PtrArray *arr, void *obj)
+{
+	OScDevInternal_FunctionTable->PtrArray_Append(&OScDevInternal_TheModuleImpl, arr, obj);
 }
 
 /// Log a debug-level message

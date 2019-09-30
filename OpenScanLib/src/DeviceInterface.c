@@ -15,6 +15,24 @@ static void Log(struct OScDev_ModuleImpl *modImpl, OScDev_Device *device, enum O
 }
 
 
+static OScDev_PtrArray *PtrArray_Create(struct OScDev_ModuleImpl *modImpl)
+{
+	return OSc_PtrArray_Create();
+}
+
+
+static void PtrArray_Destroy(struct OScDev_ModuleImpl *modImpl, OScDev_PtrArray *arr)
+{
+	OSc_PtrArray_Destroy(arr);
+}
+
+
+static void PtrArray_Append(struct OScDev_ModuleImpl *modImpl, OScDev_PtrArray *arr, void *obj)
+{
+	OSc_PtrArray_Append(arr, obj);
+}
+
+
 // TODO: Replace with direct provision of impl and data (once we have DeviceLoaders)
 static OScDev_Error Device_Create(struct OScDev_ModuleImpl *modImpl, OScDev_Device **device, struct OScDev_DeviceImpl *impl, void *data)
 {
@@ -95,6 +113,9 @@ static bool Acquisition_CallFrameCallback(struct OScDev_ModuleImpl *modImpl, OSc
 
 struct OScDevInternal_Interface DeviceInterfaceFunctionTable = {
 	.Log = Log,
+	.PtrArray_Create = PtrArray_Create,
+	.PtrArray_Destroy = PtrArray_Destroy,
+	.PtrArray_Append = PtrArray_Append,
 	.Device_Create = Device_Create,
 	.Device_GetImplData = Device_GetImplData,
 	.Setting_Create = Setting_Create,

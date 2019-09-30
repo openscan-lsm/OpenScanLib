@@ -50,6 +50,9 @@
     <ClCompile Include="src\OpenScanClock.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Array.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\OpenScanLib.h">

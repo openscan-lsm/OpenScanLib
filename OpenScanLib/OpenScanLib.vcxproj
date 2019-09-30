@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Array.c" />
     <ClCompile Include="src\DeviceInterface.c" />
     <ClCompile Include="src\Modules.c" />
     <ClCompile Include="src\OpenScanAcquisition.c" />
