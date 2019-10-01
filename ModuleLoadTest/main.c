@@ -15,6 +15,12 @@
 
 int main()
 {
+	if (!OSc_Check_Version())
+	{
+		fprintf(stderr, "OpenScanLib ABI version mismatch\n");
+		return 1;
+	}
+
 	char currentDir[512];
 #ifdef _WIN32
 	DWORD len = GetCurrentDirectoryA(sizeof(currentDir), currentDir);

@@ -47,7 +47,7 @@ extern "C" {
  * \defgroup internal OpenScanDeviceLib Internals
  *
  * These are the internal workings of OpenScanDeviceLib; device modules must
- * not used these declarations and definitions directly.
+ * not use these declarations and definitions directly.
  */
 
 

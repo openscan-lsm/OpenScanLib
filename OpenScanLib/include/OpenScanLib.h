@@ -30,6 +30,51 @@ extern "C" {
 
 
 /**
+ * \defgroup internal OpenScanLib Internals
+ *
+ * These are the internal workings of OpenScanLib; application code must not
+ * use these declarations and definitions directly.
+ */
+
+/**
+ * \ingroup internal
+ * \sa OScInternal_ABI_VERSION
+ */
+#define OScInternal_MAKE_VERSION(major, minor) (((uint32_t)(major) << 16) | (uint16_t)(minor))
+
+/**
+ * \ingroup internal
+ * \brief ABI version.
+ *
+ * This is the binary compatibility version of the application interface. It is
+ * independent of the device module programming interface version. It also has
+ * no connection to any release version number of OpenScanLib.
+ *
+ * The version number check must be done explicitly by the client application
+ * (see OSc_Check_Version()).
+ *
+ * Maintainers:
+ *
+ * The major version must be incremented when:
+ * - A function is removed
+ * - A function signature changes
+ * - Behavior of a function changes in an incompatible way
+ * - An enum constant is removed
+ * - An enum constant that must be processed by client code is added
+ *
+ * The minor version must be incremented when:
+ * - A function is added
+ * - An enum constant is added, but need not be processed by client code
+ * - A bug is fixed without changing the _intended_ behavior (severe cases
+ *   may warrant a major version increment if workarounds may have been
+ *   implemented in client applications)
+ *
+ * The above list is not comprehensive.
+ */
+#define OScInternal_ABI_VERSION OScInternal_MAKE_VERSION(1, 0)
+
+
+/**
  * \brief Maximum length for fixed-length string buffers.
  *
  * Note that the buffer size must be OSc_MAX_STR_LEN + 1.
@@ -123,6 +168,24 @@ typedef void (*OSc_Log_Func)(const char *message, OSc_Log_Level level, void *dat
 // Returns true normally, or false to halt the acquisition
 typedef bool (*OSc_Frame_Callback)(OSc_Acquisition *acq, uint32_t channel, void *pixels, void *data);
 
+/**
+ * \ingroup internal
+ * \brief Check if OpenScanLib ABI version is compatible with the version used
+ * to build the client application.
+ */
+bool OSc_API OScInternal_Check_Version(uint32_t version);
+
+/**
+ * \brief Check that a compatible version of OpenScanLib is being used.
+ *
+ * Determines if the version of OpenScanLib currently in use is compatible
+ * with the version against which the application was built.
+ *
+ * \return `true` if the OpenScanLib is compatible; `false` otherwise
+ */
+static inline bool OSc_Check_Version(void) {
+	return OScInternal_Check_Version(OScInternal_ABI_VERSION);
+}
 
 void OSc_API OSc_Set_Log_Func(OSc_Log_Func func, void *data);
 void OSc_API OSc_Log_Set_Device_Log_Func(OSc_Device *device, OSc_Log_Func func, void *data);
