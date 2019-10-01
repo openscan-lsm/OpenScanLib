@@ -9,7 +9,7 @@
 
 // Until we update the API to have proper array memory management, we fill this
 // static array once and never modify it again.
-static OScDev_PtrArray *g_deviceInstances; // Elements: struct OSc_Device*
+static OScDev_PtrArray *g_deviceInstances; // Elements: struct OScInternal_Device*
 
 
 static void EnumerateDevicesForImpl(const char *moduleName, OScDev_DeviceImpl *impl)
@@ -43,7 +43,7 @@ static void EnumerateDevicesForImpl(const char *moduleName, OScDev_DeviceImpl *i
 	}
 
 	for (size_t i = 0; i < devices->size; ++i) {
-		struct OSc_Device *device = devices->ptr[i];
+		struct OScInternal_Device *device = devices->ptr[i];
 		if (!device) {
 			continue;
 		}
@@ -107,7 +107,7 @@ OSc_Error OSc_GetAllDevices(OSc_Device ***devices, size_t *count)
 	if (OSc_CHECK_ERROR(err, EnumerateDevices()))
 		return err;
 
-	*devices = (struct OSc_Device **)g_deviceInstances->ptr;
+	*devices = (struct OScInternal_Device **)g_deviceInstances->ptr;
 	*count = g_deviceInstances->size;
 	return OSc_Error_OK;
 }

@@ -178,13 +178,13 @@ enum
 };
 
 
-typedef struct OSc_LSM OSc_LSM;
-typedef struct OSc_Device OSc_Device;
-typedef struct OSc_Clock OSc_Clock;
-typedef struct OSc_Scanner OSc_Scanner;
-typedef struct OSc_Detector OSc_Detector;
-typedef struct OSc_Setting OSc_Setting;
-typedef struct OSc_Acquisition OSc_Acquisition;
+typedef struct OScInternal_LSM OSc_LSM;
+typedef struct OScInternal_Device OSc_Device;
+typedef struct OScInternal_Clock OSc_Clock;
+typedef struct OScInternal_Scanner OSc_Scanner;
+typedef struct OScInternal_Detector OSc_Detector;
+typedef struct OScInternal_Setting OSc_Setting;
+typedef struct OScInternal_Acquisition OSc_Acquisition;
 
 typedef void (*OSc_LogFunc)(const char *message, OSc_LogLevel level, void *data);
 

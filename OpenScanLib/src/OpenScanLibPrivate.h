@@ -4,22 +4,22 @@
 #include "OpenScanDeviceLib.h"
 
 
-struct OSc_Clock
+struct OScInternal_Clock
 {
 	OSc_Device *device;
 };
 
-struct OSc_Scanner
+struct OScInternal_Scanner
 {
 	OSc_Device *device;
 };
 
-struct OSc_Detector
+struct OScInternal_Detector
 {
 	OSc_Device *device;
 };
 
-struct OSc_Device
+struct OScInternal_Device
 {
 	OScDev_DeviceImpl *impl;
 	void *implData;
@@ -41,7 +41,7 @@ struct OSc_Device
 	char displayName[OSc_MAX_STR_LEN + 1];
 };
 
-struct OSc_LSM
+struct OScInternal_LSM
 {
 	OSc_Clock *clock;
 	OSc_Scanner *scanner;
@@ -51,7 +51,7 @@ struct OSc_LSM
 	size_t associatedDeviceCount;
 };
 
-struct OSc_Setting
+struct OScInternal_Setting
 {
 	OScDev_SettingImpl *impl;
 	// TODO It is such a common usage to set implData to the device instance,
@@ -63,13 +63,13 @@ struct OSc_Setting
 	char name[OSc_MAX_STR_LEN + 1];
 };
 
-struct OSc_AcquisitionForDevice
+struct OScInternal_AcquisitionForDevice
 {
 	OSc_Device *device;
 	OSc_Acquisition *acq;
 };
 
-struct OSc_Acquisition
+struct OScInternal_Acquisition
 {
 	OSc_Clock *clock;
 	OSc_Scanner *scanner;
@@ -80,9 +80,9 @@ struct OSc_Acquisition
 
 	// We can pass opaque pointers to these structs to devices, so that we can
 	// handle acquisition-related calls in a device-specific manner.
-	struct OSc_AcquisitionForDevice acqForClockDevice;
-	struct OSc_AcquisitionForDevice acqForScannerDevice;
-	struct OSc_AcquisitionForDevice acqForDetectorDevice;
+	struct OScInternal_AcquisitionForDevice acqForClockDevice;
+	struct OScInternal_AcquisitionForDevice acqForScannerDevice;
+	struct OScInternal_AcquisitionForDevice acqForDetectorDevice;
 };
 
 

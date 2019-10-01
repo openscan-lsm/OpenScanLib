@@ -113,9 +113,9 @@ typedef struct OScDev_SettingImpl OScDev_SettingImpl;
 
 // Declarations for opaque data types accessed through device interface
 // functions.
-typedef struct OSc_Device OScDev_Device;
-typedef struct OSc_Setting OScDev_Setting;
-typedef struct OSc_AcquisitionForDevice OScDev_Acquisition;
+typedef struct OScInternal_Device OScDev_Device;
+typedef struct OScInternal_Setting OScDev_Setting;
+typedef struct OScInternal_AcquisitionForDevice OScDev_Acquisition;
 
 
 /// Log level.
