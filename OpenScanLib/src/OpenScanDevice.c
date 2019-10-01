@@ -177,13 +177,11 @@ OSc_Error OSc_Device_Get_Settings(OSc_Device *device, OSc_Setting ***settings, s
 {
 	if (device->settings == NULL)
 	{
-		OSc_Return_If_Error(device->impl->GetSettings(device, settings, count));
-		device->settings = *settings;
-		device->numSettings = *count;
-		return OSc_Error_OK;
+		OSc_Return_If_Error(device->impl->MakeSettings(device, &device->settings));
 	}
-	*settings = device->settings;
-	*count = device->numSettings;
+
+	*settings = (OScDev_Setting**)device->settings->ptr;
+	*count = device->settings->size;
 	return OSc_Error_OK;
 }
 
@@ -233,7 +231,20 @@ OSc_Error OSc_Device_Create(OSc_Device **device, struct OScDev_DeviceImpl *impl,
 
 OSc_Error OSc_Device_Destroy(OSc_Device *device)
 {
+	if (!device) {
+		return OSc_Error_OK;
+	}
+
 	device->impl->ReleaseInstance(device);
+
+	if (device->settings) {
+		for (size_t i = 0; i < device->settings->size; ++i) {
+			OSc_Setting *setting = device->settings->ptr[i];
+			OSc_Setting_Destroy(setting);
+		}
+		OSc_PtrArray_Destroy(device->settings);
+	}
+
 	free(device);
 	return OSc_Error_OK;
 }

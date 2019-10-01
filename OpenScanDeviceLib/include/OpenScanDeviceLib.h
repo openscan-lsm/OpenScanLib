@@ -93,7 +93,7 @@ extern "C" {
  * set of changes is to be made over multiple commits, the version number
  * can be set to `(-1, 0)` in intermediate commits to indicate "experimental".
  */
-#define OScDevInternal_ABI_VERSION OScDevInternal_MAKE_VERSION(4, 0)
+#define OScDevInternal_ABI_VERSION OScDevInternal_MAKE_VERSION(5, 0)
 
 
 /** \addtogroup dpi
@@ -488,7 +488,8 @@ struct OScDev_DeviceImpl
 	/// Return true if this device can perform detection.
 	OScDev_Error (*HasDetector)(OScDev_Device *device, bool *hasDetector);
 
-	OScDev_Error (*GetSettings)(OScDev_Device *device, OScDev_Setting ***settings, size_t *count);
+	/// Create the settings for a device.
+	OScDev_Error (*MakeSettings)(OScDev_Device *device, OScDev_PtrArray **settings);
 
 	OScDev_Error (*GetAllowedResolutions)(OScDev_Device *device, size_t **widths, size_t **heights, size_t *count);
 	OScDev_Error (*GetResolution)(OScDev_Device *device, size_t *width, size_t *height);
@@ -635,6 +636,9 @@ struct OScDev_SettingImpl
 	OScDev_Error (*GetEnumNumValues)(OScDev_Setting *setting, uint32_t *count);
 	OScDev_Error (*GetEnumNameForValue)(OScDev_Setting *setting, uint32_t value, char *name);
 	OScDev_Error (*GetEnumValueForName)(OScDev_Setting *setting, uint32_t *value, const char *name);
+
+	/// Free the private data associated with a setting, if any.
+	void (*Release)(OScDev_Setting *setting);
 };
 
 

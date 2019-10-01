@@ -35,8 +35,7 @@ struct OSc_Device
 
 	OSc_LSM *associatedLSM;
 
-	OSc_Setting **settings;
-	size_t numSettings;
+	OScDev_PtrArray *settings;
 
 	char name[OSc_MAX_STR_LEN + 1];
 	char displayName[OSc_MAX_STR_LEN + 1];
@@ -55,6 +54,8 @@ struct OSc_LSM
 struct OSc_Setting
 {
 	struct OScDev_SettingImpl *impl;
+	// TODO It is such a common usage to set implData to the device instance,
+	// that we should just provide a dedicated field for the device.
 	void *implData;
 
 	OSc_Value_Type valueType;
@@ -121,3 +122,4 @@ OSc_Error OSc_Device_Create(OSc_Device **device, struct OScDev_DeviceImpl *impl,
 OSc_Error OSc_Device_Destroy(OSc_Device *device);
 
 OSc_Error OSc_Setting_Create(OSc_Setting **setting, const char *name, OSc_Value_Type valueType, struct OScDev_SettingImpl *impl, void *data);
+void OSc_Setting_Destroy(OSc_Setting *setting);
