@@ -101,13 +101,13 @@ extern "C" {
 #define OSc_MAX_STR_LEN 511
 
 
-typedef int32_t OSc_Log_Level;
+typedef int32_t OSc_LogLevel;
 enum
 {
-	OSc_Log_Level_Debug,
-	OSc_Log_Level_Info,
-	OSc_Log_Level_Warning,
-	OSc_Log_Level_Error,
+	OSc_LogLevel_Debug,
+	OSc_LogLevel_Info,
+	OSc_LogLevel_Warning,
+	OSc_LogLevel_Error,
 };
 
 
@@ -143,13 +143,30 @@ enum
 };
 
 
-#define OSc_Check_Error(err, call) \
+/**
+ * \brief Convenience macro for if-statement checking error.
+ *
+ * For example,
+ *
+ *     OSc_Error err;
+ *     if (OSc_CHECK_ERROR(err, OSc_Foo(...))) {
+ *         // Clean up resources
+ *         return err;
+ *     }
+ */
+#define OSc_CHECK_ERROR(err, call) \
 	((err = (call)) != OSc_Error_OK)
 
-#define OSc_Return_If_Error(call) \
+/**
+ * \brief Return if an OpenScan API function call returns an error.
+ *
+ * \deprecated Use #OSc_CHECK_ERROR() instead. This macro seems to encourage
+ * careless error handling that leaks resources.
+ */
+#define OSc_RETURN_IF_ERROR(call) \
 	do { \
 		OSc_Error err; \
-		if (OSc_Check_Error(err, (call))) \
+		if (OSc_CHECK_ERROR(err, (call))) \
 			return err; \
 	} while (0)
 
@@ -182,7 +199,7 @@ typedef struct OSc_Detector OSc_Detector;
 typedef struct OSc_Setting OSc_Setting;
 typedef struct OSc_Acquisition OSc_Acquisition;
 
-typedef void (*OSc_Log_Func)(const char *message, OSc_Log_Level level, void *data);
+typedef void (*OSc_Log_Func)(const char *message, OSc_LogLevel level, void *data);
 
 // Returns true normally, or false to halt the acquisition
 typedef bool (*OSc_Frame_Callback)(OSc_Acquisition *acq, uint32_t channel, void *pixels, void *data);

@@ -9,7 +9,7 @@
 static void Log(OScDev_ModuleImpl *modImpl, OScDev_Device *device, enum OScDev_LogLevel dLevel, const char *message)
 {
 	// This only works because we define the enums identically:
-	OSc_Log_Level level = (OSc_Log_Level)dLevel;
+	OSc_LogLevel level = (OSc_LogLevel)dLevel;
 
 	OSc_Log(device, level, message);
 }

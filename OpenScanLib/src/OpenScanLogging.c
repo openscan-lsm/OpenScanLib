@@ -21,7 +21,7 @@ void OSc_Log_Set_Device_Log_Func(OSc_Device *device, OSc_Log_Func func, void *da
 }
 
 
-void OSc_Log(OSc_Device *device, OSc_Log_Level level, const char *message)
+void OSc_Log(OSc_Device *device, OSc_LogLevel level, const char *message)
 {
 	bool deviceSpecific = device && device->logFunc;
 	OSc_Log_Func func = deviceSpecific ? device->logFunc : g_logFunc;

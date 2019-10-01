@@ -88,26 +88,26 @@ struct OSc_Acquisition
 
 // Internal functions
 
-void OSc_Log(OSc_Device *device, OSc_Log_Level level, const char *message);
+void OSc_Log(OSc_Device *device, OSc_LogLevel level, const char *message);
 
 static inline OSc_Log_Debug(OSc_Device *device, const char *message)
 {
-	OSc_Log(device, OSc_Log_Level_Debug, message);
+	OSc_Log(device, OSc_LogLevel_Debug, message);
 }
 
 static inline OSc_Log_Info(OSc_Device *device, const char *message)
 {
-	OSc_Log(device, OSc_Log_Level_Info, message);
+	OSc_Log(device, OSc_LogLevel_Info, message);
 }
 
 static inline OSc_Log_Warning(OSc_Device *device, const char *message)
 {
-	OSc_Log(device, OSc_Log_Level_Warning, message);
+	OSc_Log(device, OSc_LogLevel_Warning, message);
 }
 
 static inline OSc_Log_Error(OSc_Device *device, const char *message)
 {
-	OSc_Log(device, OSc_Log_Level_Error, message);
+	OSc_Log(device, OSc_LogLevel_Error, message);
 }
 
 OScDev_PtrArray *OSc_PtrArray_Create(void);
