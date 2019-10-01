@@ -21,7 +21,7 @@ struct OSc_Detector
 
 struct OSc_Device
 {
-	struct OScDev_DeviceImpl *impl;
+	OScDev_DeviceImpl *impl;
 	void *implData;
 
 	OSc_Log_Func logFunc;
@@ -53,7 +53,7 @@ struct OSc_LSM
 
 struct OSc_Setting
 {
-	struct OScDev_SettingImpl *impl;
+	OScDev_SettingImpl *impl;
 	// TODO It is such a common usage to set implData to the device instance,
 	// that we should just provide a dedicated field for the device.
 	void *implData;
@@ -118,8 +118,8 @@ OSc_Error OSc_LSM_Associate_Device(OSc_LSM *lsm, OSc_Device *device);
 OSc_Error OSc_LSM_Dissociate_Device(OSc_LSM *lsm, OSc_Device *device);
 OSc_Error OSc_LSM_Is_Device_Associated(OSc_LSM *lsm, OSc_Device *device, bool *isAssociated);
 
-OSc_Error OSc_Device_Create(OSc_Device **device, struct OScDev_DeviceImpl *impl, void *data);
+OSc_Error OSc_Device_Create(OSc_Device **device, OScDev_DeviceImpl *impl, void *data);
 OSc_Error OSc_Device_Destroy(OSc_Device *device);
 
-OSc_Error OSc_Setting_Create(OSc_Setting **setting, const char *name, OSc_Value_Type valueType, struct OScDev_SettingImpl *impl, void *data);
+OSc_Error OSc_Setting_Create(OSc_Setting **setting, const char *name, OSc_Value_Type valueType, OScDev_SettingImpl *impl, void *data);
 void OSc_Setting_Destroy(OSc_Setting *setting);

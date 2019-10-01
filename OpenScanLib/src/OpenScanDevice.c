@@ -220,7 +220,7 @@ OSc_Error OSc_Device_Set_Magnification(OSc_Device *device)
 }
 
 
-OSc_Error OSc_Device_Create(OSc_Device **device, struct OScDev_DeviceImpl *impl, void *data)
+OSc_Error OSc_Device_Create(OSc_Device **device, OScDev_DeviceImpl *impl, void *data)
 {
 	*device = calloc(1, sizeof(OSc_Device));
 	(*device)->impl = impl;

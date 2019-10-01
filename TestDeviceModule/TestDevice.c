@@ -4,7 +4,7 @@
 #include <string.h>
 
 
-static struct OScDev_DeviceImpl g_TestDeviceImpl;
+static OScDev_DeviceImpl g_TestDeviceImpl;
 
 
 static OScDev_Error TestGetModelName(const char **name)
@@ -77,7 +77,7 @@ static OScDev_Error TestHasDetector(OScDev_Device *device, bool *hasDetector)
 }
 
 
-static struct OScDev_DeviceImpl g_TestDeviceImpl = {
+static OScDev_DeviceImpl g_TestDeviceImpl = {
 	.GetModelName = TestGetModelName,
 	.EnumerateInstances = TestEnumerateInstances,
 	.ReleaseInstance = TestReleaseInstance,
@@ -93,7 +93,7 @@ static struct OScDev_DeviceImpl g_TestDeviceImpl = {
 
 OScDev_Error TestGetDeviceImpls(const OScDev_PtrArray **deviceImpls)
 {
-	static struct OScDev_DeviceImpl *arr[] = {
+	static OScDev_DeviceImpl *arr[] = {
 		&g_TestDeviceImpl
 	};
 

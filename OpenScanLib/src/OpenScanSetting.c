@@ -396,7 +396,7 @@ static void DefaultRelease(OSc_Setting *setting)
 
 
 OSc_Error OSc_Setting_Create(OSc_Setting **setting, const char *name, OSc_Value_Type valueType,
-	struct OScDev_SettingImpl *impl, void *data)
+	OScDev_SettingImpl *impl, void *data)
 {
 	// TODO We should not modify 'impl' which belongs to the device module.
 	// Instead we should either use a copy of 'impl' or just check for NULL

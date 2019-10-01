@@ -102,9 +102,9 @@ extern "C" {
 
 
 // Forward declarations for types defined later in this header
-struct OScDev_ModuleImpl;
-struct OScDev_DeviceImpl;
-struct OScDev_SettingImpl;
+typedef struct OScDev_ModuleImpl OScDev_ModuleImpl;
+typedef struct OScDev_DeviceImpl OScDev_DeviceImpl;
+typedef struct OScDev_SettingImpl OScDev_SettingImpl;
 
 
 /// Maximum length for strings copied to provided buffer.
@@ -298,7 +298,7 @@ extern struct OScDevInternal_Interface *OScDevInternal_FunctionTable;
 /** \ingroup internal
  * \see OScDev_DEFINE_MODULE_IMPL
  */
-extern struct OScDev_ModuleImpl OScDevInternal_TheModuleImpl;
+extern OScDev_ModuleImpl OScDevInternal_TheModuleImpl;
 
 
 /// Define the device module implementation.
@@ -321,7 +321,7 @@ extern struct OScDev_ModuleImpl OScDevInternal_TheModuleImpl;
  *
  * \see OScDev_ModuleImpl
  */
-#define OScDev_MODULE_IMPL struct OScDev_ModuleImpl OScDevInternal_TheModuleImpl
+#define OScDev_MODULE_IMPL OScDev_ModuleImpl OScDevInternal_TheModuleImpl
 
 
 /// Interface function table for module to call OpenScanLib.
@@ -334,25 +334,25 @@ struct OScDevInternal_Interface
 	// All functions take a pointer to the module implementation, even if not
 	// needed in the implementation, because it may help with debugging.
 
-	void (*Log)(struct OScDev_ModuleImpl *modImpl, OScDev_Device *device, enum OScDev_LogLevel level, const char *message);
+	void (*Log)(OScDev_ModuleImpl *modImpl, OScDev_Device *device, enum OScDev_LogLevel level, const char *message);
 
-	OScDev_PtrArray *(*PtrArray_Create)(struct OScDev_ModuleImpl *modImpl);
-	void (*PtrArray_Destroy)(struct OScDev_ModuleImpl *modImpl, OScDev_PtrArray *arr);
-	void (*PtrArray_Append)(struct OScDev_ModuleImpl *modImpl, OScDev_PtrArray *arr, void *obj);
+	OScDev_PtrArray *(*PtrArray_Create)(OScDev_ModuleImpl *modImpl);
+	void (*PtrArray_Destroy)(OScDev_ModuleImpl *modImpl, OScDev_PtrArray *arr);
+	void (*PtrArray_Append)(OScDev_ModuleImpl *modImpl, OScDev_PtrArray *arr, void *obj);
 
-	OScDev_Error (*Device_Create)(struct OScDev_ModuleImpl *modImpl, OScDev_Device **device, struct OScDev_DeviceImpl *impl, void *data);
-	void *(*Device_GetImplData)(struct OScDev_ModuleImpl *modImpl, OScDev_Device *device);
+	OScDev_Error (*Device_Create)(OScDev_ModuleImpl *modImpl, OScDev_Device **device, OScDev_DeviceImpl *impl, void *data);
+	void *(*Device_GetImplData)(OScDev_ModuleImpl *modImpl, OScDev_Device *device);
 
-	OScDev_Error (*Setting_Create)(struct OScDev_ModuleImpl *modImpl, OScDev_Setting **setting, const char *name, enum OScDev_ValueType valueType, struct OScDev_SettingImpl *impl, void *data);
-	void *(*Setting_GetImplData)(struct OScDev_ModuleImpl *modImpl, OScDev_Setting *setting);
+	OScDev_Error (*Setting_Create)(OScDev_ModuleImpl *modImpl, OScDev_Setting **setting, const char *name, enum OScDev_ValueType valueType, OScDev_SettingImpl *impl, void *data);
+	void *(*Setting_GetImplData)(OScDev_ModuleImpl *modImpl, OScDev_Setting *setting);
 
-	OScDev_Error (*Acquisition_GetNumberOfFrames)(struct OScDev_ModuleImpl *modImpl, OScDev_Acquisition *acq, uint32_t *numberOfFrames);
-	OScDev_Error (*Acquisition_IsClockRequested)(struct OScDev_ModuleImpl *modImpl, OScDev_Acquisition *acq, bool *isRequested);
-	OScDev_Error (*Acquisition_IsScannerRequested)(struct OScDev_ModuleImpl *modImpl, OScDev_Acquisition *acq, bool *isRequested);
-	OScDev_Error (*Acquisition_IsDetectorRequested)(struct OScDev_ModuleImpl *modImpl, OScDev_Acquisition *acq, bool *isRequested);
-	OScDev_Error (*Acquisition_GetClockStartTriggerSource)(struct OScDev_ModuleImpl *modImpl, OScDev_Acquisition *acq, enum OScDev_TriggerSource *startTrigger);
-	OScDev_Error (*Acquisition_GetClockSource)(struct OScDev_ModuleImpl *modImpl, OScDev_Acquisition *acq, enum OScDev_ClockSource *clock);
-	bool (*Acquisition_CallFrameCallback)(struct OScDev_ModuleImpl *modImpl, OScDev_Acquisition *acq, uint32_t channel, void *pixels);
+	OScDev_Error (*Acquisition_GetNumberOfFrames)(OScDev_ModuleImpl *modImpl, OScDev_Acquisition *acq, uint32_t *numberOfFrames);
+	OScDev_Error (*Acquisition_IsClockRequested)(OScDev_ModuleImpl *modImpl, OScDev_Acquisition *acq, bool *isRequested);
+	OScDev_Error (*Acquisition_IsScannerRequested)(OScDev_ModuleImpl *modImpl, OScDev_Acquisition *acq, bool *isRequested);
+	OScDev_Error (*Acquisition_IsDetectorRequested)(OScDev_ModuleImpl *modImpl, OScDev_Acquisition *acq, bool *isRequested);
+	OScDev_Error (*Acquisition_GetClockStartTriggerSource)(OScDev_ModuleImpl *modImpl, OScDev_Acquisition *acq, enum OScDev_TriggerSource *startTrigger);
+	OScDev_Error (*Acquisition_GetClockSource)(OScDev_ModuleImpl *modImpl, OScDev_Acquisition *acq, enum OScDev_ClockSource *clock);
+	bool (*Acquisition_CallFrameCallback)(OScDev_ModuleImpl *modImpl, OScDev_Acquisition *acq, uint32_t channel, void *pixels);
 };
 
 
@@ -711,7 +711,7 @@ OScDevInternal_INLINE void OScDev_Log_Error(OScDev_Device *device, const char *m
 	OScDev_Log(device, OScDev_LogLevel_Error, message);
 }
 
-OScDevInternal_INLINE OScDev_Error OScDev_Device_Create(OScDev_Device **device, struct OScDev_DeviceImpl *impl, void *data)
+OScDevInternal_INLINE OScDev_Error OScDev_Device_Create(OScDev_Device **device, OScDev_DeviceImpl *impl, void *data)
 {
 	return OScDevInternal_FunctionTable->Device_Create(&OScDevInternal_TheModuleImpl, device, impl, data);
 }
@@ -721,7 +721,7 @@ OScDevInternal_INLINE void *OScDev_Device_GetImplData(OScDev_Device *device)
 	return OScDevInternal_FunctionTable->Device_GetImplData(&OScDevInternal_TheModuleImpl, device);
 }
 
-OScDevInternal_INLINE OScDev_Error OScDev_Setting_Create(OScDev_Setting **setting, const char *name, enum OScDev_ValueType valueType, struct OScDev_SettingImpl *impl, void *data)
+OScDevInternal_INLINE OScDev_Error OScDev_Setting_Create(OScDev_Setting **setting, const char *name, enum OScDev_ValueType valueType, OScDev_SettingImpl *impl, void *data)
 {
 	return OScDevInternal_FunctionTable->Setting_Create(&OScDevInternal_TheModuleImpl, setting, name, valueType, impl, data);
 }

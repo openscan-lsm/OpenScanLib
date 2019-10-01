@@ -168,7 +168,7 @@ OSc_Error OSc_DeviceModule_GetDeviceImpls(const char *module, const OScDev_PtrAr
 	OSc_Return_If_Error(GetEntryPoint(mod->handle, OScDevInternal_ENTRY_POINT_NAME, (void *)&entryPoint));
 
 	struct OScDevInternal_Interface **funcTablePtr;
-	struct OScDev_ModuleImpl *modImpl;
+	OScDev_ModuleImpl *modImpl;
 	uint32_t dpiVersion = entryPoint(&funcTablePtr, &modImpl);
 	if (dpiVersion != OScDevInternal_ABI_VERSION)
 	{

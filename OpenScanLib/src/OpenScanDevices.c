@@ -12,7 +12,7 @@
 static OScDev_PtrArray *g_deviceInstances; // Elements: struct OSc_Device*
 
 
-static void EnumerateDevicesForImpl(const char *moduleName, struct OScDev_DeviceImpl *impl)
+static void EnumerateDevicesForImpl(const char *moduleName, OScDev_DeviceImpl *impl)
 {
 	OSc_Error err;
 	OScDev_PtrArray *devices = NULL;
@@ -90,7 +90,7 @@ static OSc_Error EnumerateDevices(void)
 
 		for (size_t i = 0; i < deviceImpls->size; ++i) {
 			EnumerateDevicesForImpl(moduleName,
-				(struct OScDev_DeviceImpl *)(deviceImpls->ptr[i]));
+				(OScDev_DeviceImpl *)(deviceImpls->ptr[i]));
 		}
 		OSc_PtrArray_Destroy(deviceImpls);
 	}
