@@ -55,7 +55,7 @@ extern "C" {
 /** \ingroup internal
  * \see OScDevInternal_ABI_VERSION
  */
-#define OScDevInternal_MAKE_VERSION(major, minor) ((uint16_t)(major << 16) | (uint16_t)minor)
+#define OScDevInternal_MAKE_VERSION(major, minor) (((uint32_t)(major) << 16) | (uint16_t)(minor))
 
 
 /// Binary interface version between device module and OpenScanLib.
