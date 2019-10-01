@@ -1,5 +1,8 @@
-/*
- * OpenScan C API
+/**
+ * \file
+ * \brief OpenScan C API
+ *
+ * This header is to be included by applications using OpenScan.
  */
 
 #pragma once
@@ -28,6 +31,18 @@ extern "C" {
 #	endif
 #endif
 
+
+/**
+ * \mainpage OpenScanLib: OpenScan C Application Programming Interface
+ *
+ * For API documentation, see \ref api.
+ *
+ * For partial documentation on OpenScanLib internals, see \ref internal.
+ */
+
+/**
+ * \defgroup api OpenScan C API
+ */
 
 /**
  * \defgroup internal OpenScanLib Internals
@@ -73,6 +88,10 @@ extern "C" {
  */
 #define OScInternal_ABI_VERSION OScInternal_MAKE_VERSION(1, 0)
 
+/**
+ * \addtogroup api
+ * @{
+ */
 
 /**
  * \brief Maximum length for fixed-length string buffers.
@@ -168,12 +187,19 @@ typedef void (*OSc_Log_Func)(const char *message, OSc_Log_Level level, void *dat
 // Returns true normally, or false to halt the acquisition
 typedef bool (*OSc_Frame_Callback)(OSc_Acquisition *acq, uint32_t channel, void *pixels, void *data);
 
+/** @} */ // addtogroup api
+
 /**
  * \ingroup internal
  * \brief Check if OpenScanLib ABI version is compatible with the version used
  * to build the client application.
  */
 bool OSc_API OScInternal_Check_Version(uint32_t version);
+
+/**
+* \addtogroup api
+* @{
+*/
 
 /**
  * \brief Check that a compatible version of OpenScanLib is being used.
@@ -271,6 +297,7 @@ OSc_Error OSc_API OSc_Acquisition_Start(OSc_Acquisition *acq);
 OSc_Error OSc_API OSc_Acquisition_Stop(OSc_Acquisition *acq);
 OSc_Error OSc_API OSc_Acquisition_Wait(OSc_Acquisition *acq);
 
+/** @} */ // addtogroup api
 
 #ifdef __cplusplus
 } // extern "C"
