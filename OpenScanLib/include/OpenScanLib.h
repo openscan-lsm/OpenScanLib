@@ -79,15 +79,6 @@ enum
 };
 
 
-typedef int32_t OSc_Error_Domain;
-enum
-{
-	OSc_Error_Domain_OpenScanLib,
-	OSc_Error_Domain_DAQmx,
-	OSc_Error_Domain_NiFpga,
-};
-
-
 #define OSc_Check_Error(err, call) \
 	((err = (call)) != OSc_Error_OK)
 
@@ -97,17 +88,6 @@ enum
 		if (OSc_Check_Error(err, (call))) \
 			return err; \
 	} while (0)
-
-
-// TODO Use this as new error handling mechanism
-// (functions return bool; last param is OSc_Error_Info **)
-typedef struct OSc_Error_Info
-{
-	OSc_Error_Domain domain;
-	int32_t code;
-	char message[1024];
-	struct OSc_Error_Info *cause;
-} OSc_Error_Info;
 
 
 typedef int32_t OSc_Value_Type;
