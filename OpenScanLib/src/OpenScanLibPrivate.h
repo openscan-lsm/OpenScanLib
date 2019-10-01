@@ -114,6 +114,10 @@ OScDev_PtrArray *OSc_PtrArray_Create(void);
 void OSc_PtrArray_Destroy(const OScDev_PtrArray *arr);
 void OSc_PtrArray_Append(OScDev_PtrArray *arr, void *obj);
 
+OScDev_NumArray *OSc_NumArray_Create(void);
+void OSc_NumArray_Destroy(const OScDev_NumArray *arr);
+void OSc_NumArray_Append(OScDev_NumArray *arr, double val);
+
 OSc_Error OSc_LSM_Associate_Device(OSc_LSM *lsm, OSc_Device *device);
 OSc_Error OSc_LSM_Dissociate_Device(OSc_LSM *lsm, OSc_Device *device);
 OSc_Error OSc_LSM_Is_Device_Associated(OSc_LSM *lsm, OSc_Device *device, bool *isAssociated);

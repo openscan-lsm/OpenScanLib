@@ -33,6 +33,24 @@ static void PtrArray_Append(OScDev_ModuleImpl *modImpl, OScDev_PtrArray *arr, vo
 }
 
 
+static OScDev_NumArray *NumArray_Create(OScDev_ModuleImpl *modImpl)
+{
+	return OSc_NumArray_Create();
+}
+
+
+static void NumArray_Destroy(OScDev_ModuleImpl *modImpl, OScDev_NumArray *arr)
+{
+	OSc_NumArray_Destroy(arr);
+}
+
+
+static void NumArray_Append(OScDev_ModuleImpl *modImpl, OScDev_NumArray *arr, double val)
+{
+	OSc_NumArray_Append(arr, val);
+}
+
+
 // TODO: Replace with direct provision of impl and data (once we have DeviceLoaders)
 static OScDev_Error Device_Create(OScDev_ModuleImpl *modImpl, OScDev_Device **device, OScDev_DeviceImpl *impl, void *data)
 {
@@ -116,6 +134,9 @@ struct OScDevInternal_Interface DeviceInterfaceFunctionTable = {
 	.PtrArray_Create = PtrArray_Create,
 	.PtrArray_Destroy = PtrArray_Destroy,
 	.PtrArray_Append = PtrArray_Append,
+	.NumArray_Create = NumArray_Create,
+	.NumArray_Destroy = NumArray_Destroy,
+	.NumArray_Append = NumArray_Append,
 	.Device_Create = Device_Create,
 	.Device_GetImplData = Device_GetImplData,
 	.Setting_Create = Setting_Create,

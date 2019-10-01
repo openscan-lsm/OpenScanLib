@@ -14,6 +14,17 @@ OScDev_PtrArray *OSc_PtrArray_Create(void)
 }
 
 
+OScDev_NumArray *OSc_NumArray_Create(void)
+{
+	OScDev_NumArray *ret = calloc(1, sizeof(OScDev_NumArray));
+	if (!ret) {
+		return NULL;
+	}
+	ret->isDynamic = true;
+	return ret;
+}
+
+
 void OSc_PtrArray_Destroy(const OScDev_PtrArray *arr)
 {
 	if (!arr->isDynamic) {
@@ -25,6 +36,31 @@ void OSc_PtrArray_Destroy(const OScDev_PtrArray *arr)
 	// Clear for safety (this marks the array static, which is harmless because
 	// it will no longer be used as a dynamically allocated array).
 	memset((void *)arr, 0, sizeof(OScDev_PtrArray));
+}
+
+
+void OSc_NumArray_Destroy(const OScDev_NumArray *arr)
+{
+	if (!arr->isDynamic) {
+		return;
+	}
+
+	free(arr->ptr);
+
+	memset((void *)arr, 0, sizeof(OScDev_NumArray));
+}
+
+
+static size_t CapForSize(size_t size)
+{
+	size_t newCap = 16;
+	while (size > newCap && newCap < 1024) {
+		newCap *= 2;
+	}
+	while (size > newCap) {
+		newCap += 1024;
+	}
+	return newCap;
 }
 
 
@@ -41,16 +77,9 @@ void OSc_PtrArray_Append(OScDev_PtrArray *arr, void *obj)
 
 	size_t newSize = arr->size + 1;
 	if (newSize > arr->capacity) {
-		size_t newCap = 16;
-		while (newSize > newCap && newCap < 1024) {
-			newCap *= 2;
-		}
-		while (newSize > newCap) {
-			newCap += 1024;
-		}
-
-		void *newPtr;
+		size_t newCap = CapForSize(newSize);
 		size_t newCapBytes = sizeof(void *) * newCap;
+		void *newPtr;
 		if (!arr->ptr) {
 			newPtr = malloc(newCapBytes);
 		}
@@ -66,5 +95,35 @@ void OSc_PtrArray_Append(OScDev_PtrArray *arr, void *obj)
 	}
 
 	arr->ptr[arr->size] = obj;
+	arr->size = newSize;
+}
+
+
+void OSc_NumArray_Append(OScDev_NumArray *arr, double val)
+{
+	if (!arr->isDynamic) {
+		return; // Programming error
+	}
+
+	size_t newSize = arr->size + 1;
+	if (newSize > arr->capacity) {
+		size_t newCap = CapForSize(newSize);
+		size_t newCapBytes = sizeof(double) * newCap;
+		double *newPtr;
+		if (!arr->ptr) {
+			newPtr = malloc(newCapBytes);
+		}
+		else {
+			newPtr = realloc(arr->ptr, newCapBytes);
+		}
+		if (!newPtr) {
+			return; // Out of memory
+		}
+
+		arr->ptr = newPtr;
+		arr->capacity = newCap;
+	}
+
+	arr->ptr[arr->size] = val;
 	arr->size = newSize;
 }

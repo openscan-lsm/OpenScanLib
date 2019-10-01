@@ -93,7 +93,7 @@ extern "C" {
  * set of changes is to be made over multiple commits, the version number
  * can be set to `(-1, 0)` in intermediate commits to indicate "experimental".
  */
-#define OScDevInternal_ABI_VERSION OScDevInternal_MAKE_VERSION(5, 0)
+#define OScDevInternal_ABI_VERSION OScDevInternal_MAKE_VERSION(6, 0)
 
 
 /** \addtogroup dpi
@@ -237,6 +237,22 @@ struct OScDevInternal_PtrArray {
 };
 
 
+/** \ingroup internal
+ * \brief Internal implementation of OScDev_NumArray.
+ *
+ * Device modules must _not_ access fields of this structure directly.
+ *
+ * \sa OScDev_NumArray
+ * \sa OScDev_STATIC_NUM_ARRAY
+ */
+struct OScDevInternal_NumArray {
+	double *ptr; // Array of double
+	size_t size;
+	size_t capacity;
+	bool isDynamic;
+};
+
+
 /** \addtogroup dpi
 * @{
 */
@@ -261,6 +277,23 @@ struct OScDevInternal_PtrArray {
 typedef struct OScDevInternal_PtrArray OScDev_PtrArray;
 
 
+/// Dynamic or static array of numbers.
+/**
+ * This data type is used to pass lists of numbers from device modules to
+ * OpenScanLib.
+ *
+ * Although it holds double values, we use it for integer lists, too, for
+ * simplicity.
+ *
+ * An array can be created dynamically by calling OScDev_NumArray_Create(),
+ * or can be defined statically using #OScDev_STATIC_NUM_ARRAY.
+ *
+ * (Because this type is intended solely for passing short lists, the only
+ * available operation is appending elements.)
+ */
+typedef struct OScDevInternal_NumArray OScDev_NumArray;
+
+
 /// Define a static array of objects.
 /**
  * This defines a static ::OScDev_PtrArray.
@@ -283,6 +316,29 @@ typedef struct OScDevInternal_PtrArray OScDev_PtrArray;
  */
 #define OScDev_STATIC_PTR_ARRAY(name, arr) \
 static const OScDev_PtrArray name = { .size = sizeof(arr) / sizeof(void*), .ptr = (arr) }
+
+
+/// Define a static array of numbers.
+/**
+ * This defines a static ::OScDev_NumArray.
+ *
+ * For example,
+ *
+ *     static const double list[] = { 0.0, 1.0, 2.0, };
+ *     OScDev_STATIC_NUM_ARRAY(myArray, list);
+ *     // Now &myArray can be passed where an OScDev_NumArray* is required.
+ *
+ * Modifying a statically defined array will almost certainly result in bugs
+ * and should be avoided.
+ *
+ * Note that \p arr _must_ be the name of a static array of `double`, _not_
+ * any other kind of pointer.
+ *
+ * \param name the name of the static numeric array
+ * \param arr name of the raw double array containing the values
+ */
+#define OScDev_STATIC_NUM_ARRAY(name, arr) \
+static const OScDev_NumArray name = { .size = sizeof(arr) / sizeof(double), .ptr = (arr) }
 
 
 /** @} */ // addtogroup dpi
@@ -339,6 +395,10 @@ struct OScDevInternal_Interface
 	OScDev_PtrArray *(*PtrArray_Create)(OScDev_ModuleImpl *modImpl);
 	void (*PtrArray_Destroy)(OScDev_ModuleImpl *modImpl, OScDev_PtrArray *arr);
 	void (*PtrArray_Append)(OScDev_ModuleImpl *modImpl, OScDev_PtrArray *arr, void *obj);
+
+	OScDev_NumArray *(*NumArray_Create)(OScDev_ModuleImpl *modImpl);
+	void (*NumArray_Destroy)(OScDev_ModuleImpl *modImpl, OScDev_NumArray *arr);
+	void (*NumArray_Append)(OScDev_ModuleImpl *modImpl, OScDev_NumArray *arr, double val);
 
 	OScDev_Error (*Device_Create)(OScDev_ModuleImpl *modImpl, OScDev_Device **device, OScDev_DeviceImpl *impl, void *data);
 	void *(*Device_GetImplData)(OScDev_ModuleImpl *modImpl, OScDev_Device *device);
@@ -685,6 +745,24 @@ OScDevInternal_INLINE void OScDev_PtrArray_Destroy(OScDev_PtrArray *arr)
 OScDevInternal_INLINE void OScDev_PtrArray_Append(OScDev_PtrArray *arr, void *obj)
 {
 	OScDevInternal_FunctionTable->PtrArray_Append(&OScDevInternal_TheModuleImpl, arr, obj);
+}
+
+/// Create an array of numbers.
+OScDevInternal_INLINE OScDev_NumArray *OScDev_NumArray_Create(void)
+{
+	return OScDevInternal_FunctionTable->NumArray_Create(&OScDevInternal_TheModuleImpl);
+}
+
+/// Destroy (free) an array of numbers.
+OScDevInternal_INLINE void OScDev_NumArray_Destroy(OScDev_NumArray *arr)
+{
+	OScDevInternal_FunctionTable->NumArray_Destroy(&OScDevInternal_TheModuleImpl, arr);
+}
+
+/// Append a value to an array.
+OScDevInternal_INLINE void OScDev_NumArray_Append(OScDev_NumArray *arr, double val)
+{
+	OScDevInternal_FunctionTable->NumArray_Append(&OScDevInternal_TheModuleImpl, arr, val);
 }
 
 /// Log a debug-level message
