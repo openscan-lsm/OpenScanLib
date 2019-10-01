@@ -781,6 +781,30 @@ OScDev_API void OScDev_Log(OScDev_Device *device, enum OScDev_LogLevel level, co
 	OScDevInternal_FunctionTable->Log(&OScDevInternal_TheModuleImpl, device, level, message);
 }
 
+/// Log a debug-level message
+OScDev_API void OScDev_Log_Debug(OScDev_Device *device, const char *message)
+{
+	OScDev_Log(device, OScDev_LogLevel_Debug, message);
+}
+
+/// Log an info-level message
+OScDev_API void OScDev_Log_Info(OScDev_Device *device, const char *message)
+{
+	OScDev_Log(device, OScDev_LogLevel_Info, message);
+}
+
+/// Log a warning-level message
+OScDev_API void OScDev_Log_Warning(OScDev_Device *device, const char *message)
+{
+	OScDev_Log(device, OScDev_LogLevel_Warning, message);
+}
+
+/// Log an error-level message
+OScDev_API void OScDev_Log_Error(OScDev_Device *device, const char *message)
+{
+	OScDev_Log(device, OScDev_LogLevel_Error, message);
+}
+
 /// Create an array of objects.
 OScDev_API OScDev_PtrArray *OScDev_PtrArray_Create(void)
 {
@@ -835,30 +859,6 @@ OScDev_API void OScDev_NumRange_Destroy(OScDev_NumRange *range)
 OScDev_API void OScDev_NumRange_AppendDiscrete(OScDev_NumRange *range, double value)
 {
 	OScDevInternal_FunctionTable->NumRange_AppendDiscrete(&OScDevInternal_TheModuleImpl, range, value);
-}
-
-/// Log a debug-level message
-OScDev_API void OScDev_Log_Debug(OScDev_Device *device, const char *message)
-{
-	OScDev_Log(device, OScDev_LogLevel_Debug, message);
-}
-
-/// Log an info-level message
-OScDev_API void OScDev_Log_Info(OScDev_Device *device, const char *message)
-{
-	OScDev_Log(device, OScDev_LogLevel_Info, message);
-}
-
-/// Log a warning-level message
-OScDev_API void OScDev_Log_Warning(OScDev_Device *device, const char *message)
-{
-	OScDev_Log(device, OScDev_LogLevel_Warning, message);
-}
-
-/// Log an error-level message
-OScDev_API void OScDev_Log_Error(OScDev_Device *device, const char *message)
-{
-	OScDev_Log(device, OScDev_LogLevel_Error, message);
 }
 
 OScDev_API OScDev_Error OScDev_Device_Create(OScDev_Device **device, OScDev_DeviceImpl *impl, void *data)
