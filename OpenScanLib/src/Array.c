@@ -25,6 +25,32 @@ OScDev_NumArray *OSc_NumArray_Create(void)
 }
 
 
+OScDev_NumRange *OSc_NumRange_CreateContinuous(double rMin, double rMax)
+{
+	OScDev_NumRange *ret = calloc(1, sizeof(OScDev_NumRange));
+	if (!ret) {
+		return NULL;
+	}
+	ret->isDynamic = true;
+	ret->isList = false;
+	ret->rep.range.rMin = rMin;
+	ret->rep.range.rMax = rMax;
+	return ret;
+}
+
+
+OScDev_NumRange *OSc_NumRange_CreateDiscrete(void)
+{
+	OScDev_NumRange *ret = calloc(1, sizeof(OScDev_NumRange));
+	if (!ret) {
+		return NULL;
+	}
+	ret->isDynamic = true;
+	ret->isList = true;
+	return ret;
+}
+
+
 void OSc_PtrArray_Destroy(const OScDev_PtrArray *arr)
 {
 	if (!arr->isDynamic) {
@@ -48,6 +74,20 @@ void OSc_NumArray_Destroy(const OScDev_NumArray *arr)
 	free(arr->ptr);
 
 	memset((void *)arr, 0, sizeof(OScDev_NumArray));
+}
+
+
+void OSc_NumRange_Destroy(const OScDev_NumRange *range)
+{
+	if (!range->isDynamic) {
+		return;
+	}
+
+	if (range->isList) {
+		free(range->rep.list.ptr);
+	}
+
+	memset((void *)range, 0, sizeof(OScDev_NumRange));
 }
 
 
@@ -126,4 +166,16 @@ void OSc_NumArray_Append(OScDev_NumArray *arr, double val)
 
 	arr->ptr[arr->size] = val;
 	arr->size = newSize;
+}
+
+
+void OSc_NumRange_AppendDiscrete(OScDev_NumRange *range, double val)
+{
+	if (!range->isDynamic || !range->isList) {
+		return; // Programming error
+	}
+
+	range->rep.list.isDynamic = true;
+	OSc_NumArray_Append(&range->rep.list, val);
+	range->rep.list.isDynamic = false;
 }

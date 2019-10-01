@@ -93,7 +93,7 @@ extern "C" {
  * set of changes is to be made over multiple commits, the version number
  * can be set to `(-1, 0)` in intermediate commits to indicate "experimental".
  */
-#define OScDevInternal_ABI_VERSION OScDevInternal_MAKE_VERSION(6, 0)
+#define OScDevInternal_ABI_VERSION OScDevInternal_MAKE_VERSION(7, 0)
 
 
 /** \addtogroup dpi
@@ -253,6 +253,36 @@ struct OScDevInternal_NumArray {
 };
 
 
+/** \ingroup internal
+ * \brief Part of internal implementation of OScDev_NumRange.
+ *
+ * Device modules must _not_ access fields of this structure directly.
+ */
+struct OScDevInternal_NumContinuousRange {
+	double rMin;
+	double rMax;
+};
+
+
+/** \ingroup internal
+ * \brief Internal implementation of OScDev_NumRange.
+ *
+ * Device modules must _not_ access fields of this structure directly.
+ *
+ * \sa OScDev_NumRange
+ * \sa OScDev_STATIC_NUM_RANGE_DISCRETE
+ * \sa OScDev_STATIC_NUM_RANGE_CONTINUOUS
+ */
+struct OScDevInternal_NumRange {
+	bool isDynamic;
+	bool isList;
+	union {
+		struct OScDevInternal_NumArray list;
+		struct OScDevInternal_NumContinuousRange range;
+	} rep;
+};
+
+
 /** \addtogroup dpi
 * @{
 */
@@ -292,6 +322,20 @@ typedef struct OScDevInternal_PtrArray OScDev_PtrArray;
  * available operation is appending elements.)
  */
 typedef struct OScDevInternal_NumArray OScDev_NumArray;
+
+
+/// Continuous or discrete numerical range.
+/**
+ * This data type is used to mass numerical ranges from device modules to
+ * OpenScanLib.
+ *
+ * A range can be created dynamically by calling
+ * OScDev_NumRange_CreateContinuous() or OScDev_NumRange_CreateDiscrete().
+ * Or one can be defined statically using
+ * #OScDev_STATIC_NUM_RANGE_CONTINUOUS() or
+ * #OScDev_STATIC_NUM_RANGE_DISCRETE().
+ */
+typedef struct OScDevInternal_NumRange OScDev_NumRange;
 
 
 /// Define a static array of objects.
@@ -339,6 +383,15 @@ static const OScDev_PtrArray name = { .size = sizeof(arr) / sizeof(void*), .ptr 
  */
 #define OScDev_STATIC_NUM_ARRAY(name, arr) \
 static const OScDev_NumArray name = { .size = sizeof(arr) / sizeof(double), .ptr = (arr) }
+
+
+#define OScDev_STATIC_NUM_RANGE_CONTINUOUS(name, rangeMin, rangeMax) \
+static const OScDev_NumRange name = { .isList = false, .rep = { \
+	.range = { .rMin = (rangeMin), .rMax = (rangeMax) } } }
+
+#define OScDev_STATIC_NUM_RANGE_DISCRETE(name, arr) \
+static const OScDev_NumRange name = { .isList = true, .rep = { \
+	.list = { .size = sizeof(arr) / sizeof(double), .ptr = (arr) } } }
 
 
 /** @} */ // addtogroup dpi
@@ -399,6 +452,11 @@ struct OScDevInternal_Interface
 	OScDev_NumArray *(*NumArray_Create)(OScDev_ModuleImpl *modImpl);
 	void (*NumArray_Destroy)(OScDev_ModuleImpl *modImpl, OScDev_NumArray *arr);
 	void (*NumArray_Append)(OScDev_ModuleImpl *modImpl, OScDev_NumArray *arr, double val);
+
+	OScDev_NumRange *(*NumRange_CreateContinuous)(OScDev_ModuleImpl *modImpl, double rMin, double rMax);
+	OScDev_NumRange *(*NumRange_CreateDiscrete)(OScDev_ModuleImpl *modImpl);
+	void (*NumRange_Destroy)(OScDev_ModuleImpl *modImpl, OScDev_NumRange *range);
+	void (*NumRange_AppendDiscrete)(OScDev_ModuleImpl *modImpl, OScDev_NumRange *range, double val);
 
 	OScDev_Error (*Device_Create)(OScDev_ModuleImpl *modImpl, OScDev_Device **device, OScDev_DeviceImpl *impl, void *data);
 	void *(*Device_GetImplData)(OScDev_ModuleImpl *modImpl, OScDev_Device *device);
@@ -763,6 +821,26 @@ OScDevInternal_INLINE void OScDev_NumArray_Destroy(OScDev_NumArray *arr)
 OScDevInternal_INLINE void OScDev_NumArray_Append(OScDev_NumArray *arr, double val)
 {
 	OScDevInternal_FunctionTable->NumArray_Append(&OScDevInternal_TheModuleImpl, arr, val);
+}
+
+OScDevInternal_INLINE OScDev_NumRange *OScDev_NumRange_CreateContinuous(double rMin, double rMax)
+{
+	return OScDevInternal_FunctionTable->NumRange_CreateContinuous(&OScDevInternal_TheModuleImpl, rMin, rMax);
+}
+
+OScDevInternal_INLINE OScDev_NumRange *OScDev_NumRange_CreateDiscrete(void)
+{
+	return OScDevInternal_FunctionTable->NumRange_CreateDiscrete(&OScDevInternal_TheModuleImpl);
+}
+
+OScDevInternal_INLINE void OScDev_NumRange_Destroy(OScDev_NumRange *range)
+{
+	OScDevInternal_FunctionTable->NumRange_Destroy(&OScDevInternal_TheModuleImpl, range);
+}
+
+OScDevInternal_INLINE void OScDev_NumRange_AppendDiscrete(OScDev_NumRange *range, double value)
+{
+	OScDevInternal_FunctionTable->NumRange_AppendDiscrete(&OScDevInternal_TheModuleImpl, range, value);
 }
 
 /// Log a debug-level message

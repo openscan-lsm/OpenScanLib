@@ -51,6 +51,30 @@ static void NumArray_Append(OScDev_ModuleImpl *modImpl, OScDev_NumArray *arr, do
 }
 
 
+static OScDev_NumRange *NumRange_CreateContinuous(OScDev_ModuleImpl *modImpl, double rMin, double rMax)
+{
+	return OSc_NumRange_CreateContinuous(rMin, rMax);
+}
+
+
+static OScDev_NumRange *NumRange_CreateDiscrete(OScDev_ModuleImpl *modImpl)
+{
+	return OSc_NumRange_CreateDiscrete();
+}
+
+
+static void NumRange_Destroy(OScDev_ModuleImpl *modImpl, OScDev_NumRange *range)
+{
+	OSc_NumRange_Destroy(range);
+}
+
+
+static void NumRange_AppendDiscrete(OScDev_ModuleImpl *modImpl, OScDev_NumRange *range, double val)
+{
+	OSc_NumRange_AppendDiscrete(range, val);
+}
+
+
 // TODO: Replace with direct provision of impl and data (once we have DeviceLoaders)
 static OScDev_Error Device_Create(OScDev_ModuleImpl *modImpl, OScDev_Device **device, OScDev_DeviceImpl *impl, void *data)
 {
@@ -137,6 +161,10 @@ struct OScDevInternal_Interface DeviceInterfaceFunctionTable = {
 	.NumArray_Create = NumArray_Create,
 	.NumArray_Destroy = NumArray_Destroy,
 	.NumArray_Append = NumArray_Append,
+	.NumRange_CreateContinuous = NumRange_CreateContinuous,
+	.NumRange_CreateDiscrete = NumRange_CreateDiscrete,
+	.NumRange_Destroy = NumRange_Destroy,
+	.NumRange_AppendDiscrete = NumRange_AppendDiscrete,
 	.Device_Create = Device_Create,
 	.Device_GetImplData = Device_GetImplData,
 	.Setting_Create = Setting_Create,
