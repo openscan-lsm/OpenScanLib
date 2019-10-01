@@ -93,7 +93,7 @@ extern "C" {
  * set of changes is to be made over multiple commits, the version number
  * can be set to `(-1, 0)` in intermediate commits to indicate "experimental".
  */
-#define OScDevInternal_ABI_VERSION OScDevInternal_MAKE_VERSION(3, 0)
+#define OScDevInternal_ABI_VERSION OScDevInternal_MAKE_VERSION(4, 0)
 
 
 /** \addtogroup dpi
@@ -418,11 +418,56 @@ struct OScDev_ModuleImpl
 struct OScDev_DeviceImpl
 {
 	OScDev_Error (*GetModelName)(const char **name);
-	OScDev_Error (*GetInstances)(OScDev_Device ***devices, size_t *count);
+
+	/// Create instances for each physically available device.
+	/**
+	 * Implement this function if it is possible to automatically detect the
+	 * available devices on the computer. It is also acceptable to implement
+	 * this function when the device driver supports a small and fixed number
+	 * of devices that can be easily listed.
+	 *
+	 * **Required**
+	 *
+	 * \todo Provide an alternative mechanism to instantiate devices that
+	 * cannot be enumerated. Rather than imitating Micro-Manager's leaky
+	 * "pre-init property" mechanism, we should use dedicated "device loader"
+	 * objects, which can have settings such as port numbers.
+	 *
+	 * `devices` must be an array of OScDev_Device objects. OpenScanLib takes
+	 * ownership of the array (unless the array is statically defined) as well
+	 * as the device instances. Therefore, the device instances must be created
+	 * newly every time this function is called, and ReleaseInstance must be
+	 * correctly implemented.
+	 *
+	 * It is OpenScanLib's responsibility to ensure that no more than 1
+	 * instance of the same device (as identified by `GetName`) is ever opened
+	 * at the same time.
+	 */
+	OScDev_Error (*EnumerateInstances)(OScDev_PtrArray **devices);
+
+	/// Free the private data for a device.
+	/**
+	 * If this device implementation passes non-NULL data to
+	 * OScDev_Device_Create(), it must also implement this function to free
+	 * the private data and any resources referenced from it.
+	 *
+	 * OpenScanLib ensures that the device is closed (if it was ever opened)
+	 * before this function is called.
+	 *
+	 * **Conditionally required**
+	 */
 	OScDev_Error (*ReleaseInstance)(OScDev_Device *device);
 
 	OScDev_Error (*GetName)(OScDev_Device *device, char *name);
+
+	/// Establish a connection to the device.
+	/**
+	 * Importantly, a device instance must not connect to the physical device
+	 * until this function is called. This is because multiple instances may be
+	 * created (but not opened) for the same device.
+	 */
 	OScDev_Error (*Open)(OScDev_Device *device);
+
 	OScDev_Error (*Close)(OScDev_Device *device);
 
 	/// Return true if this device can provide the clock for scanning and detection.

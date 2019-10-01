@@ -4,10 +4,6 @@
 #include <string.h>
 
 
-static OScDev_Device **g_devices;
-static size_t g_deviceCount;
-
-
 static struct OScDev_DeviceImpl g_TestDeviceImpl;
 
 
@@ -18,24 +14,19 @@ static OScDev_Error TestGetModelName(const char **name)
 }
 
 
-static OScDev_Error TestGetInstances(OScDev_Device ***devices, size_t *count)
+static OScDev_Error TestEnumerateInstances(OScDev_PtrArray **devices)
 {
+	*devices = OScDev_PtrArray_Create();
+
 	OScDev_Error err;
-
-	if (!g_devices)
-	{
-		g_devices = malloc(sizeof(void *) * 1);
-		if (OScDev_CHECK(err, OScDev_Device_Create(&g_devices[0], &g_TestDeviceImpl, NULL)))
-		{
-			free(g_devices);
-			g_devices = NULL;
-			return err;
-		}
-		g_deviceCount = 1;
+	OScDev_Device *device0 = NULL;
+	if (OScDev_CHECK(err, OScDev_Device_Create(&device0, &g_TestDeviceImpl, NULL))) {
+		OScDev_PtrArray_Destroy(*devices);
+		*devices = NULL;
+		return err;
 	}
+	OScDev_PtrArray_Append(*devices, device0);
 
-	*devices = g_devices;
-	*count = g_deviceCount;
 	return OScDev_OK;
 }
 
@@ -88,7 +79,7 @@ static OScDev_Error TestHasDetector(OScDev_Device *device, bool *hasDetector)
 
 static struct OScDev_DeviceImpl g_TestDeviceImpl = {
 	.GetModelName = TestGetModelName,
-	.GetInstances = TestGetInstances,
+	.EnumerateInstances = TestEnumerateInstances,
 	.ReleaseInstance = TestReleaseInstance,
 	.GetName = TestGetName,
 	.Open = TestOpen,

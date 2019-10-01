@@ -2,6 +2,7 @@
 
 #include "OpenScanDeviceModules.h"
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -14,19 +15,35 @@ static OScDev_PtrArray *g_deviceInstances; // Elements: struct OSc_Device*
 static void EnumerateDevicesForImpl(const char *moduleName, struct OScDev_DeviceImpl *impl)
 {
 	OSc_Error err;
-	struct OSc_Device **devices;
-	size_t count;
-	if (OSc_Check_Error(err, impl->GetInstances(&devices, &count))) {
-		char msg[OSc_MAX_STR_LEN + 1] = "Cannot enumerate devics: ";
+	OScDev_PtrArray *devices = NULL;
+	if (OSc_Check_Error(err, impl->EnumerateInstances(&devices))) {
+		char msg[OSc_MAX_STR_LEN + 1];
 		const char *model = NULL;
 		impl->GetModelName(&model);
-		strcat(msg, model ? model : "(unknown)");
+		if (!model) {
+			model = "(unknown)";
+		}
+
+		// The device module should not create the array if it encounters an
+		// error. But that is a likely programming error, so catch it.
+		if (devices) {
+			snprintf(msg, sizeof(msg), "Device enumeration created an array "
+				"despite returning an error (this is a memory leak): %s", model);
+			// We do not attempt to free the array, because the elements may
+			// or may not be valid.
+		}
+
+		snprintf(msg, sizeof(msg), "Cannot enumerate devices: %s", model);
 		OSc_Log_Warning(NULL, msg);
 		return;
 	}
 
-	for (size_t i = 0; i < count; ++i) {
-		struct OSc_Device *device = devices[i];
+	if (!devices) {
+		return; // No devices
+	}
+
+	for (size_t i = 0; i < devices->size; ++i) {
+		struct OSc_Device *device = devices->ptr[i];
 		if (!device) {
 			continue;
 		}
