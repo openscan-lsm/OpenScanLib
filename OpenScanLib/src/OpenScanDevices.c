@@ -16,7 +16,7 @@ static void EnumerateDevicesForImpl(const char *moduleName, OScDev_DeviceImpl *i
 {
 	OSc_Error err;
 	OScDev_PtrArray *devices = NULL;
-	if (OSc_Check_Error(err, impl->EnumerateInstances(&devices))) {
+	if (OSc_CHECK_ERROR(err, impl->EnumerateInstances(&devices))) {
 		char msg[OSc_MAX_STR_LEN + 1];
 		const char *model = NULL;
 		impl->GetModelName(&model);
@@ -59,10 +59,10 @@ static OSc_Error EnumerateDevices(void)
 		return OSc_Error_OK;
 
 	size_t nModules;
-	OSc_Return_If_Error(OSc_DeviceModule_Get_Count(&nModules));
+	OSc_RETURN_IF_ERROR(OSc_DeviceModule_Get_Count(&nModules));
 	char **moduleNames = malloc(sizeof(void *) * nModules);
 	OSc_Error err;
-	if (OSc_Check_Error(err, OSc_DeviceModule_Get_Names(moduleNames, &nModules)))
+	if (OSc_CHECK_ERROR(err, OSc_DeviceModule_Get_Names(moduleNames, &nModules)))
 	{
 		free(moduleNames);
 		return err;
@@ -100,9 +100,9 @@ static OSc_Error EnumerateDevices(void)
 }
 
 
-OSc_Error OSc_Devices_Get_All(OSc_Device ***devices, size_t *count)
+OSc_Error OSc_GetAllDevices(OSc_Device ***devices, size_t *count)
 {
-	OSc_Return_If_Error(EnumerateDevices());
+	OSc_RETURN_IF_ERROR(EnumerateDevices());
 
 	*devices = (struct OSc_Device **)g_deviceInstances->ptr;
 	*count = g_deviceInstances->size;
@@ -110,7 +110,7 @@ OSc_Error OSc_Devices_Get_All(OSc_Device ***devices, size_t *count)
 }
 
 
-OSc_Error OSc_Devices_Get_Count(size_t *count)
+OSc_Error OSc_GetNumberOfAvailableDevices(size_t *count)
 {
 	EnumerateDevices();
 	*count = g_deviceInstances->size;

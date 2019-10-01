@@ -66,7 +66,7 @@ extern "C" {
  * no connection to any release version number of OpenScanLib.
  *
  * The version number check must be done explicitly by the client application
- * (see OSc_Check_Version()).
+ * (see OSc_CheckVersion()).
  *
  * Maintainers:
  *
@@ -171,23 +171,23 @@ enum
 	} while (0)
 
 
-typedef int32_t OSc_Value_Type;
+typedef int32_t OSc_ValueType;
 enum
 {
-	OSc_Value_Type_String,
-	OSc_Value_Type_Bool,
-	OSc_Value_Type_Int32,
-	OSc_Value_Type_Float64,
-	OSc_Value_Type_Enum,
+	OSc_ValueType_String,
+	OSc_ValueType_Bool,
+	OSc_ValueType_Int32,
+	OSc_ValueType_Float64,
+	OSc_ValueType_Enum,
 };
 
 
-typedef int32_t OSc_Value_Constraint;
+typedef int32_t OSc_ValueConstraint;
 enum
 {
-	OSc_Value_Constraint_None,
-	OSc_Value_Constraint_Discrete_Values,
-	OSc_Value_Constraint_Range,
+	OSc_ValueConstraint_None,
+	OSc_ValueConstraint_Discrete,
+	OSc_ValueConstraint_Continuous,
 };
 
 
@@ -199,10 +199,10 @@ typedef struct OSc_Detector OSc_Detector;
 typedef struct OSc_Setting OSc_Setting;
 typedef struct OSc_Acquisition OSc_Acquisition;
 
-typedef void (*OSc_Log_Func)(const char *message, OSc_LogLevel level, void *data);
+typedef void (*OSc_LogFunc)(const char *message, OSc_LogLevel level, void *data);
 
 // Returns true normally, or false to halt the acquisition
-typedef bool (*OSc_Frame_Callback)(OSc_Acquisition *acq, uint32_t channel, void *pixels, void *data);
+typedef bool (*OSc_FrameCallback)(OSc_Acquisition *acq, uint32_t channel, void *pixels, void *data);
 
 /** @} */ // addtogroup api
 
@@ -211,7 +211,7 @@ typedef bool (*OSc_Frame_Callback)(OSc_Acquisition *acq, uint32_t channel, void 
  * \brief Check if OpenScanLib ABI version is compatible with the version used
  * to build the client application.
  */
-bool OSc_API OScInternal_Check_Version(uint32_t version);
+bool OSc_API OScInternal_CheckVersion(uint32_t version);
 
 /**
 * \addtogroup api
@@ -226,89 +226,89 @@ bool OSc_API OScInternal_Check_Version(uint32_t version);
  *
  * \return `true` if the OpenScanLib is compatible; `false` otherwise
  */
-static inline bool OSc_Check_Version(void) {
-	return OScInternal_Check_Version(OScInternal_ABI_VERSION);
+static inline bool OSc_CheckVersion(void) {
+	return OScInternal_CheckVersion(OScInternal_ABI_VERSION);
 }
 
-void OSc_API OSc_Set_Log_Func(OSc_Log_Func func, void *data);
-void OSc_API OSc_Log_Set_Device_Log_Func(OSc_Device *device, OSc_Log_Func func, void *data);
+void OSc_API OSc_LogFunc_Set(OSc_LogFunc func, void *data);
+void OSc_API OSc_Device_SetLogFunc(OSc_Device *device, OSc_LogFunc func, void *data);
 
-void OSc_API OSc_DeviceModule_Set_Search_Paths(char **paths);
+void OSc_API OSc_SetDeviceModuleSearchPaths(char **paths);
 
 OSc_Error OSc_API OSc_LSM_Create(OSc_LSM **lsm);
 OSc_Error OSc_API OSc_LSM_Destroy(OSc_LSM *lsm);
-OSc_Error OSc_API OSc_LSM_Get_Clock(OSc_LSM *lsm, OSc_Clock **clock);
-OSc_Error OSc_API OSc_LSM_Set_Clock(OSc_LSM *lsm, OSc_Clock *clock);
-OSc_Error OSc_API OSc_LSM_Get_Scanner(OSc_LSM *lsm, OSc_Scanner **scanner);
-OSc_Error OSc_API OSc_LSM_Set_Scanner(OSc_LSM *lsm, OSc_Scanner *scanner);
-OSc_Error OSc_API OSc_LSM_Get_Detector(OSc_LSM *lsm, OSc_Detector **detector);
-OSc_Error OSc_API OSc_LSM_Set_Detector(OSc_LSM *lsm, OSc_Detector *detector);
-OSc_Error OSc_API OSc_LSM_Is_Running_Acquisition(OSc_LSM *lsm, bool *isRunning);
+OSc_Error OSc_API OSc_LSM_GetClock(OSc_LSM *lsm, OSc_Clock **clock);
+OSc_Error OSc_API OSc_LSM_SetClock(OSc_LSM *lsm, OSc_Clock *clock);
+OSc_Error OSc_API OSc_LSM_GetScanner(OSc_LSM *lsm, OSc_Scanner **scanner);
+OSc_Error OSc_API OSc_LSM_SetScanner(OSc_LSM *lsm, OSc_Scanner *scanner);
+OSc_Error OSc_API OSc_LSM_GetDetector(OSc_LSM *lsm, OSc_Detector **detector);
+OSc_Error OSc_API OSc_LSM_SetDetector(OSc_LSM *lsm, OSc_Detector *detector);
+OSc_Error OSc_API OSc_LSM_IsRunningAcquisition(OSc_LSM *lsm, bool *isRunning);
 
-OSc_Error OSc_API OSc_Devices_Get_All(OSc_Device ***devices, size_t *count);
-OSc_Error OSc_API OSc_Devices_Get_Count(size_t *count);
+OSc_Error OSc_API OSc_GetAllDevices(OSc_Device ***devices, size_t *count);
+OSc_Error OSc_API OSc_GetNumberOfAvailableDevices(size_t *count);
 
-OSc_Error OSc_API OSc_Device_Get_Name(OSc_Device *device, const char **name);
-OSc_Error OSc_API OSc_Device_Get_Display_Name(OSc_Device *device, const char **name);
+OSc_Error OSc_API OSc_Device_GetName(OSc_Device *device, const char **name);
+OSc_Error OSc_API OSc_Device_GetDisplayName(OSc_Device *device, const char **name);
 OSc_Error OSc_API OSc_Device_Open(OSc_Device *device, OSc_LSM *lsm);
 OSc_Error OSc_API OSc_Device_Close(OSc_Device *device);
-OSc_Error OSc_API OSc_Device_Has_Clock(OSc_Device *device, bool *hasClock);
-OSc_Error OSc_API OSc_Device_Has_Scanner(OSc_Device *device, bool *hasScanner);
-OSc_Error OSc_API OSc_Device_Has_Detector(OSc_Device *device, bool *hasDetector);
-OSc_Error OSc_API OSc_Device_Get_Clock(OSc_Device *device, OSc_Clock **clock);
-OSc_Error OSc_API OSc_Device_Get_Scanner(OSc_Device *device, OSc_Scanner **scanner);
-OSc_Error OSc_API OSc_Device_Get_Detector(OSc_Device *device, OSc_Detector **detector);
-OSc_Error OSc_API OSc_Device_Get_Settings(OSc_Device *device, OSc_Setting ***settings, size_t *count);
-OSc_Error OSc_API OSc_Device_Get_Allowed_Resolutions(OSc_Device *device,
+OSc_Error OSc_API OSc_Device_HasClock(OSc_Device *device, bool *hasClock);
+OSc_Error OSc_API OSc_Device_HasScanner(OSc_Device *device, bool *hasScanner);
+OSc_Error OSc_API OSc_Device_HasDetector(OSc_Device *device, bool *hasDetector);
+OSc_Error OSc_API OSc_Device_GetClock(OSc_Device *device, OSc_Clock **clock);
+OSc_Error OSc_API OSc_Device_GetScanner(OSc_Device *device, OSc_Scanner **scanner);
+OSc_Error OSc_API OSc_Device_GetDetector(OSc_Device *device, OSc_Detector **detector);
+OSc_Error OSc_API OSc_Device_GetSettings(OSc_Device *device, OSc_Setting ***settings, size_t *count);
+OSc_Error OSc_API OSc_Device_GetAllowedResolutions(OSc_Device *device,
 	size_t **widths, size_t **heights, size_t *count);
-OSc_Error OSc_API OSc_Device_Get_Resolution(OSc_Device *device, size_t *width, size_t *height);
-OSc_Error OSc_API OSc_Device_Set_Resolution(OSc_Device *device, size_t width, size_t height);
-OSc_Error OSc_API OSc_Device_Get_Magnification(OSc_Device *device, double *magnification);
-OSc_Error OSc_API OSc_Device_Set_Magnification(OSc_Device *device);
+OSc_Error OSc_API OSc_Device_GetResolution(OSc_Device *device, size_t *width, size_t *height);
+OSc_Error OSc_API OSc_Device_SetResolution(OSc_Device *device, size_t width, size_t height);
+OSc_Error OSc_API OSc_Device_GetMagnification(OSc_Device *device, double *magnification);
+OSc_Error OSc_API OSc_Device_SetMagnification(OSc_Device *device);
 
-OSc_Error OSc_API OSc_Clock_Get_Device(OSc_Clock *clock, OSc_Device **device);
+OSc_Error OSc_API OSc_Clock_GetDevice(OSc_Clock *clock, OSc_Device **device);
 
-OSc_Error OSc_API OSc_Scanner_Get_Device(OSc_Scanner *scanner, OSc_Device **device);
+OSc_Error OSc_API OSc_Scanner_GetDevice(OSc_Scanner *scanner, OSc_Device **device);
 
-OSc_Error OSc_API OSc_Detector_Get_Device(OSc_Detector *detector, OSc_Device **device);
-OSc_Error OSc_API OSc_Detector_Get_Image_Size(OSc_Detector *detector, uint32_t *width, uint32_t *height);
-OSc_Error OSc_API OSc_Detector_Get_Number_Of_Channels(OSc_Detector *detector, uint32_t *nChannels);
-OSc_Error OSc_API OSc_Detector_Get_Bytes_Per_Sample(OSc_Detector *detector, uint32_t *bytesPerSample);
+OSc_Error OSc_API OSc_Detector_GetDevice(OSc_Detector *detector, OSc_Device **device);
+OSc_Error OSc_API OSc_Detector_GetImageSize(OSc_Detector *detector, uint32_t *width, uint32_t *height);
+OSc_Error OSc_API OSc_Detector_GetNumberOfChannels(OSc_Detector *detector, uint32_t *nChannels);
+OSc_Error OSc_API OSc_Detector_GetBytesPerSample(OSc_Detector *detector, uint32_t *bytesPerSample);
 
-OSc_Error OSc_API OSc_Setting_Get_Name(OSc_Setting *setting, char *name);
-OSc_Error OSc_API OSc_Setting_Get_Value_Type(OSc_Setting *setting, OSc_Value_Type *valueType);
-OSc_Error OSc_API OSc_Setting_Is_Enabled(OSc_Setting *setting, bool *enabled);
-OSc_Error OSc_API OSc_Setting_Is_Writable(OSc_Setting *setting, bool *writable);
-OSc_Error OSc_API OSc_Setting_Get_Numeric_Constraint_Type(OSc_Setting *setting, OSc_Value_Constraint *constraintType);
+OSc_Error OSc_API OSc_Setting_GetName(OSc_Setting *setting, char *name);
+OSc_Error OSc_API OSc_Setting_GetValueType(OSc_Setting *setting, OSc_ValueType *valueType);
+OSc_Error OSc_API OSc_Setting_IsEnabled(OSc_Setting *setting, bool *enabled);
+OSc_Error OSc_API OSc_Setting_IsWritable(OSc_Setting *setting, bool *writable);
+OSc_Error OSc_API OSc_Setting_GetNumericConstraintType(OSc_Setting *setting, OSc_ValueConstraint *constraintType);
 
-OSc_Error OSc_API OSc_Setting_Get_String_Value(OSc_Setting *setting, char *value);
-OSc_Error OSc_API OSc_Setting_Set_String_Value(OSc_Setting *setting, const char *value);
+OSc_Error OSc_API OSc_Setting_GetStringValue(OSc_Setting *setting, char *value);
+OSc_Error OSc_API OSc_Setting_SetStringValue(OSc_Setting *setting, const char *value);
 
-OSc_Error OSc_API OSc_Setting_Get_Bool_Value(OSc_Setting *setting, bool *value);
-OSc_Error OSc_API OSc_Setting_Set_Bool_Value(OSc_Setting *setting, bool value);
+OSc_Error OSc_API OSc_Setting_GetBoolValue(OSc_Setting *setting, bool *value);
+OSc_Error OSc_API OSc_Setting_SetBoolValue(OSc_Setting *setting, bool value);
 
-OSc_Error OSc_API OSc_Setting_Get_Int32_Value(OSc_Setting *setting, int32_t *value);
-OSc_Error OSc_API OSc_Setting_Set_Int32_Value(OSc_Setting *setting, int32_t value);
-OSc_Error OSc_API OSc_Setting_Get_Int32_Range(OSc_Setting *setting, int32_t *min, int32_t *max);
-OSc_Error OSc_API OSc_Setting_Get_Int32_Discrete_Values(OSc_Setting *setting, int32_t **values, size_t *count);
+OSc_Error OSc_API OSc_Setting_GetInt32Value(OSc_Setting *setting, int32_t *value);
+OSc_Error OSc_API OSc_Setting_SetInt32Value(OSc_Setting *setting, int32_t value);
+OSc_Error OSc_API OSc_Setting_GetInt32ContinuousRange(OSc_Setting *setting, int32_t *min, int32_t *max);
+OSc_Error OSc_API OSc_Setting_GetInt32DiscreteValues(OSc_Setting *setting, int32_t **values, size_t *count);
 
-OSc_Error OSc_API OSc_Setting_Get_Float64_Value(OSc_Setting *setting, double *value);
-OSc_Error OSc_API OSc_Setting_Set_Float64_Value(OSc_Setting *setting, double value);
-OSc_Error OSc_API OSc_Setting_Get_Float64_Range(OSc_Setting *setting, double *min, double *max);
-OSc_Error OSc_API OSc_Setting_Get_Float64_Discrete_Values(OSc_Setting *setting, double **values, size_t *count);
+OSc_Error OSc_API OSc_Setting_GetFloat64Value(OSc_Setting *setting, double *value);
+OSc_Error OSc_API OSc_Setting_SetFloat64Value(OSc_Setting *setting, double value);
+OSc_Error OSc_API OSc_Setting_GetFloat64ContinuousRange(OSc_Setting *setting, double *min, double *max);
+OSc_Error OSc_API OSc_Setting_GetFloat64DiscreteValues(OSc_Setting *setting, double **values, size_t *count);
 
-OSc_Error OSc_API OSc_Setting_Get_Enum_Value(OSc_Setting *setting, uint32_t *value);
-OSc_Error OSc_API OSc_Setting_Set_Enum_Value(OSc_Setting *setting, uint32_t value);
-OSc_Error OSc_API OSc_Setting_Get_Enum_Num_Values(OSc_Setting *setting, uint32_t *count);
-OSc_Error OSc_API OSc_Setting_Get_Enum_Name_For_Value(OSc_Setting *setting, uint32_t value, char *name);
-OSc_Error OSc_API OSc_Setting_Get_Enum_Value_For_Name(OSc_Setting *setting, uint32_t *value, const char *name);
+OSc_Error OSc_API OSc_Setting_GetEnumValue(OSc_Setting *setting, uint32_t *value);
+OSc_Error OSc_API OSc_Setting_SetEnumValue(OSc_Setting *setting, uint32_t value);
+OSc_Error OSc_API OSc_Setting_GetEnumNumValues(OSc_Setting *setting, uint32_t *count);
+OSc_Error OSc_API OSc_Setting_GetEnumNameForValue(OSc_Setting *setting, uint32_t value, char *name);
+OSc_Error OSc_API OSc_Setting_GetEnumValueForName(OSc_Setting *setting, uint32_t *value, const char *name);
 
 OSc_Error OSc_API OSc_Acquisition_Create(OSc_Acquisition **acq, OSc_LSM *lsm);
 OSc_Error OSc_API OSc_Acquisition_Destroy(OSc_Acquisition *acq);
-OSc_Error OSc_API OSc_Acquisition_Set_Number_Of_Frames(OSc_Acquisition *acq, uint32_t numberOfFrames);
-OSc_Error OSc_API OSc_Acquisition_Set_Frame_Callback(OSc_Acquisition *acq, OSc_Frame_Callback callback);
-OSc_Error OSc_API OSc_Acquisition_Get_Data(OSc_Acquisition *acq, void **data);
-OSc_Error OSc_API OSc_Acquisition_Set_Data(OSc_Acquisition *acq, void *data);
+OSc_Error OSc_API OSc_Acquisition_SetNumberOfFrames(OSc_Acquisition *acq, uint32_t numberOfFrames);
+OSc_Error OSc_API OSc_Acquisition_SetFrameCallback(OSc_Acquisition *acq, OSc_FrameCallback callback);
+OSc_Error OSc_API OSc_Acquisition_GetData(OSc_Acquisition *acq, void **data);
+OSc_Error OSc_API OSc_Acquisition_SetData(OSc_Acquisition *acq, void *data);
 OSc_Error OSc_API OSc_Acquisition_Arm(OSc_Acquisition *acq);
 OSc_Error OSc_API OSc_Acquisition_Start(OSc_Acquisition *acq);
 OSc_Error OSc_API OSc_Acquisition_Stop(OSc_Acquisition *acq);

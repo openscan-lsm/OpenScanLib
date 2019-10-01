@@ -31,11 +31,11 @@ OSc_Error OSc_LSM_Destroy(OSc_LSM *lsm)
 	for (int i = 0; i < nDevices; ++i)
 	{
 		OSc_Device *device = devicesToClose[i];
-		if (OSc_Check_Error(err, OSc_Device_Close(device)))
+		if (OSc_CHECK_ERROR(err, OSc_Device_Close(device)))
 		{
 			char msg[OSc_MAX_STR_LEN + 1] = "Error while closing device ";
 			const char *name = NULL;
-			OSc_Device_Get_Name(device, &name);
+			OSc_Device_GetName(device, &name);
 			strcat(msg, name ? name : "(unknown)");
 			OSc_Log_Error(device, msg);
 		}
@@ -47,7 +47,7 @@ OSc_Error OSc_LSM_Destroy(OSc_LSM *lsm)
 }
 
 
-OSc_Error OSc_LSM_Get_Clock(OSc_LSM *lsm, OSc_Clock **clock)
+OSc_Error OSc_LSM_GetClock(OSc_LSM *lsm, OSc_Clock **clock)
 {
 	if (!lsm || !clock)
 		return OSc_Error_Illegal_Argument;
@@ -57,16 +57,16 @@ OSc_Error OSc_LSM_Get_Clock(OSc_LSM *lsm, OSc_Clock **clock)
 }
 
 
-OSc_Error OSc_LSM_Set_Clock(OSc_LSM *lsm, OSc_Clock *clock)
+OSc_Error OSc_LSM_SetClock(OSc_LSM *lsm, OSc_Clock *clock)
 {
 	if (!lsm || !clock)
 		return OSc_Error_Illegal_Argument;
 
 	OSc_Device *clockDevice;
-	OSc_Return_If_Error(OSc_Clock_Get_Device(clock, &clockDevice));
+	OSc_RETURN_IF_ERROR(OSc_Clock_GetDevice(clock, &clockDevice));
 
 	bool isAssociated = false;
-	OSc_Return_If_Error(OSc_LSM_Is_Device_Associated(lsm, clockDevice, &isAssociated));
+	OSc_RETURN_IF_ERROR(OSc_LSM_Is_Device_Associated(lsm, clockDevice, &isAssociated));
 	if (!isAssociated)
 		return OSc_Error_Device_Not_Opened_For_LSM;
 
@@ -75,7 +75,7 @@ OSc_Error OSc_LSM_Set_Clock(OSc_LSM *lsm, OSc_Clock *clock)
 }
 
 
-OSc_Error OSc_LSM_Get_Scanner(OSc_LSM *lsm, OSc_Scanner **scanner)
+OSc_Error OSc_LSM_GetScanner(OSc_LSM *lsm, OSc_Scanner **scanner)
 {
 	if (!lsm || !scanner)
 		return OSc_Error_Illegal_Argument;
@@ -85,16 +85,16 @@ OSc_Error OSc_LSM_Get_Scanner(OSc_LSM *lsm, OSc_Scanner **scanner)
 }
 
 
-OSc_Error OSc_LSM_Set_Scanner(OSc_LSM *lsm, OSc_Scanner *scanner)
+OSc_Error OSc_LSM_SetScanner(OSc_LSM *lsm, OSc_Scanner *scanner)
 {
 	if (!lsm || !scanner)
 		return OSc_Error_Illegal_Argument;
 
 	OSc_Device *scannerDevice;
-	OSc_Return_If_Error(OSc_Scanner_Get_Device(scanner, &scannerDevice));
+	OSc_RETURN_IF_ERROR(OSc_Scanner_GetDevice(scanner, &scannerDevice));
 
 	bool isAssociated = false;
-	OSc_Return_If_Error(OSc_LSM_Is_Device_Associated(lsm, scannerDevice, &isAssociated));
+	OSc_RETURN_IF_ERROR(OSc_LSM_Is_Device_Associated(lsm, scannerDevice, &isAssociated));
 	if (!isAssociated)
 		return OSc_Error_Device_Not_Opened_For_LSM;
 
@@ -103,7 +103,7 @@ OSc_Error OSc_LSM_Set_Scanner(OSc_LSM *lsm, OSc_Scanner *scanner)
 }
 
 
-OSc_Error OSc_LSM_Get_Detector(OSc_LSM *lsm, OSc_Detector **detector)
+OSc_Error OSc_LSM_GetDetector(OSc_LSM *lsm, OSc_Detector **detector)
 {
 	if (!lsm || !detector)
 		return OSc_Error_Illegal_Argument;
@@ -113,16 +113,16 @@ OSc_Error OSc_LSM_Get_Detector(OSc_LSM *lsm, OSc_Detector **detector)
 }
 
 
-OSc_Error OSc_LSM_Set_Detector(OSc_LSM *lsm, OSc_Detector *detector)
+OSc_Error OSc_LSM_SetDetector(OSc_LSM *lsm, OSc_Detector *detector)
 {
 	if (!lsm || !detector)
 		return OSc_Error_Illegal_Argument;
 
 	OSc_Device *detectorDevice;
-	OSc_Return_If_Error(OSc_Detector_Get_Device(detector, &detectorDevice));
+	OSc_RETURN_IF_ERROR(OSc_Detector_GetDevice(detector, &detectorDevice));
 
 	bool isAssociated = false;
-	OSc_Return_If_Error(OSc_LSM_Is_Device_Associated(lsm, detectorDevice, &isAssociated));
+	OSc_RETURN_IF_ERROR(OSc_LSM_Is_Device_Associated(lsm, detectorDevice, &isAssociated));
 	if (!isAssociated)
 		return OSc_Error_Device_Not_Opened_For_LSM;
 
@@ -134,7 +134,7 @@ OSc_Error OSc_LSM_Set_Detector(OSc_LSM *lsm, OSc_Detector *detector)
 OSc_Error OSc_LSM_Associate_Device(OSc_LSM *lsm, OSc_Device *device)
 {
 	bool isAssociated = false;
-	OSc_Return_If_Error(OSc_LSM_Is_Device_Associated(lsm, device, &isAssociated));
+	OSc_RETURN_IF_ERROR(OSc_LSM_Is_Device_Associated(lsm, device, &isAssociated));
 	if (isAssociated)
 		return OSc_Error_Device_Already_Open;
 
@@ -198,13 +198,13 @@ OSc_Error OSc_LSM_Is_Device_Associated(OSc_LSM *lsm, OSc_Device *device, bool *i
 }
 
 
-OSc_Error OSc_LSM_Is_Running_Acquisition(OSc_LSM *lsm, bool *isRunning)
+OSc_Error OSc_LSM_IsRunningAcquisition(OSc_LSM *lsm, bool *isRunning)
 {
 	*isRunning = false;
 	for (int i = 0; i < lsm->associatedDeviceCount; ++i)
 	{
 		OSc_Device *device = lsm->associatedDevices[i];
-		OSc_Return_If_Error(device->impl->IsRunning(device, isRunning));
+		OSc_RETURN_IF_ERROR(device->impl->IsRunning(device, isRunning));
 		if (*isRunning)
 			return OSc_Error_OK;
 	}

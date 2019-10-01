@@ -24,7 +24,7 @@ struct OSc_Device
 	OScDev_DeviceImpl *impl;
 	void *implData;
 
-	OSc_Log_Func logFunc;
+	OSc_LogFunc logFunc;
 	void *logData;
 
 	bool isOpen;
@@ -58,7 +58,7 @@ struct OSc_Setting
 	// that we should just provide a dedicated field for the device.
 	void *implData;
 
-	OSc_Value_Type valueType;
+	OSc_ValueType valueType;
 
 	char name[OSc_MAX_STR_LEN + 1];
 };
@@ -75,7 +75,7 @@ struct OSc_Acquisition
 	OSc_Scanner *scanner;
 	OSc_Detector *detector;
 	uint32_t numberOfFrames;
-	OSc_Frame_Callback frameCallback;
+	OSc_FrameCallback frameCallback;
 	void *data;
 
 	// We can pass opaque pointers to these structs to devices, so that we can
@@ -130,5 +130,5 @@ OSc_Error OSc_LSM_Is_Device_Associated(OSc_LSM *lsm, OSc_Device *device, bool *i
 OSc_Error OSc_Device_Create(OSc_Device **device, OScDev_DeviceImpl *impl, void *data);
 OSc_Error OSc_Device_Destroy(OSc_Device *device);
 
-OSc_Error OSc_Setting_Create(OSc_Setting **setting, const char *name, OSc_Value_Type valueType, OScDev_SettingImpl *impl, void *data);
+OSc_Error OSc_Setting_Create(OSc_Setting **setting, const char *name, OSc_ValueType valueType, OScDev_SettingImpl *impl, void *data);
 void OSc_Setting_Destroy(OSc_Setting *setting);

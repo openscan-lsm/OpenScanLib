@@ -32,28 +32,28 @@ OSc_Error OSc_Acquisition_Destroy(OSc_Acquisition *acq)
 }
 
 
-OSc_Error OSc_Acquisition_Set_Number_Of_Frames(OSc_Acquisition *acq, uint32_t numberOfFrames)
+OSc_Error OSc_Acquisition_SetNumberOfFrames(OSc_Acquisition *acq, uint32_t numberOfFrames)
 {
 	acq->numberOfFrames = numberOfFrames;
 	return OSc_Error_OK;
 }
 
 
-OSc_Error OSc_Acquisition_Set_Frame_Callback(OSc_Acquisition *acq, OSc_Frame_Callback callback)
+OSc_Error OSc_Acquisition_SetFrameCallback(OSc_Acquisition *acq, OSc_FrameCallback callback)
 {
 	acq->frameCallback = callback;
 	return OSc_Error_OK;
 }
 
 
-OSc_Error OSc_Acquisition_Get_Data(OSc_Acquisition *acq, void **data)
+OSc_Error OSc_Acquisition_GetData(OSc_Acquisition *acq, void **data)
 {
 	*data = acq->data;
 	return OSc_Error_OK;
 }
 
 
-OSc_Error OSc_Acquisition_Set_Data(OSc_Acquisition *acq, void *data)
+OSc_Error OSc_Acquisition_SetData(OSc_Acquisition *acq, void *data)
 {
 	acq->data = data;
 	return OSc_Error_OK;
@@ -67,7 +67,7 @@ OSc_Error OSc_Acquisition_Arm(OSc_Acquisition *acq)
 	OSc_Error err;
 
 	// Clock
-	if (OSc_Check_Error(err,
+	if (OSc_CHECK_ERROR(err,
 		acq->clock->device->impl->Arm(acq->clock->device,
 			&acq->acqForClockDevice)))
 		return err;
@@ -75,7 +75,7 @@ OSc_Error OSc_Acquisition_Arm(OSc_Acquisition *acq)
 	// Scanner, if different device
 	if (acq->scanner->device != acq->clock->device)
 	{
-		if (OSc_Check_Error(err,
+		if (OSc_CHECK_ERROR(err,
 			acq->scanner->device->impl->Arm(acq->scanner->device,
 				&acq->acqForScannerDevice)))
 		{
@@ -88,7 +88,7 @@ OSc_Error OSc_Acquisition_Arm(OSc_Acquisition *acq)
 	if (acq->detector->device != acq->clock->device &&
 		acq->detector->device != acq->scanner->device)
 	{
-		if (OSc_Check_Error(err,
+		if (OSc_CHECK_ERROR(err,
 			acq->detector->device->impl->Arm(acq->detector->device,
 				&acq->acqForDetectorDevice)))
 		{

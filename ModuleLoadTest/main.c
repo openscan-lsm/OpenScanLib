@@ -15,7 +15,7 @@
 
 int main()
 {
-	if (!OSc_Check_Version())
+	if (!OSc_CheckVersion())
 	{
 		fprintf(stderr, "OpenScanLib ABI version mismatch\n");
 		return 1;
@@ -36,11 +36,11 @@ int main()
 	char *paths[2];
 	paths[0] = ".";
 	paths[1] = NULL;
-	OSc_DeviceModule_Set_Search_Paths(paths);
+	OSc_SetDeviceModuleSearchPaths(paths);
 
 	size_t count;
 	OSc_Error err;
-	if (OSc_Check_Error(err, OSc_Devices_Get_Count(&count)))
+	if (OSc_CHECK_ERROR(err, OSc_GetNumberOfAvailableDevices(&count)))
 	{
 		fprintf(stderr, "Could not get count of devices\n");
 		return 1;
@@ -49,7 +49,7 @@ int main()
 	printf("Count of devices = %zu\n", count);
 
 	OSc_Device **devices;
-	if (OSc_Check_Error(err, OSc_Devices_Get_All(&devices, &count)))
+	if (OSc_CHECK_ERROR(err, OSc_GetAllDevices(&devices, &count)))
 	{
 		fprintf(stderr, "Could not get all devices\n");
 		return 1;
@@ -57,7 +57,7 @@ int main()
 
 	for (size_t i = 0; i < count; ++i) {
 		const char *name;
-		OSc_Device_Get_Name(devices[i], &name);
+		OSc_Device_GetName(devices[i], &name);
 		printf("Device %zu: %s\n", i, name);
 	}
 
