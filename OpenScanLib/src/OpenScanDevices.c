@@ -59,9 +59,10 @@ static OSc_Error EnumerateDevices(void)
 		return OSc_Error_OK;
 
 	size_t nModules;
-	OSc_RETURN_IF_ERROR(OSc_DeviceModule_Get_Count(&nModules));
-	char **moduleNames = malloc(sizeof(void *) * nModules);
 	OSc_Error err;
+	if (OSc_CHECK_ERROR(err, OSc_DeviceModule_Get_Count(&nModules)))
+		return err;
+	char **moduleNames = malloc(sizeof(void *) * nModules);
 	if (OSc_CHECK_ERROR(err, OSc_DeviceModule_Get_Names(moduleNames, &nModules)))
 	{
 		free(moduleNames);
@@ -102,7 +103,9 @@ static OSc_Error EnumerateDevices(void)
 
 OSc_Error OSc_GetAllDevices(OSc_Device ***devices, size_t *count)
 {
-	OSc_RETURN_IF_ERROR(EnumerateDevices());
+	OSc_Error err;
+	if (OSc_CHECK_ERROR(err, EnumerateDevices()))
+		return err;
 
 	*devices = (struct OSc_Device **)g_deviceInstances->ptr;
 	*count = g_deviceInstances->size;

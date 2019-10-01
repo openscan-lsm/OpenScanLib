@@ -157,19 +157,6 @@ enum
 #define OSc_CHECK_ERROR(err, call) \
 	((err = (call)) != OSc_Error_OK)
 
-/**
- * \brief Return if an OpenScan API function call returns an error.
- *
- * \deprecated Use #OSc_CHECK_ERROR() instead. This macro seems to encourage
- * careless error handling that leaks resources.
- */
-#define OSc_RETURN_IF_ERROR(call) \
-	do { \
-		OSc_Error err; \
-		if (OSc_CHECK_ERROR(err, (call))) \
-			return err; \
-	} while (0)
-
 
 typedef int32_t OSc_ValueType;
 enum

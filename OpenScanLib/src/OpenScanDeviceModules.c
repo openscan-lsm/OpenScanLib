@@ -40,7 +40,9 @@ static OSc_Error LoadAdapter(const char *path, const char *name)
 	}
 
 	OSc_Module_Handle module;
-	OSc_RETURN_IF_ERROR(LoadModuleLibrary(path, &module));
+	OSc_Error err;
+	if (OSc_CHECK_ERROR(err, LoadModuleLibrary(path, &module)))
+		return err;
 	if (g_loadedAdapterCount == g_loadedAdaptersCap)
 	{
 		g_loadedAdapters = realloc(g_loadedAdapters,
@@ -165,7 +167,9 @@ OSc_Error OSc_DeviceModule_GetDeviceImpls(const char *module, const OScDev_PtrAr
 		return OSc_Error_No_Such_Device_Module;
 
 	OScDevInternal_EntryPointPtr entryPoint;
-	OSc_RETURN_IF_ERROR(GetEntryPoint(mod->handle, OScDevInternal_ENTRY_POINT_NAME, (void *)&entryPoint));
+	OSc_Error err;
+	if (OSc_CHECK_ERROR(err, GetEntryPoint(mod->handle, OScDevInternal_ENTRY_POINT_NAME, (void *)&entryPoint)))
+		return err;
 
 	struct OScDevInternal_Interface **funcTablePtr;
 	OScDev_ModuleImpl *modImpl;
@@ -179,9 +183,13 @@ OSc_Error OSc_DeviceModule_GetDeviceImpls(const char *module, const OScDev_PtrAr
 	*funcTablePtr = &DeviceInterfaceFunctionTable;
 
 	if (modImpl->Open)
-		OSc_RETURN_IF_ERROR(modImpl->Open());
+	{
+		if (OSc_CHECK_ERROR(err, modImpl->Open()))
+			return err;
+	}
 	// TODO We need to also call Close() when shutting down
 
-	OSc_RETURN_IF_ERROR(modImpl->GetDeviceImpls(deviceImpls));
+	if (OSc_CHECK_ERROR(err, modImpl->GetDeviceImpls(deviceImpls)))
+		return err;
 	return OSc_Error_OK;
 }

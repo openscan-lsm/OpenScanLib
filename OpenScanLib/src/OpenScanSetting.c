@@ -187,7 +187,9 @@ static OSc_Error DefaultSetString(OSc_Setting *setting, const char *value)
 		return OSc_Error_Wrong_Value_Type;
 
 	bool writable;
-	OSc_RETURN_IF_ERROR(OSc_Setting_IsWritable(setting, &writable));
+	OSc_Error err;
+	if (OSc_CHECK_ERROR(err, OSc_Setting_IsWritable(setting, &writable)))
+		return err;
 	if (!writable)
 		return OSc_Error_Setting_Not_Writable;
 
@@ -210,7 +212,9 @@ static OSc_Error DefaultSetBool(OSc_Setting *setting, bool value)
 		return OSc_Error_Wrong_Value_Type;
 
 	bool writable;
-	OSc_RETURN_IF_ERROR(OSc_Setting_IsWritable(setting, &writable));
+	OSc_Error err;
+	if (OSc_CHECK_ERROR(err, OSc_Setting_IsWritable(setting, &writable)))
+		return err;
 	if (!writable)
 		return OSc_Error_Setting_Not_Writable;
 
@@ -233,7 +237,9 @@ static OSc_Error DefaultSetInt32(OSc_Setting *setting, int32_t value)
 		return OSc_Error_Wrong_Value_Type;
 
 	bool writable;
-	OSc_RETURN_IF_ERROR(OSc_Setting_IsWritable(setting, &writable));
+	OSc_Error err;
+	if (OSc_CHECK_ERROR(err, OSc_Setting_IsWritable(setting, &writable)))
+		return err;
 	if (!writable)
 		return OSc_Error_Setting_Not_Writable;
 
@@ -249,7 +255,9 @@ static OSc_Error DefaultGetInt32Range(OSc_Setting *setting, int32_t *min, int32_
 	if (setting->valueType != OSc_ValueType_Int32)
 		return OSc_Error_Wrong_Value_Type;
 	OSc_ValueConstraint constraint;
-	OSc_RETURN_IF_ERROR(OSc_Setting_GetNumericConstraintType(setting, &constraint));
+	OSc_Error err;
+	if (OSc_CHECK_ERROR(err, OSc_Setting_GetNumericConstraintType(setting, &constraint)))
+		return err;
 	if (constraint != OSc_ValueConstraint_Continuous)
 		return OSc_Error_Wrong_Constraint_Type;
 	return OSc_Error_OK;
@@ -264,7 +272,9 @@ static OSc_Error DefaultGetInt32DiscreteValues(OSc_Setting *setting, int32_t **v
 	if (setting->valueType != OSc_ValueType_Int32)
 		return OSc_Error_Wrong_Value_Type;
 	OSc_ValueConstraint constraint;
-	OSc_RETURN_IF_ERROR(OSc_Setting_GetNumericConstraintType(setting, &constraint));
+	OSc_Error err;
+	if (OSc_CHECK_ERROR(err, OSc_Setting_GetNumericConstraintType(setting, &constraint)))
+		return err;
 	if (constraint != OSc_ValueConstraint_Discrete)
 		return OSc_Error_Wrong_Constraint_Type;
 	return OSc_Error_OK;
@@ -286,7 +296,9 @@ static OSc_Error DefaultSetFloat64(OSc_Setting *setting, double value)
 		return OSc_Error_Wrong_Value_Type;
 
 	bool writable;
-	OSc_RETURN_IF_ERROR(OSc_Setting_IsWritable(setting, &writable));
+	OSc_Error err;
+	if (OSc_CHECK_ERROR(err, OSc_Setting_IsWritable(setting, &writable)))
+		return err;
 	if (!writable)
 		return OSc_Error_Setting_Not_Writable;
 
@@ -302,7 +314,9 @@ static OSc_Error DefaultGetFloat64Range(OSc_Setting *setting, double *min, doubl
 	if (setting->valueType != OSc_ValueType_Float64)
 		return OSc_Error_Wrong_Value_Type;
 	OSc_ValueConstraint constraint;
-	OSc_RETURN_IF_ERROR(OSc_Setting_GetNumericConstraintType(setting, &constraint));
+	OSc_Error err;
+	if (OSc_CHECK_ERROR(err, OSc_Setting_GetNumericConstraintType(setting, &constraint)))
+		return err;
 	if (constraint != OSc_ValueConstraint_Continuous)
 		return OSc_Error_Wrong_Constraint_Type;
 	return OSc_Error_OK;
@@ -317,7 +331,9 @@ static OSc_Error DefaultGetFloat64DiscreteValues(OSc_Setting *setting, double **
 	if (setting->valueType != OSc_ValueType_Float64)
 		return OSc_Error_Wrong_Value_Type;
 	OSc_ValueConstraint constraint;
-	OSc_RETURN_IF_ERROR(OSc_Setting_GetNumericConstraintType(setting, &constraint));
+	OSc_Error err;
+	if (OSc_CHECK_ERROR(err, OSc_Setting_GetNumericConstraintType(setting, &constraint)))
+		return err;
 	if (constraint != OSc_ValueConstraint_Discrete)
 		return OSc_Error_Wrong_Constraint_Type;
 	return OSc_Error_OK;
@@ -339,7 +355,9 @@ static OSc_Error DefaultSetEnum(OSc_Setting *setting, uint32_t value)
 		return OSc_Error_Wrong_Value_Type;
 
 	bool writable;
-	OSc_RETURN_IF_ERROR(OSc_Setting_IsWritable(setting, &writable));
+	OSc_Error err;
+	if (OSc_CHECK_ERROR(err, OSc_Setting_IsWritable(setting, &writable)))
+		return err;
 	if (!writable)
 		return OSc_Error_Setting_Not_Writable;
 

@@ -7,8 +7,12 @@
 
 OSc_Error OSc_Device_GetName(OSc_Device *device, const char **name)
 {
+	OSc_Error err;
 	if (!strlen(device->name))
-		OSc_RETURN_IF_ERROR(device->impl->GetName(device, device->name));
+	{
+		if (OSc_CHECK_ERROR(err, device->impl->GetName(device, device->name)))
+			return err;
+	}
 
 	*name = device->name;
 	return OSc_Error_OK;
@@ -19,10 +23,13 @@ OSc_Error OSc_Device_GetDisplayName(OSc_Device *device, const char **name)
 {
 	if (!strlen(device->displayName))
 	{
+		OSc_Error err;
 		const char *modelName;
-		OSc_RETURN_IF_ERROR(device->impl->GetModelName(&modelName));
+		if (OSc_CHECK_ERROR(err, device->impl->GetModelName(&modelName)))
+			return err;
 		const char *deviceName;
-		OSc_RETURN_IF_ERROR(OSc_Device_GetName(device, &deviceName));
+		if (OSc_CHECK_ERROR(err, OSc_Device_GetName(device, &deviceName)))
+			return err;
 		snprintf(device->displayName, OSc_MAX_STR_LEN, "%s@%s",
 			modelName, deviceName);
 	}
@@ -40,10 +47,10 @@ OSc_Error OSc_Device_Open(OSc_Device *device, OSc_LSM *lsm)
 		return OSc_Error_Device_Already_Open;
 	}
 
-	OSc_RETURN_IF_ERROR(device->impl->Open(device));
-	device->isOpen = true;
-
 	OSc_Error err;
+	if (OSc_CHECK_ERROR(err, device->impl->Open(device)))
+		return err;
+	device->isOpen = true;
 
 	bool hasClock;
 	if (OSc_CHECK_ERROR(err, OSc_Device_HasClock(device, &hasClock)))
@@ -88,8 +95,12 @@ OSc_Error OSc_Device_Close(OSc_Device *device)
 	if (!device || !device->isOpen)
 		return OSc_Error_OK;
 
+	OSc_Error err;
 	if (device->associatedLSM)
-		OSc_RETURN_IF_ERROR(OSc_LSM_Dissociate_Device(device->associatedLSM, device));
+	{
+		if (OSc_CHECK_ERROR(err, OSc_LSM_Dissociate_Device(device->associatedLSM, device)))
+			return err;
+	}
 
 	if (device->clock)
 		free(device->clock);
@@ -100,7 +111,8 @@ OSc_Error OSc_Device_Close(OSc_Device *device)
 	device->scanner = NULL;
 	device->detector = NULL;
 
-	OSc_RETURN_IF_ERROR(device->impl->Close(device));
+	if (OSc_CHECK_ERROR(err, device->impl->Close(device)))
+		return err;
 	device->isOpen = false;
 
 	return OSc_Error_OK;
@@ -136,7 +148,9 @@ OSc_Error OSc_Device_GetClock(OSc_Device *device, OSc_Clock **clock)
 	*clock = NULL;
 
 	bool hasClock = false;
-	OSc_RETURN_IF_ERROR(OSc_Device_HasClock(device, &hasClock));
+	OSc_Error err;
+	if (OSc_CHECK_ERROR(err, OSc_Device_HasClock(device, &hasClock)))
+		return err;
 	if (!hasClock)
 		return OSc_Error_Device_Does_Not_Support_Clock;
 
@@ -150,7 +164,9 @@ OSc_Error OSc_Device_GetScanner(OSc_Device *device, OSc_Scanner **scanner)
 	*scanner = NULL;
 
 	bool hasScanner = false;
-	OSc_RETURN_IF_ERROR(OSc_Device_HasScanner(device, &hasScanner));
+	OSc_Error err;
+	if (OSc_CHECK_ERROR(err, OSc_Device_HasScanner(device, &hasScanner)))
+		return err;
 	if (!hasScanner)
 		return OSc_Error_Device_Does_Not_Support_Scanner;
 
@@ -164,7 +180,9 @@ OSc_Error OSc_Device_GetDetector(OSc_Device *device, OSc_Detector **detector)
 	*detector = NULL;
 
 	bool hasDetector = false;
-	OSc_RETURN_IF_ERROR(OSc_Device_HasDetector(device, &hasDetector));
+	OSc_Error err;
+	if (OSc_CHECK_ERROR(err, OSc_Device_HasDetector(device, &hasDetector)))
+		return err;
 	if (!hasDetector)
 		return OSc_Error_Device_Does_Not_Support_Detector;
 
@@ -177,7 +195,9 @@ OSc_Error OSc_Device_GetSettings(OSc_Device *device, OSc_Setting ***settings, si
 {
 	if (device->settings == NULL)
 	{
-		OSc_RETURN_IF_ERROR(device->impl->MakeSettings(device, &device->settings));
+		OSc_Error err;
+		if (OSc_CHECK_ERROR(err, device->impl->MakeSettings(device, &device->settings)))
+			return err;
 	}
 
 	*settings = (OScDev_Setting**)device->settings->ptr;
@@ -188,34 +208,44 @@ OSc_Error OSc_Device_GetSettings(OSc_Device *device, OSc_Setting ***settings, si
 
 OSc_Error OSc_Device_GetAllowedResolutions(OSc_Device *device, size_t **widths, size_t **heights, size_t *count)
 {
-	OSc_RETURN_IF_ERROR(device->impl->GetAllowedResolutions(device, widths, heights, count));
+	OSc_Error err;
+	if (OSc_CHECK_ERROR(err, device->impl->GetAllowedResolutions(device, widths, heights, count)))
+		return err;
 	return OSc_Error_OK;
 }
 
 
 OSc_Error OSc_Device_GetResolution(OSc_Device *device, size_t *width, size_t *height)
 {
-	OSc_RETURN_IF_ERROR(device->impl->GetResolution(device, width, height));
+	OSc_Error err;
+	if (OSc_CHECK_ERROR(err, device->impl->GetResolution(device, width, height)))
+		return err;
 	return OSc_Error_OK;
 }
 
 
 OSc_Error OSc_Device_SetResolution(OSc_Device *device, size_t width, size_t height)
 {
-	OSc_RETURN_IF_ERROR(device->impl->SetResolution(device, width, height));
+	OSc_Error err;
+	if (OSc_CHECK_ERROR(err, device->impl->SetResolution(device, width, height)))
+		return err;
 	return OSc_Error_OK;
 }
 
 OSc_Error OSc_Device_GetMagnification(OSc_Device *device, double *magnification)
 {
-	OSc_RETURN_IF_ERROR(device->impl->GetMagnification(device, magnification));
+	OSc_Error err;
+	if (OSc_CHECK_ERROR(err, device->impl->GetMagnification(device, magnification)))
+		return err;
 	return OSc_Error_OK;
 }
 
 
 OSc_Error OSc_Device_SetMagnification(OSc_Device *device)
 {
-	OSc_RETURN_IF_ERROR(device->impl->SetMagnification(device));
+	OSc_Error err;
+	if (OSc_CHECK_ERROR(err, device->impl->SetMagnification(device)))
+		return err;
 	return OSc_Error_OK;
 }
 
