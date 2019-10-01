@@ -765,148 +765,142 @@ struct OScDev_SettingImpl
 #endif
 
 
-//
 // Inline functions wrapping all entries in the OpenScanLib function table
 //
-
-#ifdef __cplusplus
-/// Inline keyword for C++
-#define OScDevInternal_INLINE inline
-#else // C
-/// Inline keyword for C
-#define OScDevInternal_INLINE static inline
-#endif
+// Use of this macro tricks Doxygen into documenting the functions even though
+// they are static.
+#define OScDev_API static inline
 
 /** \addtogroup dpi
  * @{
  */
 
 /// Log a message
-OScDevInternal_INLINE void OScDev_Log(OScDev_Device *device, enum OScDev_LogLevel level, const char *message)
+OScDev_API void OScDev_Log(OScDev_Device *device, enum OScDev_LogLevel level, const char *message)
 {
 	OScDevInternal_FunctionTable->Log(&OScDevInternal_TheModuleImpl, device, level, message);
 }
 
 /// Create an array of objects.
-OScDevInternal_INLINE OScDev_PtrArray *OScDev_PtrArray_Create(void)
+OScDev_API OScDev_PtrArray *OScDev_PtrArray_Create(void)
 {
 	return OScDevInternal_FunctionTable->PtrArray_Create(&OScDevInternal_TheModuleImpl);
 }
 
 /// Destroy (free) an array of objects.
-OScDevInternal_INLINE void OScDev_PtrArray_Destroy(OScDev_PtrArray *arr)
+OScDev_API void OScDev_PtrArray_Destroy(OScDev_PtrArray *arr)
 {
 	OScDevInternal_FunctionTable->PtrArray_Destroy(&OScDevInternal_TheModuleImpl, arr);
 }
 
 /// Append an object to an array.
-OScDevInternal_INLINE void OScDev_PtrArray_Append(OScDev_PtrArray *arr, void *obj)
+OScDev_API void OScDev_PtrArray_Append(OScDev_PtrArray *arr, void *obj)
 {
 	OScDevInternal_FunctionTable->PtrArray_Append(&OScDevInternal_TheModuleImpl, arr, obj);
 }
 
 /// Create an array of numbers.
-OScDevInternal_INLINE OScDev_NumArray *OScDev_NumArray_Create(void)
+OScDev_API OScDev_NumArray *OScDev_NumArray_Create(void)
 {
 	return OScDevInternal_FunctionTable->NumArray_Create(&OScDevInternal_TheModuleImpl);
 }
 
 /// Destroy (free) an array of numbers.
-OScDevInternal_INLINE void OScDev_NumArray_Destroy(OScDev_NumArray *arr)
+OScDev_API void OScDev_NumArray_Destroy(OScDev_NumArray *arr)
 {
 	OScDevInternal_FunctionTable->NumArray_Destroy(&OScDevInternal_TheModuleImpl, arr);
 }
 
 /// Append a value to an array.
-OScDevInternal_INLINE void OScDev_NumArray_Append(OScDev_NumArray *arr, double val)
+OScDev_API void OScDev_NumArray_Append(OScDev_NumArray *arr, double val)
 {
 	OScDevInternal_FunctionTable->NumArray_Append(&OScDevInternal_TheModuleImpl, arr, val);
 }
 
-OScDevInternal_INLINE OScDev_NumRange *OScDev_NumRange_CreateContinuous(double rMin, double rMax)
+OScDev_API OScDev_NumRange *OScDev_NumRange_CreateContinuous(double rMin, double rMax)
 {
 	return OScDevInternal_FunctionTable->NumRange_CreateContinuous(&OScDevInternal_TheModuleImpl, rMin, rMax);
 }
 
-OScDevInternal_INLINE OScDev_NumRange *OScDev_NumRange_CreateDiscrete(void)
+OScDev_API OScDev_NumRange *OScDev_NumRange_CreateDiscrete(void)
 {
 	return OScDevInternal_FunctionTable->NumRange_CreateDiscrete(&OScDevInternal_TheModuleImpl);
 }
 
-OScDevInternal_INLINE void OScDev_NumRange_Destroy(OScDev_NumRange *range)
+OScDev_API void OScDev_NumRange_Destroy(OScDev_NumRange *range)
 {
 	OScDevInternal_FunctionTable->NumRange_Destroy(&OScDevInternal_TheModuleImpl, range);
 }
 
-OScDevInternal_INLINE void OScDev_NumRange_AppendDiscrete(OScDev_NumRange *range, double value)
+OScDev_API void OScDev_NumRange_AppendDiscrete(OScDev_NumRange *range, double value)
 {
 	OScDevInternal_FunctionTable->NumRange_AppendDiscrete(&OScDevInternal_TheModuleImpl, range, value);
 }
 
 /// Log a debug-level message
-OScDevInternal_INLINE void OScDev_Log_Debug(OScDev_Device *device, const char *message)
+OScDev_API void OScDev_Log_Debug(OScDev_Device *device, const char *message)
 {
 	OScDev_Log(device, OScDev_LogLevel_Debug, message);
 }
 
 /// Log an info-level message
-OScDevInternal_INLINE void OScDev_Log_Info(OScDev_Device *device, const char *message)
+OScDev_API void OScDev_Log_Info(OScDev_Device *device, const char *message)
 {
 	OScDev_Log(device, OScDev_LogLevel_Info, message);
 }
 
 /// Log a warning-level message
-OScDevInternal_INLINE void OScDev_Log_Warning(OScDev_Device *device, const char *message)
+OScDev_API void OScDev_Log_Warning(OScDev_Device *device, const char *message)
 {
 	OScDev_Log(device, OScDev_LogLevel_Warning, message);
 }
 
 /// Log an error-level message
-OScDevInternal_INLINE void OScDev_Log_Error(OScDev_Device *device, const char *message)
+OScDev_API void OScDev_Log_Error(OScDev_Device *device, const char *message)
 {
 	OScDev_Log(device, OScDev_LogLevel_Error, message);
 }
 
-OScDevInternal_INLINE OScDev_Error OScDev_Device_Create(OScDev_Device **device, OScDev_DeviceImpl *impl, void *data)
+OScDev_API OScDev_Error OScDev_Device_Create(OScDev_Device **device, OScDev_DeviceImpl *impl, void *data)
 {
 	return OScDevInternal_FunctionTable->Device_Create(&OScDevInternal_TheModuleImpl, device, impl, data);
 }
 
-OScDevInternal_INLINE void *OScDev_Device_GetImplData(OScDev_Device *device)
+OScDev_API void *OScDev_Device_GetImplData(OScDev_Device *device)
 {
 	return OScDevInternal_FunctionTable->Device_GetImplData(&OScDevInternal_TheModuleImpl, device);
 }
 
-OScDevInternal_INLINE OScDev_Error OScDev_Setting_Create(OScDev_Setting **setting, const char *name, enum OScDev_ValueType valueType, OScDev_SettingImpl *impl, void *data)
+OScDev_API OScDev_Error OScDev_Setting_Create(OScDev_Setting **setting, const char *name, enum OScDev_ValueType valueType, OScDev_SettingImpl *impl, void *data)
 {
 	return OScDevInternal_FunctionTable->Setting_Create(&OScDevInternal_TheModuleImpl, setting, name, valueType, impl, data);
 }
 
-OScDevInternal_INLINE void *OScDev_Setting_GetImplData(OScDev_Setting *setting)
+OScDev_API void *OScDev_Setting_GetImplData(OScDev_Setting *setting)
 {
 	return OScDevInternal_FunctionTable->Setting_GetImplData(&OScDevInternal_TheModuleImpl, setting);
 }
 
 /// Determine the requested number of frames for the given acquisition.
-OScDevInternal_INLINE OScDev_Error OScDev_Acquisition_GetNumberOfFrames(OScDev_Acquisition *acq, uint32_t *numberOfFrames)
+OScDev_API OScDev_Error OScDev_Acquisition_GetNumberOfFrames(OScDev_Acquisition *acq, uint32_t *numberOfFrames)
 {
 	return OScDevInternal_FunctionTable->Acquisition_GetNumberOfFrames(&OScDevInternal_TheModuleImpl, acq, numberOfFrames);
 }
 
 /// Determine whether this device should provide the clock for the given acquisition.
-OScDevInternal_INLINE OScDev_Error OScDev_Acquisition_IsClockRequested(OScDev_Acquisition *acq, bool *isRequested)
+OScDev_API OScDev_Error OScDev_Acquisition_IsClockRequested(OScDev_Acquisition *acq, bool *isRequested)
 {
 	return OScDevInternal_FunctionTable->Acquisition_IsClockRequested(&OScDevInternal_TheModuleImpl, acq, isRequested);
 }
 
 /// Determine whether this device should perform scanning for the given acquisition.
-OScDevInternal_INLINE OScDev_Error OScDev_Acquisition_IsScannerRequested(OScDev_Acquisition *acq, bool *isRequested)
+OScDev_API OScDev_Error OScDev_Acquisition_IsScannerRequested(OScDev_Acquisition *acq, bool *isRequested)
 {
 	return OScDevInternal_FunctionTable->Acquisition_IsScannerRequested(&OScDevInternal_TheModuleImpl, acq, isRequested);
 }
 
 /// Determine whether this device should perform detection for the given acquisition.
-OScDevInternal_INLINE OScDev_Error OScDev_Acquisition_IsDetectorRequested(OScDev_Acquisition *acq, bool *isRequested)
+OScDev_API OScDev_Error OScDev_Acquisition_IsDetectorRequested(OScDev_Acquisition *acq, bool *isRequested)
 {
 	return OScDevInternal_FunctionTable->Acquisition_IsDetectorRequested(&OScDevInternal_TheModuleImpl, acq, isRequested);
 }
@@ -919,7 +913,7 @@ OScDevInternal_INLINE OScDev_Error OScDev_Acquisition_IsDetectorRequested(OScDev
  * \param[in] acq the acquisition
  * \param[out] startTrigger the clock start trigger; either software or external
  */
-OScDevInternal_INLINE OScDev_Error OScDev_Acquisition_GetClockStartTriggerSource(OScDev_Acquisition *acq, enum OScDev_TriggerSource *startTrigger)
+OScDev_API OScDev_Error OScDev_Acquisition_GetClockStartTriggerSource(OScDev_Acquisition *acq, enum OScDev_TriggerSource *startTrigger)
 {
 	return OScDevInternal_FunctionTable->Acquisition_GetClockStartTriggerSource(&OScDevInternal_TheModuleImpl, acq, startTrigger);
 }
@@ -930,7 +924,7 @@ OScDevInternal_INLINE OScDev_Error OScDev_Acquisition_GetClockStartTriggerSource
  * for the acquisition (see `OScDev_Acquisition_IsScannerRequested()` and
  * `OScDev_Acquisition_IsDetectorRequested()`).
  */
-OScDevInternal_INLINE OScDev_Error OScDev_Acquisition_GetClockSource(OScDev_Acquisition *acq, enum OScDev_ClockSource *clock)
+OScDev_API OScDev_Error OScDev_Acquisition_GetClockSource(OScDev_Acquisition *acq, enum OScDev_ClockSource *clock)
 {
 	return OScDevInternal_FunctionTable->Acquisition_GetClockSource(&OScDevInternal_TheModuleImpl, acq, clock);
 }
@@ -947,9 +941,11 @@ OScDevInternal_INLINE OScDev_Error OScDev_Acquisition_GetClockSource(OScDev_Acqu
  * \param[in] channel the channel index
  * \param[in] pixels the raw pixel data for the channel
  */
-OScDevInternal_INLINE bool OScDev_Acquisition_CallFrameCallback(OScDev_Acquisition *acq, uint32_t channel, void *pixels)
+OScDev_API bool OScDev_Acquisition_CallFrameCallback(OScDev_Acquisition *acq, uint32_t channel, void *pixels)
 {
 	return OScDevInternal_FunctionTable->Acquisition_CallFrameCallback(&OScDevInternal_TheModuleImpl, acq, channel, pixels);
 }
+
+#undef OScDev_API
 
 /** @} */ // addtogroup dpi
