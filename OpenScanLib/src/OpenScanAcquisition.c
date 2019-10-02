@@ -1,3 +1,4 @@
+#include "OpenScanLib.h"
 #include "OpenScanLibPrivate.h"
 
 #include <stdlib.h>
@@ -7,18 +8,30 @@ OSc_Error OSc_Acquisition_Create(OSc_Acquisition **acq, OSc_LSM *lsm)
 {
 	*acq = calloc(1, sizeof(OSc_Acquisition));
 
-	// TODO Use dummy for null scanner or detector?
-
-	(*acq)->clock = lsm->clock;
-	(*acq)->scanner = lsm->scanner;
-	(*acq)->detector = lsm->detector;
+	OSc_Clock *clock = NULL;
+	OSc_LSM_GetClock(lsm, &clock);
+	OSc_Scanner *scanner = NULL;
+	OSc_LSM_GetScanner(lsm, &scanner);
+	OSc_Detector *detector = NULL;
+	OSc_LSM_GetDetector(lsm, &detector);
+	
+	(*acq)->clock = clock;
+	(*acq)->scanner = scanner;
+	(*acq)->detector = detector;
 	(*acq)->numberOfFrames = 1;
 
-	(*acq)->acqForClockDevice.device = lsm->clock->device;
+	OSc_Device *clockDevice = NULL;
+	OSc_Clock_GetDevice(clock, &clockDevice);
+	OSc_Device *scannerDevice = NULL;
+	OSc_Scanner_GetDevice(scanner, &scannerDevice);
+	OSc_Device *detectorDevice = NULL;
+	OSc_Detector_GetDevice(detector, &detectorDevice);
+
+	(*acq)->acqForClockDevice.device = clockDevice;
 	(*acq)->acqForClockDevice.acq = *acq;
-	(*acq)->acqForScannerDevice.device = lsm->scanner->device;
+	(*acq)->acqForScannerDevice.device = scannerDevice;
 	(*acq)->acqForScannerDevice.acq = *acq;
-	(*acq)->acqForDetectorDevice.device = lsm->detector->device;
+	(*acq)->acqForDetectorDevice.device = detectorDevice;
 	(*acq)->acqForDetectorDevice.acq = *acq;
 
 	return OSc_Error_OK;

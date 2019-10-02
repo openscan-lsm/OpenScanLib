@@ -41,16 +41,6 @@ struct OScInternal_Device
 	char displayName[OSc_MAX_STR_LEN + 1];
 };
 
-struct OScInternal_LSM
-{
-	OSc_Clock *clock;
-	OSc_Scanner *scanner;
-	OSc_Detector *detector;
-
-	OSc_Device **associatedDevices;
-	size_t associatedDeviceCount;
-};
-
 struct OScInternal_AcquisitionForDevice
 {
 	OSc_Device *device;
@@ -111,9 +101,9 @@ OScDev_NumRange *OSc_NumRange_CreateDiscrete(void);
 void OSc_NumRange_Destroy(const OScDev_NumRange *range);
 void OSc_NumRange_AppendDiscrete(OScDev_NumRange *range, double val);
 
-OSc_Error OSc_LSM_Associate_Device(OSc_LSM *lsm, OSc_Device *device);
-OSc_Error OSc_LSM_Dissociate_Device(OSc_LSM *lsm, OSc_Device *device);
-OSc_Error OSc_LSM_Is_Device_Associated(OSc_LSM *lsm, OSc_Device *device, bool *isAssociated);
+OSc_Error OScInternal_LSM_Associate_Device(OSc_LSM *lsm, OSc_Device *device);
+OSc_Error OScInternal_LSM_Dissociate_Device(OSc_LSM *lsm, OSc_Device *device);
+OSc_Error OScInternal_LSM_Is_Device_Associated(OSc_LSM *lsm, OSc_Device *device, bool *isAssociated);
 
 OSc_Error OSc_Device_Create(OSc_Device **device, OScDev_DeviceImpl *impl, void *data);
 OSc_Error OSc_Device_Destroy(OSc_Device *device);

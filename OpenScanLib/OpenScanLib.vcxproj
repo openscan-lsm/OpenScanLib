@@ -29,7 +29,7 @@
     <ClCompile Include="src\OpenScanDeviceModules.c" />
     <ClCompile Include="src\OpenScanDevices.c" />
     <ClCompile Include="src\OpenScanLogging.c" />
-    <ClCompile Include="src\OpenScanLSM.c" />
+    <ClCompile Include="src\LSM.c" />
     <ClCompile Include="src\OpenScanScanner.c" />
     <ClCompile Include="src\Setting.c" />
     <ClCompile Include="src\Version.c" />

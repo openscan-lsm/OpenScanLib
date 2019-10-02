@@ -4,6 +4,17 @@
 #include <string.h>
 
 
+struct OScInternal_LSM
+{
+	OSc_Clock *clock;
+	OSc_Scanner *scanner;
+	OSc_Detector *detector;
+
+	OSc_Device **associatedDevices;
+	size_t associatedDeviceCount;
+};
+
+
 OSc_Error OSc_LSM_Create(OSc_LSM **lsm)
 {
 	*lsm = calloc(1, sizeof(OSc_LSM));
@@ -68,7 +79,7 @@ OSc_Error OSc_LSM_SetClock(OSc_LSM *lsm, OSc_Clock *clock)
 		return err;
 
 	bool isAssociated = false;
-	if (OSc_CHECK_ERROR(err, OSc_LSM_Is_Device_Associated(lsm, clockDevice, &isAssociated)))
+	if (OSc_CHECK_ERROR(err, OScInternal_LSM_Is_Device_Associated(lsm, clockDevice, &isAssociated)))
 		return err;
 	if (!isAssociated)
 		return OSc_Error_Device_Not_Opened_For_LSM;
@@ -99,7 +110,7 @@ OSc_Error OSc_LSM_SetScanner(OSc_LSM *lsm, OSc_Scanner *scanner)
 		return err;
 
 	bool isAssociated = false;
-	if (OSc_CHECK_ERROR(err, OSc_LSM_Is_Device_Associated(lsm, scannerDevice, &isAssociated)))
+	if (OSc_CHECK_ERROR(err, OScInternal_LSM_Is_Device_Associated(lsm, scannerDevice, &isAssociated)))
 		return err;
 	if (!isAssociated)
 		return OSc_Error_Device_Not_Opened_For_LSM;
@@ -130,7 +141,7 @@ OSc_Error OSc_LSM_SetDetector(OSc_LSM *lsm, OSc_Detector *detector)
 		return err;
 
 	bool isAssociated = false;
-	if (OSc_CHECK_ERROR(err, OSc_LSM_Is_Device_Associated(lsm, detectorDevice, &isAssociated)))
+	if (OSc_CHECK_ERROR(err, OScInternal_LSM_Is_Device_Associated(lsm, detectorDevice, &isAssociated)))
 		return err;
 	if (!isAssociated)
 		return OSc_Error_Device_Not_Opened_For_LSM;
@@ -140,11 +151,11 @@ OSc_Error OSc_LSM_SetDetector(OSc_LSM *lsm, OSc_Detector *detector)
 }
 
 
-OSc_Error OSc_LSM_Associate_Device(OSc_LSM *lsm, OSc_Device *device)
+OSc_Error OScInternal_LSM_Associate_Device(OSc_LSM *lsm, OSc_Device *device)
 {
 	bool isAssociated = false;
 	OSc_Error err;
-	if (OSc_CHECK_ERROR(err, OSc_LSM_Is_Device_Associated(lsm, device, &isAssociated)))
+	if (OSc_CHECK_ERROR(err, OScInternal_LSM_Is_Device_Associated(lsm, device, &isAssociated)))
 		return err;
 	if (isAssociated)
 		return OSc_Error_Device_Already_Open;
@@ -166,7 +177,7 @@ OSc_Error OSc_LSM_Associate_Device(OSc_LSM *lsm, OSc_Device *device)
 }
 
 
-OSc_Error OSc_LSM_Dissociate_Device(OSc_LSM *lsm, OSc_Device *device)
+OSc_Error OScInternal_LSM_Dissociate_Device(OSc_LSM *lsm, OSc_Device *device)
 {
 	bool found = false;
 	OSc_Device **newList = malloc(lsm->associatedDeviceCount * sizeof(OSc_Device));
@@ -193,7 +204,7 @@ OSc_Error OSc_LSM_Dissociate_Device(OSc_LSM *lsm, OSc_Device *device)
 }
 
 
-OSc_Error OSc_LSM_Is_Device_Associated(OSc_LSM *lsm, OSc_Device *device, bool *isAssociated)
+OSc_Error OScInternal_LSM_Is_Device_Associated(OSc_LSM *lsm, OSc_Device *device, bool *isAssociated)
 {
 	*isAssociated = false;
 	for (int i = 0; i < lsm->associatedDeviceCount; ++i)

@@ -35,9 +35,6 @@
     <ClCompile Include="src\OpenScanLogging.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\OpenScanLSM.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\OpenScanScanner.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -54,6 +51,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Setting.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LSM.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

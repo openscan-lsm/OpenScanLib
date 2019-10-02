@@ -79,7 +79,7 @@ OSc_Error OSc_Device_Open(OSc_Device *device, OSc_LSM *lsm)
 		device->detector->device = device;
 	}
 
-	if (OSc_CHECK_ERROR(err, OSc_LSM_Associate_Device(lsm, device)))
+	if (OSc_CHECK_ERROR(err, OScInternal_LSM_Associate_Device(lsm, device)))
 		goto Error;
 
 	return OSc_Error_OK;
@@ -98,7 +98,7 @@ OSc_Error OSc_Device_Close(OSc_Device *device)
 	OSc_Error err;
 	if (device->associatedLSM)
 	{
-		if (OSc_CHECK_ERROR(err, OSc_LSM_Dissociate_Device(device->associatedLSM, device)))
+		if (OSc_CHECK_ERROR(err, OScInternal_LSM_Dissociate_Device(device->associatedLSM, device)))
 			return err;
 	}
 
