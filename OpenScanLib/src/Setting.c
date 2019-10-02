@@ -5,6 +5,19 @@
 #include <string.h>
 
 
+struct OScInternal_Setting
+{
+	OScDev_SettingImpl *impl;
+	// TODO It is such a common usage to set implData to the device instance,
+	// that we should just provide a dedicated field for the device.
+	void *implData;
+
+	OSc_ValueType valueType;
+
+	char name[OSc_MAX_STR_LEN + 1];
+};
+
+
 OSc_Error OSc_API OSc_Setting_GetName(OSc_Setting *setting, char *name)
 {
 	strncpy(name, setting->name, OSc_MAX_STR_LEN);
@@ -142,6 +155,12 @@ OSc_Error OSc_Setting_GetEnumNameForValue(OSc_Setting *setting, uint32_t value, 
 OSc_Error OSc_Setting_GetEnumValueForName(OSc_Setting *setting, uint32_t *value, const char *name)
 {
 	return setting->impl->GetEnumValueForName(setting, value, name);
+}
+
+
+void *OScInternal_Setting_GetImplData(OSc_Setting *setting)
+{
+	return setting->implData;
 }
 
 
@@ -413,7 +432,7 @@ static void DefaultRelease(OSc_Setting *setting)
 }
 
 
-OSc_Error OSc_Setting_Create(OSc_Setting **setting, const char *name, OSc_ValueType valueType,
+OSc_Error OScInternal_Setting_Create(OSc_Setting **setting, const char *name, OSc_ValueType valueType,
 	OScDev_SettingImpl *impl, void *data)
 {
 	// TODO We should not modify 'impl' which belongs to the device module.
@@ -469,7 +488,7 @@ OSc_Error OSc_Setting_Create(OSc_Setting **setting, const char *name, OSc_ValueT
 }
 
 
-void OSc_Setting_Destroy(OSc_Setting *setting)
+void OScInternal_Setting_Destroy(OSc_Setting *setting)
 {
 	setting->impl->Release(setting);
 	free(setting);

@@ -270,7 +270,7 @@ OSc_Error OSc_Device_Destroy(OSc_Device *device)
 	if (device->settings) {
 		for (size_t i = 0; i < device->settings->size; ++i) {
 			OSc_Setting *setting = device->settings->ptr[i];
-			OSc_Setting_Destroy(setting);
+			OScInternal_Setting_Destroy(setting);
 		}
 		OSc_PtrArray_Destroy(device->settings);
 	}

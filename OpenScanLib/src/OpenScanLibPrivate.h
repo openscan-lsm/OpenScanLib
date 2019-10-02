@@ -51,18 +51,6 @@ struct OScInternal_LSM
 	size_t associatedDeviceCount;
 };
 
-struct OScInternal_Setting
-{
-	OScDev_SettingImpl *impl;
-	// TODO It is such a common usage to set implData to the device instance,
-	// that we should just provide a dedicated field for the device.
-	void *implData;
-
-	OSc_ValueType valueType;
-
-	char name[OSc_MAX_STR_LEN + 1];
-};
-
 struct OScInternal_AcquisitionForDevice
 {
 	OSc_Device *device;
@@ -130,5 +118,6 @@ OSc_Error OSc_LSM_Is_Device_Associated(OSc_LSM *lsm, OSc_Device *device, bool *i
 OSc_Error OSc_Device_Create(OSc_Device **device, OScDev_DeviceImpl *impl, void *data);
 OSc_Error OSc_Device_Destroy(OSc_Device *device);
 
-OSc_Error OSc_Setting_Create(OSc_Setting **setting, const char *name, OSc_ValueType valueType, OScDev_SettingImpl *impl, void *data);
-void OSc_Setting_Destroy(OSc_Setting *setting);
+OSc_Error OScInternal_Setting_Create(OSc_Setting **setting, const char *name, OSc_ValueType valueType, OScDev_SettingImpl *impl, void *data);
+void OScInternal_Setting_Destroy(OSc_Setting *setting);
+void *OScInternal_Setting_GetImplData(OSc_Setting *setting);

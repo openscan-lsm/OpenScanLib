@@ -31,7 +31,7 @@
     <ClCompile Include="src\OpenScanLogging.c" />
     <ClCompile Include="src\OpenScanLSM.c" />
     <ClCompile Include="src\OpenScanScanner.c" />
-    <ClCompile Include="src\OpenScanSetting.c" />
+    <ClCompile Include="src\Setting.c" />
     <ClCompile Include="src\Version.c" />
   </ItemGroup>
   <ItemGroup>
