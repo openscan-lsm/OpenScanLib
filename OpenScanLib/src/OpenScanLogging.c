@@ -16,6 +16,9 @@ void OSc_LogFunc_Set(OSc_LogFunc func, void *data)
 
 void OSc_Device_SetLogFunc(OSc_Device *device, OSc_LogFunc func, void *data)
 {
+	if (!device)
+		return;
+
 	device->logFunc = func;
 	device->logData = data;
 }

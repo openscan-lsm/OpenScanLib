@@ -94,11 +94,16 @@ extern "C" {
  */
 
 /**
+ * \brief Buffer size for fixed-length strings.
+ */
+#define OSc_MAX_STR_SIZE 512
+
+/**
  * \brief Maximum length for fixed-length string buffers.
  *
- * Note that the buffer size must be OSc_MAX_STR_LEN + 1.
+ * Note that the buffer size must be #OSc_MAX_STR_SIZE.
  */
-#define OSc_MAX_STR_LEN 511
+#define OSc_MAX_STR_LEN (OSc_MAX_STR_SIZE - 1)
 
 
 typedef int32_t OSc_LogLevel;
@@ -178,17 +183,71 @@ enum
 };
 
 
+/**
+ * \brief An LSM object, which integrates clock, scanner, and detector
+ * functionality.
+ */
 typedef struct OScInternal_LSM OSc_LSM;
+
+/**
+ * \brief A device object, which models a particular hardware device.
+ *
+ * A device has some combination of clock, scanner, and/or detector capability.
+ */
 typedef struct OScInternal_Device OSc_Device;
+
+/**
+ * \brief A clock object, representing the clock capability of a device.
+ *
+ * \todo We should remove this type, instead directly associating a device
+ * to an LSM as its "clock device".
+ */
 typedef struct OScInternal_Clock OSc_Clock;
+
+/**
+ * \brief A scanner object, representing the scanner capability of a device.
+ *
+ * \todo We should remove this type, instead directly associating a device
+ * to an LSM as its "scanner device".
+ */
 typedef struct OScInternal_Scanner OSc_Scanner;
+
+/**
+ * \brief A detector object, representing the detector capability of a device.
+ *
+ * \todo We should remove this type, instead directly associating a device
+ * to an LSM as its "detector device". This requires first refactoring the API
+ * functions that operate on OSc_Detector.
+ */
 typedef struct OScInternal_Detector OSc_Detector;
+
+/**
+ * \brief A setting object, representing a device parameter.
+ */
 typedef struct OScInternal_Setting OSc_Setting;
+
+/**
+ * \brief An acquisition object, managing the state and data transfer for
+ * data acquisition.
+ */
 typedef struct OScInternal_Acquisition OSc_Acquisition;
 
+/**
+ * \brief Pointer to a logger function.
+ * \sa OSc_LogFunc_Set()
+ * \sa OSc_Device_SetLogFunc()
+ */
 typedef void (*OSc_LogFunc)(const char *message, OSc_LogLevel level, void *data);
 
-// Returns true normally, or false to halt the acquisition
+/**
+ * \brief Pointer to function that receives acquired frame data.
+ * \sa OSc_Acquisition_SetFrameCallback()
+ * \param acq the acquisition
+ * \param channel the channel number (zero-based)
+ * \param pixels image data for the given channel, which the frame callback must copy
+ * \param data the acquisition client data set by OSc_Acquisition_SetData()
+ * \return `true` normally, or `false` to cancel the acquisition
+ */
 typedef bool (*OSc_FrameCallback)(OSc_Acquisition *acq, uint32_t channel, void *pixels, void *data);
 
 /** @} */ // addtogroup api
@@ -217,40 +276,196 @@ static inline bool OSc_CheckVersion(void) {
 	return OScInternal_CheckVersion(OScInternal_ABI_VERSION);
 }
 
+/**
+ * \brief Set the logger for OpenScan.
+ *
+ * The given function will be used for all logging by OpenScanLib and device
+ * modules, unless a device-specific logger is used.
+ *
+ * \param func the logger function, or null, in which case the logger is removed
+ * \param data client data passed to the logger function
+ * \sa OSc_Device_SetLogFunc()
+ */
 void OSc_API OSc_LogFunc_Set(OSc_LogFunc func, void *data);
+
+/**
+ * \brief Set the logger for a particular device.
+ *
+ * If \p device is null, nothing is done.
+ *
+ * \param device the device for which the logger should be used
+ * \param func the logger function, or null, in which case the logger is removed
+ * \param data client data passed to the logger function
+ * \sa OSc_LogFunc_Set()
+ */
 void OSc_API OSc_Device_SetLogFunc(OSc_Device *device, OSc_LogFunc func, void *data);
 
+/**
+ * \brief Set the search path for device modules.
+ *
+ * This function must be called before either OSc_GetAllDevices() or
+ * OSc_GetNumberOfAvailableDevices() is called.
+ *
+ * OpenScanLib makes a copy of the path strings, so they can be released after
+ * the call.
+ *
+ * \param paths pointer to array of pointers to path strings
+ */
 void OSc_API OSc_SetDeviceModuleSearchPaths(char **paths);
 
 OSc_Error OSc_API OSc_LSM_Create(OSc_LSM **lsm);
+
+/**
+ * \todo Return value should be `void`.
+ */
 OSc_Error OSc_API OSc_LSM_Destroy(OSc_LSM *lsm);
+
+/**
+ * \todo Return value should be `void`.
+ */
 OSc_Error OSc_API OSc_LSM_GetClock(OSc_LSM *lsm, OSc_Clock **clock);
+
 OSc_Error OSc_API OSc_LSM_SetClock(OSc_LSM *lsm, OSc_Clock *clock);
+
+/**
+ * \todo Return value should be `void`.
+ */
 OSc_Error OSc_API OSc_LSM_GetScanner(OSc_LSM *lsm, OSc_Scanner **scanner);
+
 OSc_Error OSc_API OSc_LSM_SetScanner(OSc_LSM *lsm, OSc_Scanner *scanner);
+
+/**
+ * \todo Return value should be `void`.
+ */
 OSc_Error OSc_API OSc_LSM_GetDetector(OSc_LSM *lsm, OSc_Detector **detector);
+
 OSc_Error OSc_API OSc_LSM_SetDetector(OSc_LSM *lsm, OSc_Detector *detector);
+
+/**
+ * \todo This function should be retired once we revise the lifecycle of
+ * acquisition objects to properly separate arm-disarm from start-stop.
+ */
 OSc_Error OSc_API OSc_LSM_IsRunningAcquisition(OSc_LSM *lsm, bool *isRunning);
 
+/**
+ * \brief Get all available device instances.
+ *
+ * The returned array of devices remains valid indefinitely.
+ *
+ * \param[out] devices location where pointer to array of pointers to devices will be written
+ * \param[out] count location where number of devices in the array will be written
+ *
+ * \todo Return value should be `void` as we skip any modules and device
+ * implementations that have an error. Or we could also return an array of
+ * errors.
+ *
+ * \todo This API precludes re-enumerating devices. Now that device objects
+ * are newly created every time enumeration is performed, we should use a new
+ * interface: `OSc_EnumerateDevices(OSc_PtrArray *devices)`.
+ *
+ * \todo We will also need support for non-enumerable devices once we add
+ * support for them in the device interface.
+ */
 OSc_Error OSc_API OSc_GetAllDevices(OSc_Device ***devices, size_t *count);
+
+/**
+ * \deprecated Redundant.
+ */
 OSc_Error OSc_API OSc_GetNumberOfAvailableDevices(size_t *count);
 
+/**
+ * \brief Get the name of a device.
+ *
+ * \param device the device
+ * \param[out] name location where pointer to name string will be written
+ *
+ * \todo This API requires OpenScanLib to keep the name string available
+ * indefinitely. We should copy to client location.
+ *
+ * \todo Return value should be `void`; we can return "" if device is null
+ * and do nothing if destination is null.
+ */
 OSc_Error OSc_API OSc_Device_GetName(OSc_Device *device, const char **name);
+
+/**
+ * \brief Get the name of a device in a format including its model name.
+ *
+ * \param device the device
+ * \param[out] name location where pointer to name string will be written
+ *
+ * \todo Replace this with `OSc_Device_GetModelName()` and possibly
+ * `OSc_Device_GetModuleName()`. Formatting the name as `"name@model"` should
+ * be the applications responsibility. Same with ensuring that names are
+ * unique.
+ */
 OSc_Error OSc_API OSc_Device_GetDisplayName(OSc_Device *device, const char **name);
+
 OSc_Error OSc_API OSc_Device_Open(OSc_Device *device, OSc_LSM *lsm);
+
+/**
+ * \todo Return value should be `void`.
+ */
 OSc_Error OSc_API OSc_Device_Close(OSc_Device *device);
+
 OSc_Error OSc_API OSc_Device_HasClock(OSc_Device *device, bool *hasClock);
 OSc_Error OSc_API OSc_Device_HasScanner(OSc_Device *device, bool *hasScanner);
 OSc_Error OSc_API OSc_Device_HasDetector(OSc_Device *device, bool *hasDetector);
 OSc_Error OSc_API OSc_Device_GetClock(OSc_Device *device, OSc_Clock **clock);
 OSc_Error OSc_API OSc_Device_GetScanner(OSc_Device *device, OSc_Scanner **scanner);
 OSc_Error OSc_API OSc_Device_GetDetector(OSc_Device *device, OSc_Detector **detector);
+
+/**
+ * \brief Get the settings for a device.
+ *
+ * The device must be open. The array of settings returned by this function
+ * remain valid until the device is closed.
+ *
+ * \param device the device
+ * \param[out] settings location where pointer to array of pointers to settings will be written
+ * \param[out] count location where number of settings in the array will be written
+ *
+ * \todo While it makes sense that settings remain valid until the device is
+ * closed, the array in which they are returned should be owned by the caller.
+ */
 OSc_Error OSc_API OSc_Device_GetSettings(OSc_Device *device, OSc_Setting ***settings, size_t *count);
+
+/**
+ * \brief Get the scan resolutions supported by a device.
+ *
+ * \param device the device
+ * \param[out] widths location where pointer to array of width values will be written
+ * \param[out] heights location where pointer to array of height values will be written
+ * \param[out] count location where number of resolutions in the two arrays will be written
+ *
+ * \todo Resolution should be a single number.
+ *
+ * \todo Resolution should be set for an acquisition, not individual devices.
+ * The job of finding resolutions that are valid for all participating devices
+ * should be OpenScanLib's responsibility.
+ */
 OSc_Error OSc_API OSc_Device_GetAllowedResolutions(OSc_Device *device,
 	size_t **widths, size_t **heights, size_t *count);
+
+/**
+ * \todo Resolution should be a parameter of an acquisition, not devices.
+ */
 OSc_Error OSc_API OSc_Device_GetResolution(OSc_Device *device, size_t *width, size_t *height);
+
+/**
+* \todo Resolution should be a parameter of an acquisition, not devices.
+*/
 OSc_Error OSc_API OSc_Device_SetResolution(OSc_Device *device, size_t width, size_t height);
+
+/**
+ * \todo Magnification should be managed by the application; zoom factor should
+ * be a parameter of an acquisition.
+ */
 OSc_Error OSc_API OSc_Device_GetMagnification(OSc_Device *device, double *magnification);
+
+/**
+* \todo Magnification should be managed by the application; zoom factor should
+* be a parameter of an acquisition.
+*/
 OSc_Error OSc_API OSc_Device_SetMagnification(OSc_Device *device);
 
 OSc_Error OSc_API OSc_Clock_GetDevice(OSc_Clock *clock, OSc_Device **device);
@@ -258,11 +473,34 @@ OSc_Error OSc_API OSc_Clock_GetDevice(OSc_Clock *clock, OSc_Device **device);
 OSc_Error OSc_API OSc_Scanner_GetDevice(OSc_Scanner *scanner, OSc_Device **device);
 
 OSc_Error OSc_API OSc_Detector_GetDevice(OSc_Detector *detector, OSc_Device **device);
+
+/**
+ * \todo Image size should be determined by the acquisition (or acquisition
+ * template) based on parameters.
+ */
 OSc_Error OSc_API OSc_Detector_GetImageSize(OSc_Detector *detector, uint32_t *width, uint32_t *height);
+
+/**
+ * \todo Once we have "acquisition settings", number of channels should be a
+ * property of acquisition (or acquisition template), not detector.
+ */
 OSc_Error OSc_API OSc_Detector_GetNumberOfChannels(OSc_Detector *detector, uint32_t *nChannels);
+
+/**
+ * \todo Sample format should be a property of acquisition (or acquisition
+ * template), not detector. Since we only support 16-bit right now, we can
+ * make this change before we have "acquisition settings".
+ */
 OSc_Error OSc_API OSc_Detector_GetBytesPerSample(OSc_Detector *detector, uint32_t *bytesPerSample);
 
+/**
+ * \brief Get the name of a setting.
+ *
+ * \param setting the setting.
+ * \param[out] name a string buffer of size at least #OSc_MAX_STR_SIZE, where the name will be written.
+ */
 OSc_Error OSc_API OSc_Setting_GetName(OSc_Setting *setting, char *name);
+
 OSc_Error OSc_API OSc_Setting_GetValueType(OSc_Setting *setting, OSc_ValueType *valueType);
 OSc_Error OSc_API OSc_Setting_IsEnabled(OSc_Setting *setting, bool *enabled);
 OSc_Error OSc_API OSc_Setting_IsWritable(OSc_Setting *setting, bool *writable);

@@ -106,9 +106,11 @@ typedef struct OScDev_ModuleImpl OScDev_ModuleImpl;
 typedef struct OScDev_DeviceImpl OScDev_DeviceImpl;
 typedef struct OScDev_SettingImpl OScDev_SettingImpl;
 
+/// Buffer size for fixed-length strings.
+#define OScDev_MAX_STR_SIZE 512
 
 /// Maximum length for strings copied to provided buffer.
-#define OScDev_MAX_STR_LEN 511
+#define OScDev_MAX_STR_LEN (OScDev_MAX_STR_SIZE - 1)
 
 
 // Declarations for opaque data types accessed through device interface
