@@ -11,67 +11,67 @@ static void Log(OScDev_ModuleImpl *modImpl, OScDev_Device *device, enum OScDev_L
 	// This only works because we define the enums identically:
 	OSc_LogLevel level = (OSc_LogLevel)dLevel;
 
-	OSc_Log(device, level, message);
+	OScInternal_Log(device, level, message);
 }
 
 
 static OScDev_PtrArray *PtrArray_Create(OScDev_ModuleImpl *modImpl)
 {
-	return OSc_PtrArray_Create();
+	return OScInternal_PtrArray_Create();
 }
 
 
 static void PtrArray_Destroy(OScDev_ModuleImpl *modImpl, OScDev_PtrArray *arr)
 {
-	OSc_PtrArray_Destroy(arr);
+	OScInternal_PtrArray_Destroy(arr);
 }
 
 
 static void PtrArray_Append(OScDev_ModuleImpl *modImpl, OScDev_PtrArray *arr, void *obj)
 {
-	OSc_PtrArray_Append(arr, obj);
+	OScInternal_PtrArray_Append(arr, obj);
 }
 
 
 static OScDev_NumArray *NumArray_Create(OScDev_ModuleImpl *modImpl)
 {
-	return OSc_NumArray_Create();
+	return OScInternal_NumArray_Create();
 }
 
 
 static void NumArray_Destroy(OScDev_ModuleImpl *modImpl, OScDev_NumArray *arr)
 {
-	OSc_NumArray_Destroy(arr);
+	OScInternal_NumArray_Destroy(arr);
 }
 
 
 static void NumArray_Append(OScDev_ModuleImpl *modImpl, OScDev_NumArray *arr, double val)
 {
-	OSc_NumArray_Append(arr, val);
+	OScInternal_NumArray_Append(arr, val);
 }
 
 
 static OScDev_NumRange *NumRange_CreateContinuous(OScDev_ModuleImpl *modImpl, double rMin, double rMax)
 {
-	return OSc_NumRange_CreateContinuous(rMin, rMax);
+	return OScInternal_NumRange_CreateContinuous(rMin, rMax);
 }
 
 
 static OScDev_NumRange *NumRange_CreateDiscrete(OScDev_ModuleImpl *modImpl)
 {
-	return OSc_NumRange_CreateDiscrete();
+	return OScInternal_NumRange_CreateDiscrete();
 }
 
 
 static void NumRange_Destroy(OScDev_ModuleImpl *modImpl, OScDev_NumRange *range)
 {
-	OSc_NumRange_Destroy(range);
+	OScInternal_NumRange_Destroy(range);
 }
 
 
 static void NumRange_AppendDiscrete(OScDev_ModuleImpl *modImpl, OScDev_NumRange *range, double val)
 {
-	OSc_NumRange_AppendDiscrete(range, val);
+	OScInternal_NumRange_AppendDiscrete(range, val);
 }
 
 

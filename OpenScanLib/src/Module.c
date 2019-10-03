@@ -1,4 +1,4 @@
-#include "Modules.h"
+#include "Module.h"
 
 #include <string.h>
 
@@ -9,8 +9,8 @@
  */
 
 
-// Free a file list returned by FindFilesWithSuffix()
-void FreeFileList(char **files)
+// Free a file list returned by OScInternal_FileList_Create()
+void OScInternal_FileList_Free(char **files)
 {
 	for (char **pfile = files; *pfile; ++pfile)
 		free(*pfile);
@@ -20,8 +20,7 @@ void FreeFileList(char **files)
 
 // Finds all fils under 'path' that have 'suffix'.
 // Allocates array and element strings and places into 'files'.
-OSc_Error FindFilesWithSuffix(const char *path, const char *suffix,
-	char ***files)
+OSc_Error OScInternal_FileList_Create(char ***files, const char *path, const char *suffix)
 {
 	// Windows implementation for now
 
@@ -77,13 +76,13 @@ OSc_Error FindFilesWithSuffix(const char *path, const char *suffix,
 	return OSc_Error_OK;
 
 error:
-	FreeFileList(*files);
+	OScInternal_FileList_Free(*files);
 	*files = NULL;
 	return err;
 }
 
 
-OSc_Error LoadModuleLibrary(const char *path, OSc_Module_Handle *module)
+OSc_Error OScInternal_Module_Load(OScInternal_Module *module, const char *path)
 {
 	*module = LoadLibraryA(path);
 	if (*module == NULL)
@@ -92,7 +91,7 @@ OSc_Error LoadModuleLibrary(const char *path, OSc_Module_Handle *module)
 }
 
 
-OSc_Error GetEntryPoint(OSc_Module_Handle module, const char *funcName, void **func)
+OSc_Error OScInternal_Module_GetEntryPoint(OScInternal_Module module, const char *funcName, void **func)
 {
 	*func = GetProcAddress(module, funcName);
 	if (!*func)

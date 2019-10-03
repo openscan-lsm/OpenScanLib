@@ -14,12 +14,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Modules.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\OpenScanDevices.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\DeviceInterface.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -47,18 +41,24 @@
     <ClCompile Include="src\DeviceModule.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\DeviceEnumeration.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Module.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\OpenScanLib.h">
       <Filter>Public Headers</Filter>
     </ClInclude>
-    <ClInclude Include="src\Modules.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\OpenScanLibPrivate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\DeviceInterface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Module.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

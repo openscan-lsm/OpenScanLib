@@ -3,7 +3,7 @@
 #include <string.h>
 
 
-OScDev_PtrArray *OSc_PtrArray_Create(void)
+OScDev_PtrArray *OScInternal_PtrArray_Create(void)
 {
 	OScDev_PtrArray *ret = calloc(1, sizeof(OScDev_PtrArray));
 	if (!ret) {
@@ -14,7 +14,7 @@ OScDev_PtrArray *OSc_PtrArray_Create(void)
 }
 
 
-OScDev_NumArray *OSc_NumArray_Create(void)
+OScDev_NumArray *OScInternal_NumArray_Create(void)
 {
 	OScDev_NumArray *ret = calloc(1, sizeof(OScDev_NumArray));
 	if (!ret) {
@@ -25,7 +25,7 @@ OScDev_NumArray *OSc_NumArray_Create(void)
 }
 
 
-OScDev_NumRange *OSc_NumRange_CreateContinuous(double rMin, double rMax)
+OScDev_NumRange *OScInternal_NumRange_CreateContinuous(double rMin, double rMax)
 {
 	OScDev_NumRange *ret = calloc(1, sizeof(OScDev_NumRange));
 	if (!ret) {
@@ -39,7 +39,7 @@ OScDev_NumRange *OSc_NumRange_CreateContinuous(double rMin, double rMax)
 }
 
 
-OScDev_NumRange *OSc_NumRange_CreateDiscrete(void)
+OScDev_NumRange *OScInternal_NumRange_CreateDiscrete(void)
 {
 	OScDev_NumRange *ret = calloc(1, sizeof(OScDev_NumRange));
 	if (!ret) {
@@ -51,7 +51,7 @@ OScDev_NumRange *OSc_NumRange_CreateDiscrete(void)
 }
 
 
-void OSc_PtrArray_Destroy(const OScDev_PtrArray *arr)
+void OScInternal_PtrArray_Destroy(const OScDev_PtrArray *arr)
 {
 	if (!arr->isDynamic) {
 		return;
@@ -65,7 +65,7 @@ void OSc_PtrArray_Destroy(const OScDev_PtrArray *arr)
 }
 
 
-void OSc_NumArray_Destroy(const OScDev_NumArray *arr)
+void OScInternal_NumArray_Destroy(const OScDev_NumArray *arr)
 {
 	if (!arr->isDynamic) {
 		return;
@@ -77,7 +77,7 @@ void OSc_NumArray_Destroy(const OScDev_NumArray *arr)
 }
 
 
-void OSc_NumRange_Destroy(const OScDev_NumRange *range)
+void OScInternal_NumRange_Destroy(const OScDev_NumRange *range)
 {
 	if (!range->isDynamic) {
 		return;
@@ -104,7 +104,7 @@ static size_t CapForSize(size_t size)
 }
 
 
-void OSc_PtrArray_Append(OScDev_PtrArray *arr, void *obj)
+void OScInternal_PtrArray_Append(OScDev_PtrArray *arr, void *obj)
 {
 	// We do not currently report errors. All errors that may occur are severe
 	// (either out of memory or a programming error), so logging and crashing
@@ -139,7 +139,7 @@ void OSc_PtrArray_Append(OScDev_PtrArray *arr, void *obj)
 }
 
 
-void OSc_NumArray_Append(OScDev_NumArray *arr, double val)
+void OScInternal_NumArray_Append(OScDev_NumArray *arr, double val)
 {
 	if (!arr->isDynamic) {
 		return; // Programming error
@@ -169,13 +169,13 @@ void OSc_NumArray_Append(OScDev_NumArray *arr, double val)
 }
 
 
-void OSc_NumRange_AppendDiscrete(OScDev_NumRange *range, double val)
+void OScInternal_NumRange_AppendDiscrete(OScDev_NumRange *range, double val)
 {
 	if (!range->isDynamic || !range->isList) {
 		return; // Programming error
 	}
 
 	range->rep.list.isDynamic = true;
-	OSc_NumArray_Append(&range->rep.list, val);
+	OScInternal_NumArray_Append(&range->rep.list, val);
 	range->rep.list.isDynamic = false;
 }

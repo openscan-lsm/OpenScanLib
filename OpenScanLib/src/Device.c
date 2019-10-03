@@ -236,7 +236,7 @@ OSc_Error OScInternal_Device_Destroy(OSc_Device *device)
 			OSc_Setting *setting = device->settings->ptr[i];
 			OScInternal_Setting_Destroy(setting);
 		}
-		OSc_PtrArray_Destroy(device->settings);
+		OScInternal_PtrArray_Destroy(device->settings);
 	}
 
 	free(device);

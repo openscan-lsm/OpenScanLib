@@ -48,7 +48,7 @@ OSc_Error OSc_LSM_Destroy(OSc_LSM *lsm)
 			const char *name = NULL;
 			OSc_Device_GetName(device, &name);
 			strcat(msg, name ? name : "(unknown)");
-			OSc_Log_Error(device, msg);
+			OScInternal_LogError(device, msg);
 		}
 	}
 

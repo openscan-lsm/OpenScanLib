@@ -13,7 +13,7 @@ void OSc_LogFunc_Set(OSc_LogFunc func, void *data)
 }
 
 
-void OSc_Log(OSc_Device *device, OSc_LogLevel level, const char *message)
+void OScInternal_Log(OSc_Device *device, OSc_LogLevel level, const char *message)
 {
 	if (OScInternal_Device_Log(device, level, message))
 		return;

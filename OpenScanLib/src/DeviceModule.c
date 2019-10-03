@@ -1,5 +1,5 @@
 #include "DeviceInterface.h"
-#include "Modules.h"
+#include "Module.h"
 
 #define OScDevInternal_BUILDING_OPENSCANLIB
 #include "OpenScanDeviceLibPrivate.h"
@@ -12,7 +12,7 @@ static char **g_adapterPaths;
 // Array of valid module handles
 struct Module
 {
-	OSc_Module_Handle handle;
+	OScInternal_Module handle;
 	char *name;
 };
 static struct Module *g_loadedAdapters;
@@ -37,9 +37,9 @@ static OSc_Error LoadAdapter(const char *path, const char *name)
 			return OSc_Error_Device_Module_Already_Exists;
 	}
 
-	OSc_Module_Handle module;
+	OScInternal_Module module;
 	OSc_Error err;
-	if (OSc_CHECK_ERROR(err, LoadModuleLibrary(path, &module)))
+	if (OSc_CHECK_ERROR(err, OScInternal_Module_Load(&module, path)))
 		return err;
 	if (g_loadedAdapterCount == g_loadedAdaptersCap)
 	{
@@ -59,7 +59,7 @@ static OSc_Error LoadAdapter(const char *path, const char *name)
 static void LoadAdaptersAtPath(const char *path)
 {
 	char **files;
-	FindFilesWithSuffix(path, ".osdev", &files);
+	OScInternal_FileList_Create(&files, path, ".osdev");
 	for (char **pfile = files; *pfile; ++pfile)
 	{
 		char filePath[512];
@@ -68,12 +68,12 @@ static void LoadAdaptersAtPath(const char *path)
 		strncat(filePath, *pfile, sizeof(filePath) - 1 - strlen(filePath));
 		char name[512];
 		strncpy(name, *pfile, sizeof(name) - 1);
-		// Remove suffix (we trust FindFilesWithSuffix returned what it should)
+		// Remove suffix (we trust OScInternal_FileList_Create returned what it should)
 		*strrchr(name, '.') = '\0';
 		OSc_Error err = LoadAdapter(filePath, name);
 		// TODO Log or report error
 	}
-	FreeFileList(files);
+	OScInternal_FileList_Free(files);
 }
 
 
@@ -166,7 +166,7 @@ OSc_Error OScInternal_DeviceModule_GetDeviceImpls(const char *module, const OScD
 
 	OScDevInternal_EntryPointPtr entryPoint;
 	OSc_Error err;
-	if (OSc_CHECK_ERROR(err, GetEntryPoint(mod->handle, OScDevInternal_ENTRY_POINT_NAME, (void *)&entryPoint)))
+	if (OSc_CHECK_ERROR(err, OScInternal_Module_GetEntryPoint(mod->handle, OScDevInternal_ENTRY_POINT_NAME, (void *)&entryPoint)))
 		return err;
 
 	struct OScDevInternal_Interface **funcTablePtr;
