@@ -6,7 +6,7 @@
 
 
 // TODO: Generalize to more than device; possibly accept impl ptrs
-static void Log(OScDev_ModuleImpl *modImpl, OScDev_Device *device, enum OScDev_LogLevel dLevel, const char *message)
+static void Log(OScDev_ModuleImpl *modImpl, OScDev_Device *device, OScDev_LogLevel dLevel, const char *message)
 {
 	// This only works because we define the enums identically:
 	OSc_LogLevel level = (OSc_LogLevel)dLevel;
@@ -89,7 +89,7 @@ static void *Device_GetImplData(OScDev_ModuleImpl *modImpl, OScDev_Device *devic
 
 
 // TODO: Replace with a SettingsCreateContext-based method
-static OScDev_Error Setting_Create(OScDev_ModuleImpl *modImpl, OScDev_Setting **setting, const char *name, enum OScDev_ValueType valueType, OScDev_SettingImpl *impl, void *data)
+static OScDev_Error Setting_Create(OScDev_ModuleImpl *modImpl, OScDev_Setting **setting, const char *name, OScDev_ValueType valueType, OScDev_SettingImpl *impl, void *data)
 {
 	return OScInternal_Setting_Create(setting, name, valueType, impl, data);
 }
@@ -139,7 +139,7 @@ static OScDev_Error Acquisition_IsDetectorRequested(OScDev_ModuleImpl *modImpl, 
 }
 
 
-static OScDev_Error Acquisition_GetClockStartTriggerSource(OScDev_ModuleImpl *modImpl, OScDev_Acquisition *devAcq, enum OScDev_TriggerSource *startTrigger)
+static OScDev_Error Acquisition_GetClockStartTriggerSource(OScDev_ModuleImpl *modImpl, OScDev_Acquisition *devAcq, OScDev_TriggerSource *startTrigger)
 {
 	// At this moment we don't yet support external start trigger.
 	*startTrigger = OScDev_TriggerSource_Software;
@@ -147,7 +147,7 @@ static OScDev_Error Acquisition_GetClockStartTriggerSource(OScDev_ModuleImpl *mo
 }
 
 
-static OScDev_Error Acquisition_GetClockSource(OScDev_ModuleImpl *modImpl, OScDev_Acquisition *devAcq, enum OScDev_ClockSource *clock)
+static OScDev_Error Acquisition_GetClockSource(OScDev_ModuleImpl *modImpl, OScDev_Acquisition *devAcq, OScDev_ClockSource *clock)
 {
 	OSc_Device *device = OScInternal_AcquisitionForDevice_GetDevice(devAcq);
 	OSc_Acquisition *acq = OScInternal_AcquisitionForDevice_GetAcquisition(devAcq);

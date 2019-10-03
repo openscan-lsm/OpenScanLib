@@ -93,7 +93,7 @@ extern "C" {
  * set of changes is to be made over multiple commits, the version number
  * can be set to `(-1, 0)` in intermediate commits to indicate "experimental".
  */
-#define OScDevInternal_ABI_VERSION OScDevInternal_MAKE_VERSION(7, 0)
+#define OScDevInternal_ABI_VERSION OScDevInternal_MAKE_VERSION(8, 0)
 
 
 /** \addtogroup dpi
@@ -121,7 +121,10 @@ typedef struct OScInternal_AcquisitionForDevice OScDev_Acquisition;
 
 
 /// Log level.
-enum OScDev_LogLevel
+typedef int32_t OScDev_LogLevel;
+
+/// Constants for ::OScDev_LogLevel.
+enum
 {
 	OScDev_LogLevel_Debug,
 	OScDev_LogLevel_Info,
@@ -188,21 +191,24 @@ enum {
 // be freed before returning with an error.
 
 
-enum OScDev_TriggerSource
+typedef int32_t OScDev_TriggerSource;
+enum
 {
 	OScDev_TriggerSource_Software,
 	OScDev_TriggerSource_External,
 };
 
 
-enum OScDev_ClockSource
+typedef int32_t OScDev_ClockSource;
+enum
 {
 	OScDev_ClockSource_Internal,
 	OScDev_ClockSource_External,
 };
 
 
-enum OScDev_ValueType
+typedef int32_t OScDev_ValueType;
+enum
 {
 	OScDev_ValueType_String,
 	OScDev_ValueType_Bool,
@@ -212,7 +218,8 @@ enum OScDev_ValueType
 };
 
 
-enum OScDev_ValueConstraint
+typedef int32_t OScDev_ValueConstraint;
+enum
 {
 	OScDev_ValueConstraint_None,
 	OScDev_ValueConstraint_DiscreteValues,
@@ -445,7 +452,7 @@ struct OScDevInternal_Interface
 	// All functions take a pointer to the module implementation, even if not
 	// needed in the implementation, because it may help with debugging.
 
-	void (*Log)(OScDev_ModuleImpl *modImpl, OScDev_Device *device, enum OScDev_LogLevel level, const char *message);
+	void (*Log)(OScDev_ModuleImpl *modImpl, OScDev_Device *device, OScDev_LogLevel level, const char *message);
 
 	OScDev_PtrArray *(*PtrArray_Create)(OScDev_ModuleImpl *modImpl);
 	void (*PtrArray_Destroy)(OScDev_ModuleImpl *modImpl, OScDev_PtrArray *arr);
@@ -463,15 +470,15 @@ struct OScDevInternal_Interface
 	OScDev_Error (*Device_Create)(OScDev_ModuleImpl *modImpl, OScDev_Device **device, OScDev_DeviceImpl *impl, void *data);
 	void *(*Device_GetImplData)(OScDev_ModuleImpl *modImpl, OScDev_Device *device);
 
-	OScDev_Error (*Setting_Create)(OScDev_ModuleImpl *modImpl, OScDev_Setting **setting, const char *name, enum OScDev_ValueType valueType, OScDev_SettingImpl *impl, void *data);
+	OScDev_Error (*Setting_Create)(OScDev_ModuleImpl *modImpl, OScDev_Setting **setting, const char *name, OScDev_ValueType valueType, OScDev_SettingImpl *impl, void *data);
 	void *(*Setting_GetImplData)(OScDev_ModuleImpl *modImpl, OScDev_Setting *setting);
 
 	OScDev_Error (*Acquisition_GetNumberOfFrames)(OScDev_ModuleImpl *modImpl, OScDev_Acquisition *acq, uint32_t *numberOfFrames);
 	OScDev_Error (*Acquisition_IsClockRequested)(OScDev_ModuleImpl *modImpl, OScDev_Acquisition *acq, bool *isRequested);
 	OScDev_Error (*Acquisition_IsScannerRequested)(OScDev_ModuleImpl *modImpl, OScDev_Acquisition *acq, bool *isRequested);
 	OScDev_Error (*Acquisition_IsDetectorRequested)(OScDev_ModuleImpl *modImpl, OScDev_Acquisition *acq, bool *isRequested);
-	OScDev_Error (*Acquisition_GetClockStartTriggerSource)(OScDev_ModuleImpl *modImpl, OScDev_Acquisition *acq, enum OScDev_TriggerSource *startTrigger);
-	OScDev_Error (*Acquisition_GetClockSource)(OScDev_ModuleImpl *modImpl, OScDev_Acquisition *acq, enum OScDev_ClockSource *clock);
+	OScDev_Error (*Acquisition_GetClockStartTriggerSource)(OScDev_ModuleImpl *modImpl, OScDev_Acquisition *acq, OScDev_TriggerSource *startTrigger);
+	OScDev_Error (*Acquisition_GetClockSource)(OScDev_ModuleImpl *modImpl, OScDev_Acquisition *acq, OScDev_ClockSource *clock);
 	bool (*Acquisition_CallFrameCallback)(OScDev_ModuleImpl *modImpl, OScDev_Acquisition *acq, uint32_t channel, void *pixels);
 };
 
@@ -738,7 +745,7 @@ struct OScDev_SettingImpl
 {
 	OScDev_Error (*IsEnabled)(OScDev_Setting *setting, bool *enabled);
 	OScDev_Error (*IsWritable)(OScDev_Setting *setting, bool *writable);
-	OScDev_Error (*GetNumericConstraintType)(OScDev_Setting *setting, enum OScDev_ValueConstraint *constraintType);
+	OScDev_Error (*GetNumericConstraintType)(OScDev_Setting *setting, OScDev_ValueConstraint *constraintType);
 	OScDev_Error (*GetString)(OScDev_Setting *setting, char *value);
 	OScDev_Error (*SetString)(OScDev_Setting *setting, const char *value);
 	OScDev_Error (*GetBool)(OScDev_Setting *setting, bool *value);
@@ -778,7 +785,7 @@ struct OScDev_SettingImpl
  */
 
 /// Log a message
-OScDev_API void OScDev_Log(OScDev_Device *device, enum OScDev_LogLevel level, const char *message)
+OScDev_API void OScDev_Log(OScDev_Device *device, OScDev_LogLevel level, const char *message)
 {
 	OScDevInternal_FunctionTable->Log(&OScDevInternal_TheModuleImpl, device, level, message);
 }
@@ -873,7 +880,7 @@ OScDev_API void *OScDev_Device_GetImplData(OScDev_Device *device)
 	return OScDevInternal_FunctionTable->Device_GetImplData(&OScDevInternal_TheModuleImpl, device);
 }
 
-OScDev_API OScDev_Error OScDev_Setting_Create(OScDev_Setting **setting, const char *name, enum OScDev_ValueType valueType, OScDev_SettingImpl *impl, void *data)
+OScDev_API OScDev_Error OScDev_Setting_Create(OScDev_Setting **setting, const char *name, OScDev_ValueType valueType, OScDev_SettingImpl *impl, void *data)
 {
 	return OScDevInternal_FunctionTable->Setting_Create(&OScDevInternal_TheModuleImpl, setting, name, valueType, impl, data);
 }
@@ -915,7 +922,7 @@ OScDev_API OScDev_Error OScDev_Acquisition_IsDetectorRequested(OScDev_Acquisitio
  * \param[in] acq the acquisition
  * \param[out] startTrigger the clock start trigger; either software or external
  */
-OScDev_API OScDev_Error OScDev_Acquisition_GetClockStartTriggerSource(OScDev_Acquisition *acq, enum OScDev_TriggerSource *startTrigger)
+OScDev_API OScDev_Error OScDev_Acquisition_GetClockStartTriggerSource(OScDev_Acquisition *acq, OScDev_TriggerSource *startTrigger)
 {
 	return OScDevInternal_FunctionTable->Acquisition_GetClockStartTriggerSource(&OScDevInternal_TheModuleImpl, acq, startTrigger);
 }
@@ -928,7 +935,7 @@ OScDev_API OScDev_Error OScDev_Acquisition_GetClockStartTriggerSource(OScDev_Acq
  *
  * \todo This is redundant with OScDev_Acquisition_IsClockRequested(). Remove.
 */
-OScDev_API OScDev_Error OScDev_Acquisition_GetClockSource(OScDev_Acquisition *acq, enum OScDev_ClockSource *clock)
+OScDev_API OScDev_Error OScDev_Acquisition_GetClockSource(OScDev_Acquisition *acq, OScDev_ClockSource *clock)
 {
 	return OScDevInternal_FunctionTable->Acquisition_GetClockSource(&OScDevInternal_TheModuleImpl, acq, clock);
 }

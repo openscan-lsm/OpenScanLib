@@ -47,7 +47,7 @@ OSc_Error OSc_Setting_IsWritable(OSc_Setting *setting, bool *writable)
 OSc_Error OSc_Setting_GetNumericConstraintType(OSc_Setting *setting, OSc_ValueConstraint *constraintType)
 {
 	*constraintType = OSc_ValueConstraint_None;
-	enum OScDev_ValueConstraint dConstraintType;
+	OScDev_ValueConstraint dConstraintType;
 	OScDev_Error err;
 	if (OSc_CHECK_ERROR(err, setting->impl->GetNumericConstraintType(setting, &dConstraintType)))
 		return err;
@@ -178,7 +178,7 @@ static OSc_Error DefaultIsWritable(OSc_Setting *setting, bool *writable)
 }
 
 
-static OSc_Error DefaultGetNumericConstraint(OSc_Setting *setting, enum OScDev_ValueConstraint *constraintType)
+static OSc_Error DefaultGetNumericConstraint(OSc_Setting *setting, OScDev_ValueConstraint *constraintType)
 {
 	*constraintType = OScDev_ValueConstraint_None;
 	switch (setting->valueType)
