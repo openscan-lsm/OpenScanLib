@@ -23,14 +23,11 @@
     <ClCompile Include="src\DeviceInterface.c" />
     <ClCompile Include="src\Modules.c" />
     <ClCompile Include="src\Acquisition.c" />
-    <ClCompile Include="src\OpenScanClock.c" />
-    <ClCompile Include="src\OpenScanDetector.c" />
     <ClCompile Include="src\OpenScanDevice.c" />
     <ClCompile Include="src\OpenScanDeviceModules.c" />
     <ClCompile Include="src\OpenScanDevices.c" />
     <ClCompile Include="src\OpenScanLogging.c" />
     <ClCompile Include="src\LSM.c" />
-    <ClCompile Include="src\OpenScanScanner.c" />
     <ClCompile Include="src\Setting.c" />
     <ClCompile Include="src\Version.c" />
   </ItemGroup>

@@ -12,9 +12,9 @@ struct OScInternal_AcquisitionForDevice
 
 struct OScInternal_Acquisition
 {
-	OSc_Clock *clock;
-	OSc_Scanner *scanner;
-	OSc_Detector *detector;
+	OSc_Device *clockDevice;
+	OSc_Device *scannerDevice;
+	OSc_Device *detectorDevice;
 	uint32_t numberOfFrames;
 	OSc_FrameCallback frameCallback;
 	void *data;
@@ -43,30 +43,16 @@ OSc_Error OSc_Acquisition_Create(OSc_Acquisition **acq, OSc_LSM *lsm)
 {
 	*acq = calloc(1, sizeof(OSc_Acquisition));
 
-	OSc_Clock *clock = NULL;
-	OSc_LSM_GetClock(lsm, &clock);
-	OSc_Scanner *scanner = NULL;
-	OSc_LSM_GetScanner(lsm, &scanner);
-	OSc_Detector *detector = NULL;
-	OSc_LSM_GetDetector(lsm, &detector);
-	
-	(*acq)->clock = clock;
-	(*acq)->scanner = scanner;
-	(*acq)->detector = detector;
+	(*acq)->clockDevice = OSc_LSM_GetClockDevice(lsm);
+	(*acq)->scannerDevice = OSc_LSM_GetScannerDevice(lsm);
+	(*acq)->detectorDevice = OSc_LSM_GetDetectorDevice(lsm);
 	(*acq)->numberOfFrames = 1;
 
-	OSc_Device *clockDevice = NULL;
-	OSc_Clock_GetDevice(clock, &clockDevice);
-	OSc_Device *scannerDevice = NULL;
-	OSc_Scanner_GetDevice(scanner, &scannerDevice);
-	OSc_Device *detectorDevice = NULL;
-	OSc_Detector_GetDevice(detector, &detectorDevice);
-
-	(*acq)->acqForClockDevice.device = clockDevice;
+	(*acq)->acqForClockDevice.device = (*acq)->clockDevice;
 	(*acq)->acqForClockDevice.acq = *acq;
-	(*acq)->acqForScannerDevice.device = scannerDevice;
+	(*acq)->acqForScannerDevice.device = (*acq)->scannerDevice;
 	(*acq)->acqForScannerDevice.acq = *acq;
-	(*acq)->acqForDetectorDevice.device = detectorDevice;
+	(*acq)->acqForDetectorDevice.device = (*acq)->detectorDevice;
 	(*acq)->acqForDetectorDevice.acq = *acq;
 
 	return OSc_Error_OK;
@@ -116,33 +102,33 @@ OSc_Error OSc_Acquisition_Arm(OSc_Acquisition *acq)
 
 	// Clock
 	if (OSc_CHECK_ERROR(err,
-		acq->clock->device->impl->Arm(acq->clock->device,
+		acq->clockDevice->impl->Arm(acq->clockDevice,
 			&acq->acqForClockDevice)))
 		return err;
 
 	// Scanner, if different device
-	if (acq->scanner->device != acq->clock->device)
+	if (acq->scannerDevice != acq->clockDevice)
 	{
 		if (OSc_CHECK_ERROR(err,
-			acq->scanner->device->impl->Arm(acq->scanner->device,
+			acq->scannerDevice->impl->Arm(acq->scannerDevice,
 				&acq->acqForScannerDevice)))
 		{
-			acq->clock->device->impl->Stop(acq->clock->device);
+			acq->clockDevice->impl->Stop(acq->clockDevice);
 			return err;
 		}
 	}
 
 	// Detector, if different device
-	if (acq->detector->device != acq->clock->device &&
-		acq->detector->device != acq->scanner->device)
+	if (acq->detectorDevice != acq->clockDevice &&
+		acq->detectorDevice != acq->scannerDevice)
 	{
 		if (OSc_CHECK_ERROR(err,
-			acq->detector->device->impl->Arm(acq->detector->device,
+			acq->detectorDevice->impl->Arm(acq->detectorDevice,
 				&acq->acqForDetectorDevice)))
 		{
-			acq->scanner->device->impl->Stop(acq->scanner->device);
-			if (acq->clock->device != acq->scanner->device)
-				acq->clock->device->impl->Stop(acq->clock->device);
+			acq->scannerDevice->impl->Stop(acq->scannerDevice);
+			if (acq->clockDevice != acq->scannerDevice)
+				acq->clockDevice->impl->Stop(acq->clockDevice);
 			return err;
 		}
 	}
@@ -154,16 +140,16 @@ OSc_Error OSc_Acquisition_Arm(OSc_Acquisition *acq)
 OSc_Error OSc_Acquisition_Start(OSc_Acquisition *acq)
 {
 	// TODO Error if not armed
-	return acq->clock->device->impl->Start(acq->clock->device);
+	return acq->clockDevice->impl->Start(acq->clockDevice);
 }
 
 
 OSc_Error OSc_Acquisition_Stop(OSc_Acquisition *acq)
 {
 	// Stop() is idempotent, so we don't bother to determine the unique devices
-	acq->clock->device->impl->Stop(acq->clock->device);
-	acq->scanner->device->impl->Stop(acq->scanner->device);
-	acq->detector->device->impl->Stop(acq->detector->device);
+	acq->clockDevice->impl->Stop(acq->clockDevice);
+	acq->scannerDevice->impl->Stop(acq->scannerDevice);
+	acq->detectorDevice->impl->Stop(acq->detectorDevice);
 
 	return OSc_Error_OK;
 }
@@ -171,9 +157,9 @@ OSc_Error OSc_Acquisition_Stop(OSc_Acquisition *acq)
 
 OSc_Error OSc_Acquisition_Wait(OSc_Acquisition *acq)
 {
-	acq->clock->device->impl->Wait(acq->clock->device);
-	acq->scanner->device->impl->Wait(acq->scanner->device);
-	acq->detector->device->impl->Wait(acq->detector->device);
+	acq->clockDevice->impl->Wait(acq->clockDevice);
+	acq->scannerDevice->impl->Wait(acq->scannerDevice);
+	acq->detectorDevice->impl->Wait(acq->detectorDevice);
 	return OSc_Error_OK;
 }
 
@@ -186,25 +172,19 @@ uint32_t OScInternal_Acquisition_GetNumberOfFrames(OSc_Acquisition *acq)
 
 OSc_Device *OScInternal_Acquisition_GetClockDevice(OSc_Acquisition *acq)
 {
-	OSc_Device *ret;
-	OSc_Clock_GetDevice(acq->clock, &ret);
-	return ret;
+	return acq->clockDevice;
 }
 
 
 OSc_Device *OScInternal_Acquisition_GetScannerDevice(OSc_Acquisition *acq)
 {
-	OSc_Device *ret;
-	OSc_Scanner_GetDevice(acq->scanner, &ret);
-	return ret;
+	return acq->scannerDevice;
 }
 
 
 OSc_Device *OScInternal_Acquisition_GetDetectorDevice(OSc_Acquisition *acq)
 {
-	OSc_Device *ret;
-	OSc_Detector_GetDevice(acq->detector, &ret);
-	return ret;
+	return acq->detectorDevice;
 }
 
 

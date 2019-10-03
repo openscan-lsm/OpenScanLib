@@ -4,21 +4,6 @@
 #include "OpenScanDeviceLib.h"
 
 
-struct OScInternal_Clock
-{
-	OSc_Device *device;
-};
-
-struct OScInternal_Scanner
-{
-	OSc_Device *device;
-};
-
-struct OScInternal_Detector
-{
-	OSc_Device *device;
-};
-
 struct OScInternal_Device
 {
 	OScDev_DeviceImpl *impl;
@@ -28,10 +13,6 @@ struct OScInternal_Device
 	void *logData;
 
 	bool isOpen;
-
-	OSc_Clock *clock;
-	OSc_Scanner *scanner;
-	OSc_Detector *detector;
 
 	OSc_LSM *associatedLSM;
 

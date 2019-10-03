@@ -52,33 +52,6 @@ OSc_Error OSc_Device_Open(OSc_Device *device, OSc_LSM *lsm)
 		return err;
 	device->isOpen = true;
 
-	bool hasClock;
-	if (OSc_CHECK_ERROR(err, OSc_Device_HasClock(device, &hasClock)))
-		goto Error;
-	if (hasClock)
-	{
-		device->clock = calloc(1, sizeof(OSc_Clock));
-		device->clock->device = device;
-	}
-
-	bool hasScanner;
-	if (OSc_CHECK_ERROR(err, OSc_Device_HasScanner(device, &hasScanner)))
-		goto Error;
-	if (hasScanner)
-	{
-		device->scanner = calloc(1, sizeof(OSc_Scanner));
-		device->scanner->device = device;
-	}
-
-	bool hasDetector;
-	if (OSc_CHECK_ERROR(err, OSc_Device_HasDetector(device, &hasDetector)))
-		goto Error;
-	if (hasDetector)
-	{
-		device->detector = calloc(1, sizeof(OSc_Detector));
-		device->detector->device = device;
-	}
-
 	if (OSc_CHECK_ERROR(err, OScInternal_LSM_Associate_Device(lsm, device)))
 		goto Error;
 
@@ -101,15 +74,6 @@ OSc_Error OSc_Device_Close(OSc_Device *device)
 		if (OSc_CHECK_ERROR(err, OScInternal_LSM_Dissociate_Device(device->associatedLSM, device)))
 			return err;
 	}
-
-	if (device->clock)
-		free(device->clock);
-	if (device->scanner)
-		free(device->scanner);
-	if (device->detector)
-		free(device->detector);
-	device->scanner = NULL;
-	device->detector = NULL;
 
 	if (OSc_CHECK_ERROR(err, device->impl->Close(device)))
 		return err;
@@ -140,54 +104,6 @@ OSc_Error OSc_Device_HasDetector(OSc_Device *device, bool *hasDetector)
 	*hasDetector = false;
 
 	return device->impl->HasDetector(device, hasDetector);
-}
-
-
-OSc_Error OSc_Device_GetClock(OSc_Device *device, OSc_Clock **clock)
-{
-	*clock = NULL;
-
-	bool hasClock = false;
-	OSc_Error err;
-	if (OSc_CHECK_ERROR(err, OSc_Device_HasClock(device, &hasClock)))
-		return err;
-	if (!hasClock)
-		return OSc_Error_Device_Does_Not_Support_Clock;
-
-	*clock = device->clock;
-	return OSc_Error_OK;
-}
-
-
-OSc_Error OSc_Device_GetScanner(OSc_Device *device, OSc_Scanner **scanner)
-{
-	*scanner = NULL;
-
-	bool hasScanner = false;
-	OSc_Error err;
-	if (OSc_CHECK_ERROR(err, OSc_Device_HasScanner(device, &hasScanner)))
-		return err;
-	if (!hasScanner)
-		return OSc_Error_Device_Does_Not_Support_Scanner;
-
-	*scanner = device->scanner;
-	return OSc_Error_OK;
-}
-
-
-OSc_Error OSc_Device_GetDetector(OSc_Device *device, OSc_Detector **detector)
-{
-	*detector = NULL;
-
-	bool hasDetector = false;
-	OSc_Error err;
-	if (OSc_CHECK_ERROR(err, OSc_Device_HasDetector(device, &hasDetector)))
-		return err;
-	if (!hasDetector)
-		return OSc_Error_Device_Does_Not_Support_Detector;
-
-	*detector = device->detector;
-	return OSc_Error_OK;
 }
 
 
@@ -247,6 +163,24 @@ OSc_Error OSc_Device_SetMagnification(OSc_Device *device)
 	if (OSc_CHECK_ERROR(err, device->impl->SetMagnification(device)))
 		return err;
 	return OSc_Error_OK;
+}
+
+
+OSc_Error OSc_Device_GetDetectorImageSize(OSc_Device *detectorDevice, uint32_t *width, uint32_t *height)
+{
+	return detectorDevice->impl->GetImageSize(detectorDevice, width, height);
+}
+
+
+OSc_Error OSc_Device_GetDetectorNumberOfChannels(OSc_Device *detectorDevice, uint32_t *nChannels)
+{
+	return detectorDevice->impl->GetNumberOfChannels(detectorDevice, nChannels);
+}
+
+
+OSc_Error OSc_Device_GetDetectorBytesPerSample(OSc_Device *detectorDevice, uint32_t *bytesPerSample)
+{
+	return detectorDevice->impl->GetBytesPerSample(detectorDevice, bytesPerSample);
 }
 
 

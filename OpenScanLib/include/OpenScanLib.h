@@ -86,7 +86,7 @@ extern "C" {
  *
  * The above list is not comprehensive.
  */
-#define OScInternal_ABI_VERSION OScInternal_MAKE_VERSION(1, 0)
+#define OScInternal_ABI_VERSION OScInternal_MAKE_VERSION(2, 0)
 
 /**
  * \addtogroup api
@@ -197,31 +197,6 @@ typedef struct OScInternal_LSM OSc_LSM;
 typedef struct OScInternal_Device OSc_Device;
 
 /**
- * \brief A clock object, representing the clock capability of a device.
- *
- * \todo We should remove this type, instead directly associating a device
- * to an LSM as its "clock device".
- */
-typedef struct OScInternal_Clock OSc_Clock;
-
-/**
- * \brief A scanner object, representing the scanner capability of a device.
- *
- * \todo We should remove this type, instead directly associating a device
- * to an LSM as its "scanner device".
- */
-typedef struct OScInternal_Scanner OSc_Scanner;
-
-/**
- * \brief A detector object, representing the detector capability of a device.
- *
- * \todo We should remove this type, instead directly associating a device
- * to an LSM as its "detector device". This requires first refactoring the API
- * functions that operate on OSc_Detector.
- */
-typedef struct OScInternal_Detector OSc_Detector;
-
-/**
  * \brief A setting object, representing a device parameter.
  */
 typedef struct OScInternal_Setting OSc_Setting;
@@ -320,26 +295,17 @@ OSc_Error OSc_API OSc_LSM_Create(OSc_LSM **lsm);
  */
 OSc_Error OSc_API OSc_LSM_Destroy(OSc_LSM *lsm);
 
-/**
- * \todo Return value should be `void`.
- */
-OSc_Error OSc_API OSc_LSM_GetClock(OSc_LSM *lsm, OSc_Clock **clock);
+OSc_API OSc_Device *OSc_LSM_GetClockDevice(OSc_LSM *lsm);
 
-OSc_Error OSc_API OSc_LSM_SetClock(OSc_LSM *lsm, OSc_Clock *clock);
+OSc_API OSc_Device *OSc_LSM_GetScannerDevice(OSc_LSM *lsm);
 
-/**
- * \todo Return value should be `void`.
- */
-OSc_Error OSc_API OSc_LSM_GetScanner(OSc_LSM *lsm, OSc_Scanner **scanner);
+OSc_API OSc_Device *OSc_LSM_GetDetectorDevice(OSc_LSM *lsm);
 
-OSc_Error OSc_API OSc_LSM_SetScanner(OSc_LSM *lsm, OSc_Scanner *scanner);
+OSc_Error OSc_API OSc_LSM_SetClockDevice(OSc_LSM *lsm, OSc_Device *clockDevice);
 
-/**
- * \todo Return value should be `void`.
- */
-OSc_Error OSc_API OSc_LSM_GetDetector(OSc_LSM *lsm, OSc_Detector **detector);
+OSc_Error OSc_API OSc_LSM_SetScannerDevice(OSc_LSM *lsm, OSc_Device *scannerDevice);
 
-OSc_Error OSc_API OSc_LSM_SetDetector(OSc_LSM *lsm, OSc_Detector *detector);
+OSc_Error OSc_API OSc_LSM_SetDetectorDevice(OSc_LSM *lsm, OSc_Device *detectorDevice);
 
 /**
  * \todo This function should be retired once we revise the lifecycle of
@@ -410,9 +376,6 @@ OSc_Error OSc_API OSc_Device_Close(OSc_Device *device);
 OSc_Error OSc_API OSc_Device_HasClock(OSc_Device *device, bool *hasClock);
 OSc_Error OSc_API OSc_Device_HasScanner(OSc_Device *device, bool *hasScanner);
 OSc_Error OSc_API OSc_Device_HasDetector(OSc_Device *device, bool *hasDetector);
-OSc_Error OSc_API OSc_Device_GetClock(OSc_Device *device, OSc_Clock **clock);
-OSc_Error OSc_API OSc_Device_GetScanner(OSc_Device *device, OSc_Scanner **scanner);
-OSc_Error OSc_API OSc_Device_GetDetector(OSc_Device *device, OSc_Detector **detector);
 
 /**
  * \brief Get the settings for a device.
@@ -468,30 +431,23 @@ OSc_Error OSc_API OSc_Device_GetMagnification(OSc_Device *device, double *magnif
 */
 OSc_Error OSc_API OSc_Device_SetMagnification(OSc_Device *device);
 
-OSc_Error OSc_API OSc_Clock_GetDevice(OSc_Clock *clock, OSc_Device **device);
-
-OSc_Error OSc_API OSc_Scanner_GetDevice(OSc_Scanner *scanner, OSc_Device **device);
-
-OSc_Error OSc_API OSc_Detector_GetDevice(OSc_Detector *detector, OSc_Device **device);
-
 /**
  * \todo Image size should be determined by the acquisition (or acquisition
  * template) based on parameters.
  */
-OSc_Error OSc_API OSc_Detector_GetImageSize(OSc_Detector *detector, uint32_t *width, uint32_t *height);
+OSc_Error OSc_API OSc_Device_GetDetectorImageSize(OSc_Device *detectorDevice, uint32_t *width, uint32_t *height);
 
 /**
  * \todo Once we have "acquisition settings", number of channels should be a
- * property of acquisition (or acquisition template), not detector.
+ * property of acquisition (or acquisition template), not detector device.
  */
-OSc_Error OSc_API OSc_Detector_GetNumberOfChannels(OSc_Detector *detector, uint32_t *nChannels);
+OSc_Error OSc_API OSc_Device_GetDetectorNumberOfChannels(OSc_Device *detectorDevice, uint32_t *nChannels);
 
 /**
  * \todo Sample format should be a property of acquisition (or acquisition
- * template), not detector. Since we only support 16-bit right now, we can
- * make this change before we have "acquisition settings".
+ * template), not detector device.
  */
-OSc_Error OSc_API OSc_Detector_GetBytesPerSample(OSc_Detector *detector, uint32_t *bytesPerSample);
+OSc_Error OSc_API OSc_Device_GetDetectorBytesPerSample(OSc_Device *detectorDevice, uint32_t *bytesPerSample);
 
 /**
  * \brief Get the name of a setting.
