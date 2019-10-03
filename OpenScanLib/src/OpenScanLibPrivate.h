@@ -4,25 +4,6 @@
 #include "OpenScanDeviceLib.h"
 
 
-struct OScInternal_Device
-{
-	OScDev_DeviceImpl *impl;
-	void *implData;
-
-	OSc_LogFunc logFunc;
-	void *logData;
-
-	bool isOpen;
-
-	OSc_LSM *associatedLSM;
-
-	OScDev_PtrArray *settings;
-
-	char name[OSc_MAX_STR_LEN + 1];
-	char displayName[OSc_MAX_STR_LEN + 1];
-};
-
-
 // Internal functions
 
 void OSc_Log(OSc_Device *device, OSc_LogLevel level, const char *message);
@@ -64,8 +45,15 @@ OSc_Error OScInternal_LSM_Associate_Device(OSc_LSM *lsm, OSc_Device *device);
 OSc_Error OScInternal_LSM_Dissociate_Device(OSc_LSM *lsm, OSc_Device *device);
 OSc_Error OScInternal_LSM_Is_Device_Associated(OSc_LSM *lsm, OSc_Device *device, bool *isAssociated);
 
-OSc_Error OSc_Device_Create(OSc_Device **device, OScDev_DeviceImpl *impl, void *data);
-OSc_Error OSc_Device_Destroy(OSc_Device *device);
+OSc_Error OScInternal_Device_Create(OSc_Device **device, OScDev_DeviceImpl *impl, void *data);
+OSc_Error OScInternal_Device_Destroy(OSc_Device *device);
+bool OScInternal_Device_Log(OSc_Device *device, OSc_LogLevel level, const char *message);
+void *OScInternal_Device_GetImplData(OSc_Device *device);
+OSc_Error OScInternal_Device_Arm(OSc_Device *device, OSc_Acquisition *acq);
+OSc_Error OScInternal_Device_Start(OSc_Device *device);
+void OScInternal_Device_Stop(OSc_Device *device);
+void OScInternal_Device_Wait(OSc_Device *device);
+OSc_Error OScInternal_Device_IsRunning(OSc_Device *device, bool *isRunning);
 
 OSc_Error OScInternal_Setting_Create(OSc_Setting **setting, const char *name, OSc_ValueType valueType, OScDev_SettingImpl *impl, void *data);
 void OScInternal_Setting_Destroy(OSc_Setting *setting);
@@ -78,4 +66,5 @@ uint32_t OScInternal_Acquisition_GetNumberOfFrames(OSc_Acquisition *acq);
 OSc_Device *OScInternal_Acquisition_GetClockDevice(OSc_Acquisition *acq);
 OSc_Device *OScInternal_Acquisition_GetScannerDevice(OSc_Acquisition *acq);
 OSc_Device *OScInternal_Acquisition_GetDetectorDevice(OSc_Acquisition *acq);
+OScDev_Acquisition *OScInternal_Acquisition_GetForDevice(OSc_Acquisition *acq, OSc_Device *device);
 bool OScInternal_Acquisition_CallFrameCallback(OSc_Acquisition *acq, uint32_t channel, void *pixels);

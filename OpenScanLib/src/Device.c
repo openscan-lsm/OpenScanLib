@@ -5,6 +5,35 @@
 #include <string.h>
 
 
+struct OScInternal_Device
+{
+	OScDev_DeviceImpl *impl;
+	void *implData;
+
+	OSc_LogFunc logFunc;
+	void *logData;
+
+	bool isOpen;
+
+	OSc_LSM *associatedLSM;
+
+	OScDev_PtrArray *settings;
+
+	char name[OSc_MAX_STR_LEN + 1];
+	char displayName[OSc_MAX_STR_LEN + 1];
+};
+
+
+void OSc_Device_SetLogFunc(OSc_Device *device, OSc_LogFunc func, void *data)
+{
+	if (!device)
+		return;
+
+	device->logFunc = func;
+	device->logData = data;
+}
+
+
 OSc_Error OSc_Device_GetName(OSc_Device *device, const char **name)
 {
 	OSc_Error err;
@@ -54,6 +83,7 @@ OSc_Error OSc_Device_Open(OSc_Device *device, OSc_LSM *lsm)
 
 	if (OSc_CHECK_ERROR(err, OScInternal_LSM_Associate_Device(lsm, device)))
 		goto Error;
+	device->associatedLSM = lsm;
 
 	return OSc_Error_OK;
 
@@ -184,7 +214,7 @@ OSc_Error OSc_Device_GetDetectorBytesPerSample(OSc_Device *detectorDevice, uint3
 }
 
 
-OSc_Error OSc_Device_Create(OSc_Device **device, OScDev_DeviceImpl *impl, void *data)
+OSc_Error OScInternal_Device_Create(OSc_Device **device, OScDev_DeviceImpl *impl, void *data)
 {
 	*device = calloc(1, sizeof(OSc_Device));
 	(*device)->impl = impl;
@@ -193,7 +223,7 @@ OSc_Error OSc_Device_Create(OSc_Device **device, OScDev_DeviceImpl *impl, void *
 }
 
 
-OSc_Error OSc_Device_Destroy(OSc_Device *device)
+OSc_Error OScInternal_Device_Destroy(OSc_Device *device)
 {
 	if (!device) {
 		return OSc_Error_OK;
@@ -211,4 +241,66 @@ OSc_Error OSc_Device_Destroy(OSc_Device *device)
 
 	free(device);
 	return OSc_Error_OK;
+}
+
+
+bool OScInternal_Device_Log(OSc_Device *device, OSc_LogLevel level, const char *message)
+{
+	if (!device || !device->logFunc)
+		return false;
+	device->logFunc(message, level, device->logData);
+	return true;
+}
+
+
+void *OScInternal_Device_GetImplData(OSc_Device *device)
+{
+	if (!device)
+		return NULL;
+	return device->implData;
+}
+
+
+OSc_Error OScInternal_Device_Arm(OSc_Device *device, OSc_Acquisition *acq)
+{
+	if (!device || !acq)
+		return OSc_Error_Illegal_Argument;
+
+	return device->impl->Arm(device, OScInternal_Acquisition_GetForDevice(acq, device));
+}
+
+
+OSc_Error OScInternal_Device_Start(OSc_Device *device)
+{
+	if (!device)
+		return OSc_Error_Illegal_Argument;
+
+	return device->impl->Start(device);
+}
+
+
+void OScInternal_Device_Stop(OSc_Device *device)
+{
+	if (!device)
+		return;
+
+	device->impl->Stop(device);
+}
+
+
+void OScInternal_Device_Wait(OSc_Device *device)
+{
+	if (!device)
+		return;
+
+	device->impl->Wait(device);
+}
+
+
+OSc_Error OScInternal_Device_IsRunning(OSc_Device *device, bool *isRunning)
+{
+	if (!device || !isRunning)
+		return OSc_Error_Illegal_Argument;
+
+	return device->impl->IsRunning(device, isRunning);
 }

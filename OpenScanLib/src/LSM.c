@@ -33,7 +33,7 @@ OSc_Error OSc_LSM_Destroy(OSc_LSM *lsm)
 	// that device, so we need to make a copy of the list of associated devices
 	// first.
 	size_t nDevices = lsm->associatedDeviceCount;
-	OSc_Device **devicesToClose = malloc(nDevices * sizeof(OSc_Device));
+	OSc_Device **devicesToClose = malloc(nDevices * sizeof(OSc_Device *));
 	for (int i = 0; i < lsm->associatedDeviceCount; ++i)
 	{
 		devicesToClose[i] = lsm->associatedDevices[i];
@@ -147,16 +147,14 @@ OSc_Error OScInternal_LSM_Associate_Device(OSc_LSM *lsm, OSc_Device *device)
 
 	if (!lsm->associatedDevices)
 	{
-		lsm->associatedDevices = malloc(sizeof(OSc_Device));
+		lsm->associatedDevices = malloc(sizeof(OSc_Device *));
 		lsm->associatedDeviceCount = 1;
 	}
 	else {
 		lsm->associatedDevices = realloc(lsm->associatedDevices,
-			(++lsm->associatedDeviceCount) * sizeof(OSc_Device));
+			(++lsm->associatedDeviceCount) * sizeof(OSc_Device *));
 	}
 	lsm->associatedDevices[lsm->associatedDeviceCount - 1] = device;
-
-	device->associatedLSM = lsm;
 
 	return OSc_Error_OK;
 }
@@ -165,7 +163,7 @@ OSc_Error OScInternal_LSM_Associate_Device(OSc_LSM *lsm, OSc_Device *device)
 OSc_Error OScInternal_LSM_Dissociate_Device(OSc_LSM *lsm, OSc_Device *device)
 {
 	bool found = false;
-	OSc_Device **newList = malloc(lsm->associatedDeviceCount * sizeof(OSc_Device));
+	OSc_Device **newList = malloc(lsm->associatedDeviceCount * sizeof(OSc_Device *));
 	for (int i = 0; i < lsm->associatedDeviceCount; ++i)
 	{
 		if (lsm->associatedDevices[i] == device)
@@ -212,7 +210,7 @@ OSc_Error OSc_LSM_IsRunningAcquisition(OSc_LSM *lsm, bool *isRunning)
 	{
 		OSc_Device *device = lsm->associatedDevices[i];
 		OSc_Error err;
-		if (OSc_CHECK_ERROR(err, device->impl->IsRunning(device, isRunning)))
+		if (OSc_CHECK_ERROR(err, OScInternal_Device_IsRunning(device, isRunning)))
 			return err;
 		if (*isRunning)
 			return OSc_Error_OK;

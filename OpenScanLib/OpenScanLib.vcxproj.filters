@@ -17,16 +17,10 @@
     <ClCompile Include="src\Modules.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\OpenScanDevice.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\OpenScanDeviceModules.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\OpenScanDevices.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\OpenScanLogging.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\DeviceInterface.c">
@@ -45,6 +39,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Acquisition.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Device.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Logging.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

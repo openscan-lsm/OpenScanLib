@@ -101,19 +101,15 @@ OSc_Error OSc_Acquisition_Arm(OSc_Acquisition *acq)
 	OSc_Error err;
 
 	// Clock
-	if (OSc_CHECK_ERROR(err,
-		acq->clockDevice->impl->Arm(acq->clockDevice,
-			&acq->acqForClockDevice)))
+	if (OSc_CHECK_ERROR(err, OScInternal_Device_Arm(acq->clockDevice, acq)))
 		return err;
 
 	// Scanner, if different device
 	if (acq->scannerDevice != acq->clockDevice)
 	{
-		if (OSc_CHECK_ERROR(err,
-			acq->scannerDevice->impl->Arm(acq->scannerDevice,
-				&acq->acqForScannerDevice)))
+		if (OSc_CHECK_ERROR(err, OScInternal_Device_Arm(acq->scannerDevice, acq)))
 		{
-			acq->clockDevice->impl->Stop(acq->clockDevice);
+			OScInternal_Device_Stop(acq->clockDevice);
 			return err;
 		}
 	}
@@ -122,13 +118,11 @@ OSc_Error OSc_Acquisition_Arm(OSc_Acquisition *acq)
 	if (acq->detectorDevice != acq->clockDevice &&
 		acq->detectorDevice != acq->scannerDevice)
 	{
-		if (OSc_CHECK_ERROR(err,
-			acq->detectorDevice->impl->Arm(acq->detectorDevice,
-				&acq->acqForDetectorDevice)))
+		if (OSc_CHECK_ERROR(err, OScInternal_Device_Arm(acq->detectorDevice, acq)))
 		{
-			acq->scannerDevice->impl->Stop(acq->scannerDevice);
+			OScInternal_Device_Stop(acq->scannerDevice);
 			if (acq->clockDevice != acq->scannerDevice)
-				acq->clockDevice->impl->Stop(acq->clockDevice);
+				OScInternal_Device_Stop(acq->clockDevice);
 			return err;
 		}
 	}
@@ -140,16 +134,16 @@ OSc_Error OSc_Acquisition_Arm(OSc_Acquisition *acq)
 OSc_Error OSc_Acquisition_Start(OSc_Acquisition *acq)
 {
 	// TODO Error if not armed
-	return acq->clockDevice->impl->Start(acq->clockDevice);
+	return OScInternal_Device_Start(acq->clockDevice);
 }
 
 
 OSc_Error OSc_Acquisition_Stop(OSc_Acquisition *acq)
 {
 	// Stop() is idempotent, so we don't bother to determine the unique devices
-	acq->clockDevice->impl->Stop(acq->clockDevice);
-	acq->scannerDevice->impl->Stop(acq->scannerDevice);
-	acq->detectorDevice->impl->Stop(acq->detectorDevice);
+	OScInternal_Device_Stop(acq->clockDevice);
+	OScInternal_Device_Stop(acq->scannerDevice);
+	OScInternal_Device_Stop(acq->detectorDevice);
 
 	return OSc_Error_OK;
 }
@@ -157,9 +151,9 @@ OSc_Error OSc_Acquisition_Stop(OSc_Acquisition *acq)
 
 OSc_Error OSc_Acquisition_Wait(OSc_Acquisition *acq)
 {
-	acq->clockDevice->impl->Wait(acq->clockDevice);
-	acq->scannerDevice->impl->Wait(acq->scannerDevice);
-	acq->detectorDevice->impl->Wait(acq->detectorDevice);
+	OScInternal_Device_Wait(acq->clockDevice);
+	OScInternal_Device_Wait(acq->scannerDevice);
+	OScInternal_Device_Wait(acq->detectorDevice);
 	return OSc_Error_OK;
 }
 
@@ -185,6 +179,18 @@ OSc_Device *OScInternal_Acquisition_GetScannerDevice(OSc_Acquisition *acq)
 OSc_Device *OScInternal_Acquisition_GetDetectorDevice(OSc_Acquisition *acq)
 {
 	return acq->detectorDevice;
+}
+
+
+OScDev_Acquisition *OScInternal_Acquisition_GetForDevice(OSc_Acquisition *acq, OSc_Device *device)
+{
+	if (acq->clockDevice == device)
+		return &acq->acqForClockDevice;
+	if (acq->scannerDevice == device)
+		return &acq->acqForScannerDevice;
+	if (acq->detectorDevice == device)
+		return &acq->acqForDetectorDevice;
+	return NULL;
 }
 
 
