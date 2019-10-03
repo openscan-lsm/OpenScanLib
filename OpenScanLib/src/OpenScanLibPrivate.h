@@ -41,6 +41,10 @@ OScDev_NumRange *OSc_NumRange_CreateDiscrete(void);
 void OSc_NumRange_Destroy(const OScDev_NumRange *range);
 void OSc_NumRange_AppendDiscrete(OScDev_NumRange *range, double val);
 
+OSc_Error OScInternal_DeviceModule_GetCount(size_t *count);
+OSc_Error OScInternal_DeviceModule_GetNames(const char **modules, size_t *count);
+OSc_Error OScInternal_DeviceModule_GetDeviceImpls(const char *module, const OScDev_PtrArray **deviceImpls);
+
 OSc_Error OScInternal_LSM_Associate_Device(OSc_LSM *lsm, OSc_Device *device);
 OSc_Error OScInternal_LSM_Dissociate_Device(OSc_LSM *lsm, OSc_Device *device);
 OSc_Error OScInternal_LSM_Is_Device_Associated(OSc_LSM *lsm, OSc_Device *device, bool *isAssociated);

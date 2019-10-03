@@ -24,7 +24,7 @@
     <ClCompile Include="src\Modules.c" />
     <ClCompile Include="src\Acquisition.c" />
     <ClCompile Include="src\Device.c" />
-    <ClCompile Include="src\OpenScanDeviceModules.c" />
+    <ClCompile Include="src\DeviceModule.c" />
     <ClCompile Include="src\OpenScanDevices.c" />
     <ClCompile Include="src\Logging.c" />
     <ClCompile Include="src\LSM.c" />
@@ -35,7 +35,6 @@
     <ClInclude Include="include\OpenScanLib.h" />
     <ClInclude Include="src\DeviceInterface.h" />
     <ClInclude Include="src\Modules.h" />
-    <ClInclude Include="src\OpenScanDeviceModules.h" />
     <ClInclude Include="src\OpenScanLibPrivate.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

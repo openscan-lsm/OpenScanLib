@@ -1,5 +1,3 @@
-#include "OpenScanDeviceModules.h"
-
 #include "DeviceInterface.h"
 #include "Modules.h"
 
@@ -129,7 +127,7 @@ void OSc_SetDeviceModuleSearchPaths(char **paths)
 }
 
 
-OSc_Error OSc_DeviceModule_Get_Count(size_t *count)
+OSc_Error OScInternal_DeviceModule_GetCount(size_t *count)
 {
 	if (!g_loadedAdapters)
 		LoadAdapters();
@@ -139,7 +137,7 @@ OSc_Error OSc_DeviceModule_Get_Count(size_t *count)
 }
 
 
-OSc_Error OSc_DeviceModule_Get_Names(const char **modules, size_t *count)
+OSc_Error OScInternal_DeviceModule_GetNames(const char **modules, size_t *count)
 {
 	if (!g_loadedAdapters)
 		LoadAdapters();
@@ -152,7 +150,7 @@ OSc_Error OSc_DeviceModule_Get_Names(const char **modules, size_t *count)
 }
 
 
-OSc_Error OSc_DeviceModule_GetDeviceImpls(const char *module, const OScDev_PtrArray **deviceImpls)
+OSc_Error OScInternal_DeviceModule_GetDeviceImpls(const char *module, const OScDev_PtrArray **deviceImpls)
 {
 	struct Module *mod = NULL;
 	for (size_t i = 0; i < g_loadedAdapterCount; ++i)

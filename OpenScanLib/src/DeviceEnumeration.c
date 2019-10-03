@@ -1,7 +1,5 @@
 #include "OpenScanLibPrivate.h"
 
-#include "OpenScanDeviceModules.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -60,10 +58,10 @@ static OSc_Error EnumerateDevices(void)
 
 	size_t nModules;
 	OSc_Error err;
-	if (OSc_CHECK_ERROR(err, OSc_DeviceModule_Get_Count(&nModules)))
+	if (OSc_CHECK_ERROR(err, OScInternal_DeviceModule_GetCount(&nModules)))
 		return err;
 	char **moduleNames = malloc(sizeof(void *) * nModules);
-	if (OSc_CHECK_ERROR(err, OSc_DeviceModule_Get_Names(moduleNames, &nModules)))
+	if (OSc_CHECK_ERROR(err, OScInternal_DeviceModule_GetNames(moduleNames, &nModules)))
 	{
 		free(moduleNames);
 		return err;
@@ -79,7 +77,7 @@ static OSc_Error EnumerateDevices(void)
 		const char* moduleName = moduleNames[i];
 
 		const OScDev_PtrArray *deviceImpls = NULL;
-		err = OSc_DeviceModule_GetDeviceImpls(moduleName, &deviceImpls);
+		err = OScInternal_DeviceModule_GetDeviceImpls(moduleName, &deviceImpls);
 		if (err) {
 			char msg[OSc_MAX_STR_LEN + 1] = "Cannot get device implementations from module: ";
 			strncat(msg, moduleName, sizeof(msg) - 1);
