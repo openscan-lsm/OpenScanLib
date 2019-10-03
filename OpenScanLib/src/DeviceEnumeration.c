@@ -32,7 +32,7 @@ static void EnumerateDevicesForImpl(const char *moduleName, OScDev_DeviceImpl *i
 		}
 
 		snprintf(msg, sizeof(msg), "Cannot enumerate devices: %s", model);
-		OSc_Log_Warning(NULL, msg);
+		OScInternal_LogWarning(NULL, msg);
 		return;
 	}
 
@@ -45,7 +45,7 @@ static void EnumerateDevicesForImpl(const char *moduleName, OScDev_DeviceImpl *i
 		if (!device) {
 			continue;
 		}
-		OSc_PtrArray_Append(g_deviceInstances, device);
+		OScInternal_PtrArray_Append(g_deviceInstances, device);
 	}
 }
 
@@ -67,7 +67,7 @@ static OSc_Error EnumerateDevices(void)
 		return err;
 	}
 
-	g_deviceInstances = OSc_PtrArray_Create();
+	g_deviceInstances = OScInternal_PtrArray_Create();
 	if (!g_deviceInstances) {
 		return OSc_Error_Unknown; // Out of memory
 	}
@@ -82,7 +82,7 @@ static OSc_Error EnumerateDevices(void)
 			char msg[OSc_MAX_STR_LEN + 1] = "Cannot get device implementations from module: ";
 			strncat(msg, moduleName, sizeof(msg) - 1);
 			msg[sizeof(msg) - 1] = '\0';
-			OSc_Log_Warning(NULL, msg);
+			OScInternal_LogWarning(NULL, msg);
 
 			continue;
 		}
@@ -91,7 +91,7 @@ static OSc_Error EnumerateDevices(void)
 			EnumerateDevicesForImpl(moduleName,
 				(OScDev_DeviceImpl *)(deviceImpls->ptr[i]));
 		}
-		OSc_PtrArray_Destroy(deviceImpls);
+		OScInternal_PtrArray_Destroy(deviceImpls);
 	}
 
 	free(moduleNames);

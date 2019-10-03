@@ -6,40 +6,40 @@
 
 // Internal functions
 
-void OSc_Log(OSc_Device *device, OSc_LogLevel level, const char *message);
+void OScInternal_Log(OSc_Device *device, OSc_LogLevel level, const char *message);
 
-static inline OSc_Log_Debug(OSc_Device *device, const char *message)
+static inline OScInternal_LogDebug(OSc_Device *device, const char *message)
 {
-	OSc_Log(device, OSc_LogLevel_Debug, message);
+	OScInternal_Log(device, OSc_LogLevel_Debug, message);
 }
 
-static inline OSc_Log_Info(OSc_Device *device, const char *message)
+static inline OScInternal_LogInfo(OSc_Device *device, const char *message)
 {
-	OSc_Log(device, OSc_LogLevel_Info, message);
+	OScInternal_Log(device, OSc_LogLevel_Info, message);
 }
 
-static inline OSc_Log_Warning(OSc_Device *device, const char *message)
+static inline OScInternal_LogWarning(OSc_Device *device, const char *message)
 {
-	OSc_Log(device, OSc_LogLevel_Warning, message);
+	OScInternal_Log(device, OSc_LogLevel_Warning, message);
 }
 
-static inline OSc_Log_Error(OSc_Device *device, const char *message)
+static inline OScInternal_LogError(OSc_Device *device, const char *message)
 {
-	OSc_Log(device, OSc_LogLevel_Error, message);
+	OScInternal_Log(device, OSc_LogLevel_Error, message);
 }
 
-OScDev_PtrArray *OSc_PtrArray_Create(void);
-void OSc_PtrArray_Destroy(const OScDev_PtrArray *arr);
-void OSc_PtrArray_Append(OScDev_PtrArray *arr, void *obj);
+OScDev_PtrArray *OScInternal_PtrArray_Create(void);
+void OScInternal_PtrArray_Destroy(const OScDev_PtrArray *arr);
+void OScInternal_PtrArray_Append(OScDev_PtrArray *arr, void *obj);
 
-OScDev_NumArray *OSc_NumArray_Create(void);
-void OSc_NumArray_Destroy(const OScDev_NumArray *arr);
-void OSc_NumArray_Append(OScDev_NumArray *arr, double val);
+OScDev_NumArray *OScInternal_NumArray_Create(void);
+void OScInternal_NumArray_Destroy(const OScDev_NumArray *arr);
+void OScInternal_NumArray_Append(OScDev_NumArray *arr, double val);
 
-OScDev_NumRange *OSc_NumRange_CreateContinuous(double rMin, double rMax);
-OScDev_NumRange *OSc_NumRange_CreateDiscrete(void);
-void OSc_NumRange_Destroy(const OScDev_NumRange *range);
-void OSc_NumRange_AppendDiscrete(OScDev_NumRange *range, double val);
+OScDev_NumRange *OScInternal_NumRange_CreateContinuous(double rMin, double rMax);
+OScDev_NumRange *OScInternal_NumRange_CreateDiscrete(void);
+void OScInternal_NumRange_Destroy(const OScDev_NumRange *range);
+void OScInternal_NumRange_AppendDiscrete(OScDev_NumRange *range, double val);
 
 OSc_Error OScInternal_DeviceModule_GetCount(size_t *count);
 OSc_Error OScInternal_DeviceModule_GetNames(const char **modules, size_t *count);
