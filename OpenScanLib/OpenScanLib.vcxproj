@@ -22,7 +22,7 @@
     <ClCompile Include="src\Array.c" />
     <ClCompile Include="src\DeviceInterface.c" />
     <ClCompile Include="src\Modules.c" />
-    <ClCompile Include="src\OpenScanAcquisition.c" />
+    <ClCompile Include="src\Acquisition.c" />
     <ClCompile Include="src\OpenScanClock.c" />
     <ClCompile Include="src\OpenScanDetector.c" />
     <ClCompile Include="src\OpenScanDevice.c" />

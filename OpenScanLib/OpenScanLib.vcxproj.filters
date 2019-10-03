@@ -17,9 +17,6 @@
     <ClCompile Include="src\Modules.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\OpenScanAcquisition.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\OpenScanDetector.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -54,6 +51,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\LSM.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Acquisition.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

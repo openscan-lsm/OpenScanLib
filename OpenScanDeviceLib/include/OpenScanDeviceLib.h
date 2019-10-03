@@ -925,7 +925,9 @@ OScDev_API OScDev_Error OScDev_Acquisition_GetClockStartTriggerSource(OScDev_Acq
  * This function is only useful when the scanner and/or detector is requested
  * for the acquisition (see `OScDev_Acquisition_IsScannerRequested()` and
  * `OScDev_Acquisition_IsDetectorRequested()`).
- */
+ *
+ * \todo This is redundant with OScDev_Acquisition_IsClockRequested(). Remove.
+*/
 OScDev_API OScDev_Error OScDev_Acquisition_GetClockSource(OScDev_Acquisition *acq, enum OScDev_ClockSource *clock)
 {
 	return OScDevInternal_FunctionTable->Acquisition_GetClockSource(&OScDevInternal_TheModuleImpl, acq, clock);

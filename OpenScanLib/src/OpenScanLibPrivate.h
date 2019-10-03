@@ -41,28 +41,6 @@ struct OScInternal_Device
 	char displayName[OSc_MAX_STR_LEN + 1];
 };
 
-struct OScInternal_AcquisitionForDevice
-{
-	OSc_Device *device;
-	OSc_Acquisition *acq;
-};
-
-struct OScInternal_Acquisition
-{
-	OSc_Clock *clock;
-	OSc_Scanner *scanner;
-	OSc_Detector *detector;
-	uint32_t numberOfFrames;
-	OSc_FrameCallback frameCallback;
-	void *data;
-
-	// We can pass opaque pointers to these structs to devices, so that we can
-	// handle acquisition-related calls in a device-specific manner.
-	struct OScInternal_AcquisitionForDevice acqForClockDevice;
-	struct OScInternal_AcquisitionForDevice acqForScannerDevice;
-	struct OScInternal_AcquisitionForDevice acqForDetectorDevice;
-};
-
 
 // Internal functions
 
@@ -111,3 +89,12 @@ OSc_Error OSc_Device_Destroy(OSc_Device *device);
 OSc_Error OScInternal_Setting_Create(OSc_Setting **setting, const char *name, OSc_ValueType valueType, OScDev_SettingImpl *impl, void *data);
 void OScInternal_Setting_Destroy(OSc_Setting *setting);
 void *OScInternal_Setting_GetImplData(OSc_Setting *setting);
+
+OSc_Device *OScInternal_AcquisitionForDevice_GetDevice(OScDev_Acquisition *devAcq);
+OSc_Acquisition *OScInternal_AcquisitionForDevice_GetAcquisition(OScDev_Acquisition *devAcq);
+
+uint32_t OScInternal_Acquisition_GetNumberOfFrames(OSc_Acquisition *acq);
+OSc_Device *OScInternal_Acquisition_GetClockDevice(OSc_Acquisition *acq);
+OSc_Device *OScInternal_Acquisition_GetScannerDevice(OSc_Acquisition *acq);
+OSc_Device *OScInternal_Acquisition_GetDetectorDevice(OSc_Acquisition *acq);
+bool OScInternal_Acquisition_CallFrameCallback(OSc_Acquisition *acq, uint32_t channel, void *pixels);

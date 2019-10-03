@@ -103,28 +103,38 @@ static void *Setting_GetImplData(OScDev_ModuleImpl *modImpl, OScDev_Setting *set
 
 static OScDev_Error Acquisition_GetNumberOfFrames(OScDev_ModuleImpl *modImpl, OScDev_Acquisition *devAcq, uint32_t *numberOfFrames)
 {
-	*numberOfFrames = devAcq->acq->numberOfFrames;
+	OSc_Acquisition *acq = OScInternal_AcquisitionForDevice_GetAcquisition(devAcq);
+	*numberOfFrames = OScInternal_Acquisition_GetNumberOfFrames(acq);
 	return OScDev_OK;
 }
 
 
 static OScDev_Error Acquisition_IsClockRequested(OScDev_ModuleImpl *modImpl, OScDev_Acquisition *devAcq, bool *isRequested)
 {
-	*isRequested = devAcq->device == devAcq->acq->clock->device;
+	OSc_Device *device = OScInternal_AcquisitionForDevice_GetDevice(devAcq);
+	OSc_Acquisition *acq = OScInternal_AcquisitionForDevice_GetAcquisition(devAcq);
+	OSc_Device *clockDevice = OScInternal_Acquisition_GetClockDevice(acq);
+	*isRequested = device == clockDevice;
 	return OScDev_OK;
 }
 
 
 static OScDev_Error Acquisition_IsScannerRequested(OScDev_ModuleImpl *modImpl, OScDev_Acquisition *devAcq, bool *isRequested)
 {
-	*isRequested = devAcq->device == devAcq->acq->scanner->device;
+	OSc_Device *device = OScInternal_AcquisitionForDevice_GetDevice(devAcq);
+	OSc_Acquisition *acq = OScInternal_AcquisitionForDevice_GetAcquisition(devAcq);
+	OSc_Device *scannerDevice = OScInternal_Acquisition_GetScannerDevice(acq);
+	*isRequested = device == scannerDevice;
 	return OScDev_OK;
 }
 
 
 static OScDev_Error Acquisition_IsDetectorRequested(OScDev_ModuleImpl *modImpl, OScDev_Acquisition *devAcq, bool *isRequested)
 {
-	*isRequested = devAcq->device == devAcq->acq->detector->device;
+	OSc_Device *device = OScInternal_AcquisitionForDevice_GetDevice(devAcq);
+	OSc_Acquisition *acq = OScInternal_AcquisitionForDevice_GetAcquisition(devAcq);
+	OSc_Device *detectorDevice = OScInternal_Acquisition_GetDetectorDevice(acq);
+	*isRequested = device == detectorDevice;
 	return OScDev_OK;
 }
 
@@ -139,7 +149,11 @@ static OScDev_Error Acquisition_GetClockStartTriggerSource(OScDev_ModuleImpl *mo
 
 static OScDev_Error Acquisition_GetClockSource(OScDev_ModuleImpl *modImpl, OScDev_Acquisition *devAcq, enum OScDev_ClockSource *clock)
 {
-	if (devAcq->device == devAcq->acq->clock->device)
+	OSc_Device *device = OScInternal_AcquisitionForDevice_GetDevice(devAcq);
+	OSc_Acquisition *acq = OScInternal_AcquisitionForDevice_GetAcquisition(devAcq);
+	OSc_Device *clockDevice = OScInternal_Acquisition_GetClockDevice(acq);
+
+	if (device == clockDevice)
 		*clock = OScDev_ClockSource_Internal;
 	else
 		*clock = OScDev_ClockSource_External;
@@ -149,7 +163,8 @@ static OScDev_Error Acquisition_GetClockSource(OScDev_ModuleImpl *modImpl, OScDe
 
 static bool Acquisition_CallFrameCallback(OScDev_ModuleImpl *modImpl, OScDev_Acquisition *devAcq, uint32_t channel, void *pixels)
 {
-	return devAcq->acq->frameCallback(devAcq->acq, channel, pixels, devAcq->acq->data);
+	OSc_Acquisition *acq = OScInternal_AcquisitionForDevice_GetAcquisition(devAcq);
+	return OScInternal_Acquisition_CallFrameCallback(acq, channel, pixels);
 }
 
 

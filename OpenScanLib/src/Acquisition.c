@@ -1,7 +1,42 @@
-#include "OpenScanLib.h"
 #include "OpenScanLibPrivate.h"
 
 #include <stdlib.h>
+
+
+struct OScInternal_AcquisitionForDevice
+{
+	OSc_Device *device;
+	OSc_Acquisition *acq;
+};
+
+
+struct OScInternal_Acquisition
+{
+	OSc_Clock *clock;
+	OSc_Scanner *scanner;
+	OSc_Detector *detector;
+	uint32_t numberOfFrames;
+	OSc_FrameCallback frameCallback;
+	void *data;
+
+	// We can pass opaque pointers to these structs to devices, so that we can
+	// handle acquisition-related calls in a device-specific manner.
+	struct OScInternal_AcquisitionForDevice acqForClockDevice;
+	struct OScInternal_AcquisitionForDevice acqForScannerDevice;
+	struct OScInternal_AcquisitionForDevice acqForDetectorDevice;
+};
+
+
+OSc_Device *OScInternal_AcquisitionForDevice_GetDevice(OScDev_Acquisition *devAcq)
+{
+	return devAcq->device;
+}
+
+
+OSc_Acquisition *OScInternal_AcquisitionForDevice_GetAcquisition(OScDev_Acquisition *devAcq)
+{
+	return devAcq->acq;
+}
 
 
 OSc_Error OSc_Acquisition_Create(OSc_Acquisition **acq, OSc_LSM *lsm)
@@ -143,8 +178,41 @@ OSc_Error OSc_Acquisition_Wait(OSc_Acquisition *acq)
 }
 
 
-OSc_Error OSc_Acquisition_GetNumberOfFrames(OSc_Acquisition *acq, uint32_t *numberOfFrames)
+uint32_t OScInternal_Acquisition_GetNumberOfFrames(OSc_Acquisition *acq)
 {
-	*numberOfFrames = acq->numberOfFrames;
-	return OSc_Error_OK;
+	return acq->numberOfFrames;
+}
+
+
+OSc_Device *OScInternal_Acquisition_GetClockDevice(OSc_Acquisition *acq)
+{
+	OSc_Device *ret;
+	OSc_Clock_GetDevice(acq->clock, &ret);
+	return ret;
+}
+
+
+OSc_Device *OScInternal_Acquisition_GetScannerDevice(OSc_Acquisition *acq)
+{
+	OSc_Device *ret;
+	OSc_Scanner_GetDevice(acq->scanner, &ret);
+	return ret;
+}
+
+
+OSc_Device *OScInternal_Acquisition_GetDetectorDevice(OSc_Acquisition *acq)
+{
+	OSc_Device *ret;
+	OSc_Detector_GetDevice(acq->detector, &ret);
+	return ret;
+}
+
+
+bool OScInternal_Acquisition_CallFrameCallback(OSc_Acquisition *acq, uint32_t channel, void *pixels)
+{
+	if (acq->frameCallback == NULL) {
+		return true;
+	}
+
+	return acq->frameCallback(acq, channel, pixels, acq->data);
 }
