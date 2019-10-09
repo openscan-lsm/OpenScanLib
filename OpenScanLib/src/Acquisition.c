@@ -1,5 +1,6 @@
 #include "OpenScanLibPrivate.h"
 
+#include <math.h>
 #include <stdlib.h>
 
 
@@ -15,9 +16,20 @@ struct OScInternal_Acquisition
 	OSc_Device *clockDevice;
 	OSc_Device *scannerDevice;
 	OSc_Device *detectorDevice;
-	uint32_t numberOfFrames;
 	OSc_FrameCallback frameCallback;
 	void *data;
+
+	uint32_t numberOfFrames;
+	double pixelRateHz;
+	int32_t resolution;
+	double zoomFactor;
+	uint32_t xOffset;
+	uint32_t yOffset;
+	uint32_t width;
+	uint32_t height;
+
+	uint32_t numberOfChannels;
+	uint32_t bytesPerSample;
 
 	// We can pass opaque pointers to these structs to devices, so that we can
 	// handle acquisition-related calls in a device-specific manner.
@@ -39,14 +51,29 @@ OSc_Acquisition *OScInternal_AcquisitionForDevice_GetAcquisition(OScDev_Acquisit
 }
 
 
-OSc_Error OSc_Acquisition_Create(OSc_Acquisition **acq, OSc_LSM *lsm)
+OSc_Error OSc_Acquisition_Create(OSc_Acquisition **acq, OSc_AcqTemplate *tmpl)
 {
 	*acq = calloc(1, sizeof(OSc_Acquisition));
+
+	OSc_LSM *lsm = OSc_AcqTemplate_GetLSM(tmpl);
 
 	(*acq)->clockDevice = OSc_LSM_GetClockDevice(lsm);
 	(*acq)->scannerDevice = OSc_LSM_GetScannerDevice(lsm);
 	(*acq)->detectorDevice = OSc_LSM_GetDetectorDevice(lsm);
-	(*acq)->numberOfFrames = 1;
+
+	(*acq)->numberOfFrames = OSc_AcqTemplate_GetNumberOfFrames(tmpl);
+	OSc_Setting *setting;
+	OSc_AcqTemplate_GetPixelRateSetting(tmpl, &setting);
+	OSc_Setting_GetFloat64Value(setting, &(*acq)->pixelRateHz);
+	OSc_AcqTemplate_GetResolutionSetting(tmpl, &setting);
+	OSc_Setting_GetInt32Value(setting, &(*acq)->resolution);
+	OSc_AcqTemplate_GetZoomFactorSetting(tmpl, &setting);
+	OSc_Setting_GetFloat64Value(setting, &(*acq)->zoomFactor);
+	OSc_AcqTemplate_GetROI(tmpl, &(*acq)->xOffset, &(*acq)->yOffset,
+		&(*acq)->width, &(*acq)->height);
+
+	OScInternal_Device_GetNumberOfChannels((*acq)->detectorDevice, &(*acq)->numberOfChannels);
+	OScInternal_Device_GetBytesPerSample((*acq)->detectorDevice, &(*acq)->bytesPerSample);
 
 	(*acq)->acqForClockDevice.device = (*acq)->clockDevice;
 	(*acq)->acqForClockDevice.acq = *acq;
@@ -90,6 +117,74 @@ OSc_Error OSc_Acquisition_GetData(OSc_Acquisition *acq, void **data)
 OSc_Error OSc_Acquisition_SetData(OSc_Acquisition *acq, void *data)
 {
 	acq->data = data;
+	return OSc_Error_OK;
+}
+
+
+uint32_t OSc_Acquisition_GetNumberOfFrames(OSc_Acquisition *acq)
+{
+	if (!acq)
+		return 0;
+	return acq->numberOfFrames;
+}
+
+
+double OSc_Acquisition_GetPixelRate(OSc_Acquisition *acq)
+{
+	if (!acq)
+		return NAN;
+	return acq->pixelRateHz;
+}
+
+
+uint32_t OSc_Acquisition_GetResolution(OSc_Acquisition *acq)
+{
+	if (!acq)
+		return 0;
+	return acq->resolution;
+}
+
+
+double OSc_Acquisition_GetZoomFactor(OSc_Acquisition *acq)
+{
+	if (!acq)
+		return NAN;
+	return acq->zoomFactor;
+}
+
+
+void OSc_Acquisition_GetROI(OSc_Acquisition *acq, uint32_t *xOffset, uint32_t *yOffset, uint32_t *width, uint32_t *height)
+{
+	if (!acq) {
+		*xOffset = *yOffset = 0;
+		*width = *height = 0;
+		return;
+	}
+	if (xOffset)
+		*xOffset = acq->xOffset;
+	if (yOffset)
+		*yOffset = acq->yOffset;
+	if (width)
+		*width = acq->width;
+	if (height)
+		*height = acq->height;
+}
+
+
+OSc_Error OSc_Acquisition_GetNumberOfChannels(OSc_Acquisition *acq, uint32_t *numberOfChannels)
+{
+	if (!acq || !numberOfChannels)
+		return OSc_Error_Illegal_Argument;
+	*numberOfChannels = acq->numberOfChannels;
+	return OSc_Error_OK;
+}
+
+
+OSc_Error OSc_Acquisition_GetBytesPerSample(OSc_Acquisition *acq, uint32_t *bytesPerSample)
+{
+	if (!acq || !bytesPerSample)
+		return OSc_Error_Illegal_Argument;
+	*bytesPerSample = acq->bytesPerSample;
 	return OSc_Error_OK;
 }
 

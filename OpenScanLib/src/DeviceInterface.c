@@ -101,14 +101,6 @@ static void *Setting_GetImplData(OScDev_ModuleImpl *modImpl, OScDev_Setting *set
 }
 
 
-static OScDev_Error Acquisition_GetNumberOfFrames(OScDev_ModuleImpl *modImpl, OScDev_Acquisition *devAcq, uint32_t *numberOfFrames)
-{
-	OSc_Acquisition *acq = OScInternal_AcquisitionForDevice_GetAcquisition(devAcq);
-	*numberOfFrames = OScInternal_Acquisition_GetNumberOfFrames(acq);
-	return OScDev_OK;
-}
-
-
 static OScDev_Error Acquisition_IsClockRequested(OScDev_ModuleImpl *modImpl, OScDev_Acquisition *devAcq, bool *isRequested)
 {
 	OSc_Device *device = OScInternal_AcquisitionForDevice_GetDevice(devAcq);
@@ -161,6 +153,42 @@ static OScDev_Error Acquisition_GetClockSource(OScDev_ModuleImpl *modImpl, OScDe
 }
 
 
+static uint32_t Acquisition_GetNumberOfFrames(OScDev_ModuleImpl *modImpl, OScDev_Acquisition *devAcq)
+{
+	OSc_Acquisition *acq = OScInternal_AcquisitionForDevice_GetAcquisition(devAcq);
+	return OScInternal_Acquisition_GetNumberOfFrames(acq);
+}
+
+
+static double Acquisition_GetPixelRate(OScDev_ModuleImpl *modImpl, OScDev_Acquisition *devAcq)
+{
+	OSc_Acquisition *acq = OScInternal_AcquisitionForDevice_GetAcquisition(devAcq);
+	return OSc_Acquisition_GetPixelRate(acq);
+}
+
+
+static uint32_t Acquisition_GetResolution(OScDev_ModuleImpl *modImpl, OScDev_Acquisition *devAcq)
+{
+	OSc_Acquisition *acq = OScInternal_AcquisitionForDevice_GetAcquisition(devAcq);
+	return OSc_Acquisition_GetResolution(acq);
+}
+
+
+static double Acquisition_GetZoomFactor(OScDev_ModuleImpl *modImpl, OScDev_Acquisition *devAcq)
+{
+	OSc_Acquisition *acq = OScInternal_AcquisitionForDevice_GetAcquisition(devAcq);
+	return OSc_Acquisition_GetZoomFactor(acq);
+}
+
+
+static void Acquisition_GetROI(OScDev_ModuleImpl *modImpl, OScDev_Acquisition *devAcq,
+	uint32_t *xOffset, uint32_t *yOffset, uint32_t *width, uint32_t *height)
+{
+	OSc_Acquisition *acq = OScInternal_AcquisitionForDevice_GetAcquisition(devAcq);
+	OSc_Acquisition_GetROI(acq, xOffset, yOffset, width, height);
+}
+
+
 static bool Acquisition_CallFrameCallback(OScDev_ModuleImpl *modImpl, OScDev_Acquisition *devAcq, uint32_t channel, void *pixels)
 {
 	OSc_Acquisition *acq = OScInternal_AcquisitionForDevice_GetAcquisition(devAcq);
@@ -184,11 +212,15 @@ struct OScDevInternal_Interface DeviceInterfaceFunctionTable = {
 	.Device_GetImplData = Device_GetImplData,
 	.Setting_Create = Setting_Create,
 	.Setting_GetImplData = Setting_GetImplData,
-	.Acquisition_GetNumberOfFrames = Acquisition_GetNumberOfFrames,
 	.Acquisition_IsClockRequested = Acquisition_IsClockRequested,
 	.Acquisition_IsScannerRequested = Acquisition_IsScannerRequested,
 	.Acquisition_IsDetectorRequested = Acquisition_IsDetectorRequested,
 	.Acquisition_GetClockStartTriggerSource = Acquisition_GetClockStartTriggerSource,
 	.Acquisition_GetClockSource = Acquisition_GetClockSource,
+	.Acquisition_GetNumberOfFrames = Acquisition_GetNumberOfFrames,
+	.Acquisition_GetPixelRate = Acquisition_GetPixelRate,
+	.Acquisition_GetResolution = Acquisition_GetResolution,
+	.Acquisition_GetZoomFactor = Acquisition_GetZoomFactor,
+	.Acquisition_GetROI = Acquisition_GetROI,
 	.Acquisition_CallFrameCallback = Acquisition_CallFrameCallback,
 };

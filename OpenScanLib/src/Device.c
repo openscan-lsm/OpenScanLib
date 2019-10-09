@@ -152,68 +152,6 @@ OSc_Error OSc_Device_GetSettings(OSc_Device *device, OSc_Setting ***settings, si
 }
 
 
-OSc_Error OSc_Device_GetAllowedResolutions(OSc_Device *device, size_t **widths, size_t **heights, size_t *count)
-{
-	OSc_Error err;
-	if (OSc_CHECK_ERROR(err, device->impl->GetAllowedResolutions(device, widths, heights, count)))
-		return err;
-	return OSc_Error_OK;
-}
-
-
-OSc_Error OSc_Device_GetResolution(OSc_Device *device, size_t *width, size_t *height)
-{
-	OSc_Error err;
-	if (OSc_CHECK_ERROR(err, device->impl->GetResolution(device, width, height)))
-		return err;
-	return OSc_Error_OK;
-}
-
-
-OSc_Error OSc_Device_SetResolution(OSc_Device *device, size_t width, size_t height)
-{
-	OSc_Error err;
-	if (OSc_CHECK_ERROR(err, device->impl->SetResolution(device, width, height)))
-		return err;
-	return OSc_Error_OK;
-}
-
-OSc_Error OSc_Device_GetMagnification(OSc_Device *device, double *magnification)
-{
-	OSc_Error err;
-	if (OSc_CHECK_ERROR(err, device->impl->GetMagnification(device, magnification)))
-		return err;
-	return OSc_Error_OK;
-}
-
-
-OSc_Error OSc_Device_SetMagnification(OSc_Device *device)
-{
-	OSc_Error err;
-	if (OSc_CHECK_ERROR(err, device->impl->SetMagnification(device)))
-		return err;
-	return OSc_Error_OK;
-}
-
-
-OSc_Error OSc_Device_GetDetectorImageSize(OSc_Device *detectorDevice, uint32_t *width, uint32_t *height)
-{
-	return detectorDevice->impl->GetImageSize(detectorDevice, width, height);
-}
-
-
-OSc_Error OSc_Device_GetDetectorNumberOfChannels(OSc_Device *detectorDevice, uint32_t *nChannels)
-{
-	return detectorDevice->impl->GetNumberOfChannels(detectorDevice, nChannels);
-}
-
-
-OSc_Error OSc_Device_GetDetectorBytesPerSample(OSc_Device *detectorDevice, uint32_t *bytesPerSample)
-{
-	return detectorDevice->impl->GetBytesPerSample(detectorDevice, bytesPerSample);
-}
-
-
 OSc_Error OScInternal_Device_Create(OSc_Device **device, OScDev_DeviceImpl *impl, void *data)
 {
 	*device = calloc(1, sizeof(OSc_Device));
@@ -258,6 +196,78 @@ void *OScInternal_Device_GetImplData(OSc_Device *device)
 	if (!device)
 		return NULL;
 	return device->implData;
+}
+
+
+OScDev_NumRange *OScInternal_Device_GetPixelRates(OSc_Device *device)
+{
+	if (!device)
+		return NULL;
+	if (device->impl->GetPixelRates) {
+		OScDev_NumRange *ret;
+		OSc_Error err;
+		if (OSc_CHECK_ERROR(err, device->impl->GetPixelRates(device, &ret))) {
+			return OScInternal_NumRange_CreateDiscrete();
+		}
+		return ret;
+	}
+	return OScInternal_NumRange_CreateContinuous(1e-3, 1e10);
+}
+
+
+OScDev_NumRange *OScInternal_Device_GetResolutions(OSc_Device *device)
+{
+	if (!device)
+		return NULL;
+	if (device->impl->GetResolutions) {
+		OScDev_NumRange *ret;
+		OSc_Error err;
+		if (OSc_CHECK_ERROR(err, device->impl->GetResolutions(device, &ret))) {
+			return OScInternal_NumRange_CreateDiscrete();
+		}
+		return ret;
+	}
+	return OScInternal_NumRange_CreateContinuous(1, INT32_MAX);
+}
+
+
+OScDev_NumRange *OScInternal_Device_GetZooms(OSc_Device *device)
+{
+	if (!device)
+		return NULL;
+	if (device->impl->GetZoomFactors) {
+		OScDev_NumRange *ret;
+		OSc_Error err;
+		if (OSc_CHECK_ERROR(err, device->impl->GetZoomFactors(device, &ret))) {
+			return OScInternal_NumRange_CreateDiscrete();
+		}
+		return ret;
+	}
+	return OScInternal_NumRange_CreateContinuous(1e-6, 1e6);
+}
+
+
+OSc_Error OScInternal_Device_GetNumberOfChannels(OSc_Device *device, uint32_t *numberOfChannels)
+{
+	if (!device || !numberOfChannels)
+		return OSc_Error_Illegal_Argument;
+	if (device->impl->GetNumberOfChannels) {
+		return device->impl->GetNumberOfChannels(device, numberOfChannels);
+	}
+	*numberOfChannels = 0;
+	return OSc_Error_Device_Does_Not_Support_Detector;
+}
+
+
+OSc_Error OScInternal_Device_GetBytesPerSample(OSc_Device *device, uint32_t *bytesPerSample)
+{
+	if (!device || !bytesPerSample)
+		return OSc_Error_Illegal_Argument;
+	if (device->impl->GetBytesPerSample) {
+		return device->impl->GetBytesPerSample(device, bytesPerSample);
+	}
+	*bytesPerSample = 0;
+	return OSc_Error_Device_Does_Not_Support_Detector;
 }
 
 

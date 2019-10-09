@@ -88,7 +88,7 @@ extern "C" {
  *
  * The above list is not comprehensive.
  */
-#define OScInternal_ABI_VERSION OScInternal_MAKE_VERSION(2, 0)
+#define OScInternal_ABI_VERSION OScInternal_MAKE_VERSION(3, 0)
 
 /**
  * \addtogroup api
@@ -202,6 +202,11 @@ typedef struct OScInternal_Device OSc_Device;
  * \brief A setting object, representing a device parameter.
  */
 typedef struct OScInternal_Setting OSc_Setting;
+
+/**
+ * \brief A representation of acquisition settings for an LSM.
+ */
+typedef struct OScInternal_AcqTemplate OSc_AcqTemplate;
 
 /**
  * \brief An acquisition object, managing the state and data transfer for
@@ -395,63 +400,6 @@ OSc_API OSc_Error OSc_Device_HasDetector(OSc_Device *device, bool *hasDetector);
 OSc_API OSc_Error OSc_Device_GetSettings(OSc_Device *device, OSc_Setting ***settings, size_t *count);
 
 /**
- * \brief Get the scan resolutions supported by a device.
- *
- * \param device the device
- * \param[out] widths location where pointer to array of width values will be written
- * \param[out] heights location where pointer to array of height values will be written
- * \param[out] count location where number of resolutions in the two arrays will be written
- *
- * \todo Resolution should be a single number.
- *
- * \todo Resolution should be set for an acquisition, not individual devices.
- * The job of finding resolutions that are valid for all participating devices
- * should be OpenScanLib's responsibility.
- */
-OSc_API OSc_Error OSc_Device_GetAllowedResolutions(OSc_Device *device,
-	size_t **widths, size_t **heights, size_t *count);
-
-/**
- * \todo Resolution should be a parameter of an acquisition, not devices.
- */
-OSc_API OSc_Error OSc_Device_GetResolution(OSc_Device *device, size_t *width, size_t *height);
-
-/**
-* \todo Resolution should be a parameter of an acquisition, not devices.
-*/
-OSc_API OSc_Error OSc_Device_SetResolution(OSc_Device *device, size_t width, size_t height);
-
-/**
- * \todo Magnification should be managed by the application; zoom factor should
- * be a parameter of an acquisition.
- */
-OSc_API OSc_Error OSc_Device_GetMagnification(OSc_Device *device, double *magnification);
-
-/**
-* \todo Magnification should be managed by the application; zoom factor should
-* be a parameter of an acquisition.
-*/
-OSc_API OSc_Error OSc_Device_SetMagnification(OSc_Device *device);
-
-/**
- * \todo Image size should be determined by the acquisition (or acquisition
- * template) based on parameters.
- */
-OSc_API OSc_Error OSc_Device_GetDetectorImageSize(OSc_Device *detectorDevice, uint32_t *width, uint32_t *height);
-
-/**
- * \todo Once we have "acquisition settings", number of channels should be a
- * property of acquisition (or acquisition template), not detector device.
- */
-OSc_API OSc_Error OSc_Device_GetDetectorNumberOfChannels(OSc_Device *detectorDevice, uint32_t *nChannels);
-
-/**
- * \todo Sample format should be a property of acquisition (or acquisition
- * template), not detector device.
- */
-OSc_API OSc_Error OSc_Device_GetDetectorBytesPerSample(OSc_Device *detectorDevice, uint32_t *bytesPerSample);
-
-/**
  * \brief Get the name of a setting.
  *
  * \param setting the setting.
@@ -486,12 +434,34 @@ OSc_API OSc_Error OSc_Setting_GetEnumNumValues(OSc_Setting *setting, uint32_t *c
 OSc_API OSc_Error OSc_Setting_GetEnumNameForValue(OSc_Setting *setting, uint32_t value, char *name);
 OSc_API OSc_Error OSc_Setting_GetEnumValueForName(OSc_Setting *setting, uint32_t *value, const char *name);
 
-OSc_API OSc_Error OSc_Acquisition_Create(OSc_Acquisition **acq, OSc_LSM *lsm);
+OSc_API OSc_Error OSc_AcqTemplate_Create(OSc_AcqTemplate **tmpl, OSc_LSM *lsm);
+OSc_API void OSc_AcqTemplate_Destroy(OSc_AcqTemplate *tmpl);
+OSc_API OSc_LSM *OSc_AcqTemplate_GetLSM(OSc_AcqTemplate *tmpl);
+OSc_API OSc_Error OSc_AcqTemplate_SetNumberOfFrames(OSc_AcqTemplate *tmpl, uint32_t numberOfFrames);
+OSc_API uint32_t OSc_AcqTemplate_GetNumberOfFrames(OSc_AcqTemplate *tmpl);
+OSc_API OSc_Error OSc_AcqTemplate_GetPixelRateSetting(OSc_AcqTemplate *tmpl, OSc_Setting **setting);
+OSc_API OSc_Error OSc_AcqTemplate_GetResolutionSetting(OSc_AcqTemplate *tmpl, OSc_Setting **setting);
+OSc_API OSc_Error OSc_AcqTemplate_GetZoomFactorSetting(OSc_AcqTemplate *tmpl, OSc_Setting **setting);
+OSc_API OSc_Error OSc_AcqTemplate_SetROI(OSc_AcqTemplate *tmpl, uint32_t xOffset, uint32_t yOffset, uint32_t width, uint32_t height);
+OSc_API void OSc_AcqTemplate_ResetROI(OSc_AcqTemplate *tmpl);
+OSc_API OSc_Error OSc_AcqTemplate_GetROI(OSc_AcqTemplate *tmpl, uint32_t *xOffset, uint32_t *yOffset, uint32_t *width, uint32_t *height);
+// TODO AcqTemplate should also have numberOfChannels and bytesPerSample, but
+// that requires detector settings to apply to AcqTemplate rather than the
+// device.
+
+OSc_API OSc_Error OSc_Acquisition_Create(OSc_Acquisition **acq, OSc_AcqTemplate *tmpl);
 OSc_API OSc_Error OSc_Acquisition_Destroy(OSc_Acquisition *acq);
 OSc_API OSc_Error OSc_Acquisition_SetNumberOfFrames(OSc_Acquisition *acq, uint32_t numberOfFrames);
 OSc_API OSc_Error OSc_Acquisition_SetFrameCallback(OSc_Acquisition *acq, OSc_FrameCallback callback);
 OSc_API OSc_Error OSc_Acquisition_GetData(OSc_Acquisition *acq, void **data);
 OSc_API OSc_Error OSc_Acquisition_SetData(OSc_Acquisition *acq, void *data);
+OSc_API uint32_t OSc_Acquisition_GetNumberOfFrames(OSc_Acquisition *acq);
+OSc_API double OSc_Acquisition_GetPixelRate(OSc_Acquisition *acq);
+OSc_API uint32_t OSc_Acquisition_GetResolution(OSc_Acquisition *acq);
+OSc_API double OSc_Acquisition_GetZoomFactor(OSc_Acquisition *acq);
+OSc_API void OSc_Acquisition_GetROI(OSc_Acquisition *acq, uint32_t *xOffset, uint32_t *yOffset, uint32_t *width, uint32_t *height);
+OSc_API OSc_Error OSc_Acquisition_GetNumberOfChannels(OSc_Acquisition *acq, uint32_t *numberOfChannels);
+OSc_API OSc_Error OSc_Acquisition_GetBytesPerSample(OSc_Acquisition *acq, uint32_t *bytesPerSample);
 OSc_API OSc_Error OSc_Acquisition_Arm(OSc_Acquisition *acq);
 OSc_API OSc_Error OSc_Acquisition_Start(OSc_Acquisition *acq);
 OSc_API OSc_Error OSc_Acquisition_Stop(OSc_Acquisition *acq);

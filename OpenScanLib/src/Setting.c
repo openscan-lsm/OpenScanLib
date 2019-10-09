@@ -95,6 +95,7 @@ OSc_Error OSc_Setting_GetInt32Value(OSc_Setting *setting, int32_t *value)
 
 OSc_Error OSc_Setting_SetInt32Value(OSc_Setting *setting, int32_t value)
 {
+	// TODO Should we validate the value here?
 	return setting->impl->SetInt32(setting, value);
 }
 
@@ -142,6 +143,7 @@ OSc_Error OSc_Setting_GetFloat64Value(OSc_Setting *setting, double *value)
 
 OSc_Error OSc_Setting_SetFloat64Value(OSc_Setting *setting, double value)
 {
+	// TODO Should we validate the value here?
 	return setting->impl->SetFloat64(setting, value);
 }
 
@@ -189,6 +191,7 @@ OSc_Error OSc_Setting_GetEnumValue(OSc_Setting *setting, uint32_t *value)
 
 OSc_Error OSc_Setting_SetEnumValue(OSc_Setting *setting, uint32_t value)
 {
+	// TODO Should we validate the value here?
 	return setting->impl->SetEnum(setting, value);
 }
 
