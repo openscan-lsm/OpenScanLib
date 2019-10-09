@@ -35,6 +35,8 @@ void OScInternal_PtrArray_Append(OScDev_PtrArray *arr, void *obj);
 OScDev_NumArray *OScInternal_NumArray_Create(void);
 void OScInternal_NumArray_Destroy(const OScDev_NumArray *arr);
 void OScInternal_NumArray_Append(OScDev_NumArray *arr, double val);
+size_t OScInternal_NumArray_Size(OScDev_NumArray *arr);
+double OScInternal_NumArray_At(OScDev_NumArray *arr, size_t index);
 
 OScDev_NumRange *OScInternal_NumRange_CreateContinuous(double rMin, double rMax);
 OScDev_NumRange *OScInternal_NumRange_CreateDiscrete(void);

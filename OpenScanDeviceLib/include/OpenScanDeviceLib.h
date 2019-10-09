@@ -473,12 +473,14 @@ struct OScDevInternal_Interface
 	OScDev_Error (*Setting_Create)(OScDev_ModuleImpl *modImpl, OScDev_Setting **setting, const char *name, OScDev_ValueType valueType, OScDev_SettingImpl *impl, void *data);
 	void *(*Setting_GetImplData)(OScDev_ModuleImpl *modImpl, OScDev_Setting *setting);
 
+	// TODO These can return void
 	OScDev_Error (*Acquisition_GetNumberOfFrames)(OScDev_ModuleImpl *modImpl, OScDev_Acquisition *acq, uint32_t *numberOfFrames);
 	OScDev_Error (*Acquisition_IsClockRequested)(OScDev_ModuleImpl *modImpl, OScDev_Acquisition *acq, bool *isRequested);
 	OScDev_Error (*Acquisition_IsScannerRequested)(OScDev_ModuleImpl *modImpl, OScDev_Acquisition *acq, bool *isRequested);
 	OScDev_Error (*Acquisition_IsDetectorRequested)(OScDev_ModuleImpl *modImpl, OScDev_Acquisition *acq, bool *isRequested);
 	OScDev_Error (*Acquisition_GetClockStartTriggerSource)(OScDev_ModuleImpl *modImpl, OScDev_Acquisition *acq, OScDev_TriggerSource *startTrigger);
 	OScDev_Error (*Acquisition_GetClockSource)(OScDev_ModuleImpl *modImpl, OScDev_Acquisition *acq, OScDev_ClockSource *clock);
+
 	bool (*Acquisition_CallFrameCallback)(OScDev_ModuleImpl *modImpl, OScDev_Acquisition *acq, uint32_t channel, void *pixels);
 };
 
@@ -708,6 +710,11 @@ struct OScDev_DeviceImpl
 	 * callback (see Todo at Arm). The latter (`Disarm()`) should mainly
 	 * handle cleanup, and should be guaranteed to be called exactly once per
 	 * armed acquisition, after all processes have stopped.
+	 * \todo `SoftwareTriggerStop()` can be optional to implement; we should
+	 * additionally provide `bool OScDev_Acquisition_SoftwareStopTriggered()`
+	 * which can be called any time between `Arm()` and `Disarm()`; this will
+	 * supersede the `bool` return value of
+	 * `OScDev_Acquisition_CallFrameCalback()`.
 	 */
 	OScDev_Error (*Stop)(OScDev_Device *device);
 
@@ -743,8 +750,26 @@ struct OScDev_DeviceImpl
 
 struct OScDev_SettingImpl
 {
+	// TODO The value type should be moved inside the SettingImpl as a static
+	// data field. The type-dependent fields could be placed in a union:
+	//     .valueType = OScDev_ValueType_Int32,
+	//     .typeImpl.int32 = {
+	//         .constraintType = OScDev_ValueConstraint_Range,
+	//         .Get = myGetFunc,
+	//         .Set = mySetFunc,
+	//         .GetRange = myRangeFunc,
+	//     }
+	// We can also provide static data fields for range and discrete values.
+
 	OScDev_Error (*IsEnabled)(OScDev_Setting *setting, bool *enabled);
 	OScDev_Error (*IsWritable)(OScDev_Setting *setting, bool *writable);
+
+	/**
+	 * \brief Get the type of value constraint of an int32 or float64 setting.
+	 *
+	 * \todo We cannot realistically allow the constraint type to change, so
+	 * this should be a static data field.
+	 */
 	OScDev_Error (*GetNumericConstraintType)(OScDev_Setting *setting, OScDev_ValueConstraint *constraintType);
 	OScDev_Error (*GetString)(OScDev_Setting *setting, char *value);
 	OScDev_Error (*SetString)(OScDev_Setting *setting, const char *value);
@@ -752,12 +777,68 @@ struct OScDev_SettingImpl
 	OScDev_Error (*SetBool)(OScDev_Setting *setting, bool value);
 	OScDev_Error (*GetInt32)(OScDev_Setting *setting, int32_t *value);
 	OScDev_Error (*SetInt32)(OScDev_Setting *setting, int32_t value);
+
+	/**
+	 * \brief Get the range of an int32 setting with range constraint.
+	 *
+	 * **Required** if value type is int32 and numeric constraint type is
+	 * range.
+	 *
+	 * \pre \p setting, \p min, and \p max are guaranteed to be valid pointers.
+	 */
 	OScDev_Error (*GetInt32Range)(OScDev_Setting *setting, int32_t *min, int32_t *max);
-	OScDev_Error (*GetInt32DiscreteValues)(OScDev_Setting *setting, int32_t **values, size_t *count);
+
+	/**
+	 * \brief Get the allowed values of an int32 setting with discrete values
+	 * constraint.
+	 *
+	 * **Required** if value type is int32 and numeric constraint type is
+	 * discrete values.
+	 *
+	 * \pre \p setting and \p values are guaranteed to be valid pointers.
+	 *
+	 * The implementation must create a new ::OScDev_NumArray and set `*values`
+	 * to its address.
+     *
+     * \param setting the setting
+     * \param[out] values address where implementation should write pointer to
+     * new array containing allowed values (which must fit in int32) for the
+     * setting
+     * \return error in case hardware need to be queried and query failed
+	 */
+	OScDev_Error (*GetInt32DiscreteValues)(OScDev_Setting *setting, OScDev_NumArray **values);
+
 	OScDev_Error (*GetFloat64)(OScDev_Setting *setting, double *value);
 	OScDev_Error (*SetFloat64)(OScDev_Setting *setting, double value);
+
+	/**
+	 * \brief Get the range of an float64 setting with range constraint.
+	 *
+	 * **Required** if value type is float64 and numeric constraint type is
+	 * range.
+	 *
+	 * \pre \p setting, \p min, and \p max are guaranteed to be valid pointers.
+	 */
 	OScDev_Error (*GetFloat64Range)(OScDev_Setting *setting, double *min, double *max);
-	OScDev_Error (*GetFloat64DiscreteValues)(OScDev_Setting *setting, double **values, size_t *count);
+
+	/**
+	 * \brief Get the allowed values of an float64 setting with discrete values
+	 * constraint.
+	 *
+	 * **Required** if value type is float64 and numeric constraint type is
+	 * discrete values.
+	 *
+	 * \pre \p setting and \p values are guaranteed to be valid pointers.
+	 *
+	 * The implementation must create a new ::OScDev_NumArray and set `*values`
+	 * to its address.
+     *
+     * \param setting the setting
+     * \param[out] values address where implementation should write pointer to
+     * new array containing allowed values for the setting
+     * \return error in case hardware need to be queried and query failed
+	 */
+	OScDev_Error (*GetFloat64DiscreteValues)(OScDev_Setting *setting, OScDev_NumArray **values);
 	OScDev_Error (*GetEnum)(OScDev_Setting *setting, uint32_t *value);
 	OScDev_Error (*SetEnum)(OScDev_Setting *setting, uint32_t value);
 	OScDev_Error (*GetEnumNumValues)(OScDev_Setting *setting, uint32_t *count);

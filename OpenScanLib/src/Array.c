@@ -1,5 +1,6 @@
 #include "OpenScanLibPrivate.h"
 
+#include <math.h>
 #include <string.h>
 
 
@@ -178,4 +179,20 @@ void OScInternal_NumRange_AppendDiscrete(OScDev_NumRange *range, double val)
 	range->rep.list.isDynamic = true;
 	OScInternal_NumArray_Append(&range->rep.list, val);
 	range->rep.list.isDynamic = false;
+}
+
+
+size_t OScInternal_NumArray_Size(OScDev_NumArray *arr)
+{
+    if (!arr)
+        return 0;
+    return arr->size;
+}
+
+
+double OScInternal_NumArray_At(OScDev_NumArray *arr, size_t index)
+{
+    if (!arr || index >= arr->size)
+        return NAN;
+    return arr->ptr[index];
 }
