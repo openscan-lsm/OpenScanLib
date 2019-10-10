@@ -31,6 +31,8 @@ extern "C" {
 #	endif
 #endif
 
+#define OSc_InlineAPI static inline
+
 
 /**
  * \mainpage OpenScanLib: OpenScan C Application Programming Interface
@@ -247,7 +249,7 @@ OSc_API bool OScInternal_CheckVersion(uint32_t version);
  *
  * \return `true` if the OpenScanLib is compatible; `false` otherwise
  */
-static inline bool OSc_CheckVersion(void) {
+OSc_InlineAPI bool OSc_CheckVersion(void) {
 	return OScInternal_CheckVersion(OScInternal_ABI_VERSION);
 }
 
