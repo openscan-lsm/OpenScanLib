@@ -1,7 +1,7 @@
 #include "DeviceInterface.h"
 #include "Module.h"
 
-#define OScDevInternal_BUILDING_OPENSCANLIB
+#define OScDevInternal_BUILDING_OPENSCANLIB 1
 #include "OpenScanDeviceLibPrivate.h"
 
 

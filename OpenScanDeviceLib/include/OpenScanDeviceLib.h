@@ -405,7 +405,7 @@ static const OScDev_NumRange name = { .isList = true, .rep = { \
 
 /** @} */ // addtogroup dpi
 
-#ifndef OPENSCANLIB_EXPORTS // Building OpenScanLib
+#ifndef OScDevInternal_BUILDING_OPENSCANLIB
 
 /// Pointer to the interface function table provided by OpenScanLib.
 /** \ingroup internal
@@ -971,7 +971,7 @@ struct OScDev_SettingImpl
 } // extern "C"
 #endif
 
-#ifndef OPENSCANLIB_EXPORTS
+#ifndef OScDevInternal_BUILDING_OPENSCANLIB
 
 // Inline functions wrapping all entries in the OpenScanLib function table
 //
@@ -1180,6 +1180,6 @@ OScDev_API bool OScDev_Acquisition_CallFrameCallback(OScDev_Acquisition *acq, ui
 
 #undef OScDev_API
 
-#endif // OPENSCANLIB_EXPORTS
+#endif // OScDevInternal_BUILDING_OPENSCANLIB
 
 /** @} */ // addtogroup dpi

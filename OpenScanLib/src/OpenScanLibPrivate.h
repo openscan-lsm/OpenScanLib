@@ -1,5 +1,6 @@
 #pragma once
 
+#define OScDevInternal_BUILDING_OPENSCANLIB 1
 #include "OpenScanLib.h"
 #include "OpenScanDeviceLib.h"
 

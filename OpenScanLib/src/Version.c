@@ -1,4 +1,4 @@
-#include "OpenScanLib.h"
+#include "OpenScanLibPrivate.h"
 
 
 bool OScInternal_CheckVersion(uint32_t version)
