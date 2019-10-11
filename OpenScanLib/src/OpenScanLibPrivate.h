@@ -53,12 +53,12 @@ double OScInternal_NumRange_Min(const OScDev_NumRange *range);
 double OScInternal_NumRange_Max(const OScDev_NumRange *range);
 double OScInternal_NumRange_ClosestValue(const OScDev_NumRange *range, double value);
 OScDev_NumRange *OScInternal_NumRange_Intersection(
-    const OScDev_NumRange *r1, const OScDev_NumRange *r2);
+	const OScDev_NumRange *r1, const OScDev_NumRange *r2);
 OScDev_NumRange *OScInternal_NumRange_Intersection3(
-    const OScDev_NumRange *r1, const OScDev_NumRange *r2, const OScDev_NumRange *r3);
+	const OScDev_NumRange *r1, const OScDev_NumRange *r2, const OScDev_NumRange *r3);
 OScDev_NumRange *OScInternal_NumRange_Intersection4(
-    const OScDev_NumRange *r1, const OScDev_NumRange *r2, const OScDev_NumRange *r3,
-    const OScDev_NumRange *r4);
+	const OScDev_NumRange *r1, const OScDev_NumRange *r2, const OScDev_NumRange *r3,
+	const OScDev_NumRange *r4);
 
 OSc_Error OScInternal_DeviceModule_GetCount(size_t *count);
 OSc_Error OScInternal_DeviceModule_GetNames(const char **modules, size_t *count);

@@ -21,10 +21,10 @@ struct OScInternal_Setting
 
 	// Memoization should be avoided, but we need it for now to support the API
 	// returning a static array.
-    int32_t *i32DiscreteValues;
-    size_t i32DiscreteValueCount;
-    double *f64DiscreteValues;
-    size_t f64DiscreteValueCount;
+	int32_t *i32DiscreteValues;
+	size_t i32DiscreteValueCount;
+	double *f64DiscreteValues;
+	size_t f64DiscreteValueCount;
 };
 
 
@@ -120,30 +120,30 @@ OSc_Error OSc_Setting_GetInt32ContinuousRange(OSc_Setting *setting, int32_t *min
 
 OSc_Error OSc_Setting_GetInt32DiscreteValues(OSc_Setting *setting, int32_t **values, size_t *count)
 {
-    if (!setting || !count) {
-        return OSc_Error_Illegal_Argument;
-    }
+	if (!setting || !count) {
+		return OSc_Error_Illegal_Argument;
+	}
 
-    if (setting->i32DiscreteValues == NULL) {
-        OScDev_NumArray *values;
-        OSc_Error err;
-        if (OSc_CHECK_ERROR(err, setting->impl->GetInt32DiscreteValues(setting, &values))) {
+	if (setting->i32DiscreteValues == NULL) {
+		OScDev_NumArray *values;
+		OSc_Error err;
+		if (OSc_CHECK_ERROR(err, setting->impl->GetInt32DiscreteValues(setting, &values))) {
 			return err;
-        }
-        if (values) {
+		}
+		if (values) {
 			size_t count = OScInternal_NumArray_Size(values);
 			setting->i32DiscreteValues = malloc(sizeof(int32_t) * count);
-            for (size_t i = 0; i < count; ++i) {
-                setting->i32DiscreteValues[i] = (int32_t)OScInternal_NumArray_At(values, i);
-            }
-            setting->i32DiscreteValueCount = count;
-        }
-        OScInternal_NumArray_Destroy(values);
-    }
+			for (size_t i = 0; i < count; ++i) {
+				setting->i32DiscreteValues[i] = (int32_t)OScInternal_NumArray_At(values, i);
+			}
+			setting->i32DiscreteValueCount = count;
+		}
+		OScInternal_NumArray_Destroy(values);
+	}
 
-    *values = setting->i32DiscreteValues;
-    *count = setting->i32DiscreteValueCount;
-    return OSc_Error_OK;
+	*values = setting->i32DiscreteValues;
+	*count = setting->i32DiscreteValueCount;
+	return OSc_Error_OK;
 }
 
 
@@ -168,30 +168,30 @@ OSc_Error OSc_Setting_GetFloat64ContinuousRange(OSc_Setting *setting, double *mi
 
 OSc_Error OSc_Setting_GetFloat64DiscreteValues(OSc_Setting *setting, double **values, size_t *count)
 {
-    if (!setting || !count) {
-        return OSc_Error_Illegal_Argument;
-    }
+	if (!setting || !count) {
+		return OSc_Error_Illegal_Argument;
+	}
 
-    if (setting->f64DiscreteValues == NULL) {
-        OScDev_NumArray *values;
-        OSc_Error err;
-        if (OSc_CHECK_ERROR(err, setting->impl->GetFloat64DiscreteValues(setting, &values))) {
+	if (setting->f64DiscreteValues == NULL) {
+		OScDev_NumArray *values;
+		OSc_Error err;
+		if (OSc_CHECK_ERROR(err, setting->impl->GetFloat64DiscreteValues(setting, &values))) {
 			return err;
-        }
-        if (values) {
+		}
+		if (values) {
 			size_t count = OScInternal_NumArray_Size(values);
 			setting->f64DiscreteValues = malloc(sizeof(double) * count);
-            for (size_t i = 0; i < count; ++i) {
-                setting->f64DiscreteValues[i] = OScInternal_NumArray_At(values, i);
-            }
-            setting->f64DiscreteValueCount = count;
-        }
-        OScInternal_NumArray_Destroy(values);
-    }
+			for (size_t i = 0; i < count; ++i) {
+				setting->f64DiscreteValues[i] = OScInternal_NumArray_At(values, i);
+			}
+			setting->f64DiscreteValueCount = count;
+		}
+		OScInternal_NumArray_Destroy(values);
+	}
 
-    *values = setting->f64DiscreteValues;
-    *count = setting->f64DiscreteValueCount;
-    return OSc_Error_OK;
+	*values = setting->f64DiscreteValues;
+	*count = setting->f64DiscreteValueCount;
+	return OSc_Error_OK;
 }
 
 
@@ -360,7 +360,7 @@ static OSc_Error DefaultGetInt32Range(OSc_Setting *setting, int32_t *min, int32_
 
 static OSc_Error DefaultGetInt32DiscreteValues(OSc_Setting *setting, OScDev_NumArray **values)
 {
-    *values = NULL;
+	*values = NULL;
 	if (setting->valueType != OSc_ValueType_Int32)
 		return OSc_Error_Wrong_Value_Type;
 	OSc_ValueConstraint constraint;
@@ -369,7 +369,7 @@ static OSc_Error DefaultGetInt32DiscreteValues(OSc_Setting *setting, OScDev_NumA
 		return err;
 	if (constraint != OSc_ValueConstraint_Discrete)
 		return OSc_Error_Wrong_Constraint_Type;
-    *values = OScInternal_NumArray_Create();
+	*values = OScInternal_NumArray_Create();
 	return OSc_Error_OK;
 }
 
@@ -418,7 +418,7 @@ static OSc_Error DefaultGetFloat64Range(OSc_Setting *setting, double *min, doubl
 
 static OSc_Error DefaultGetFloat64DiscreteValues(OSc_Setting *setting, OScDev_NumArray **values)
 {
-    *values = NULL;
+	*values = NULL;
 	if (setting->valueType != OSc_ValueType_Float64)
 		return OSc_Error_Wrong_Value_Type;
 	OSc_ValueConstraint constraint;
@@ -427,7 +427,7 @@ static OSc_Error DefaultGetFloat64DiscreteValues(OSc_Setting *setting, OScDev_Nu
 		return err;
 	if (constraint != OSc_ValueConstraint_Discrete)
 		return OSc_Error_Wrong_Constraint_Type;
-    *values = OScInternal_NumArray_Create();
+	*values = OScInternal_NumArray_Create();
 	return OSc_Error_OK;
 }
 
