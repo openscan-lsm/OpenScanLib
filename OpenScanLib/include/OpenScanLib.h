@@ -88,7 +88,7 @@ extern "C" {
  *
  * The above list is not comprehensive.
  */
-#define OScInternal_ABI_VERSION OScInternal_MAKE_VERSION(3, 0)
+#define OScInternal_ABI_VERSION OScInternal_MAKE_VERSION(3, 1)
 
 /**
  * \addtogroup api
@@ -445,9 +445,11 @@ OSc_API OSc_Error OSc_AcqTemplate_GetZoomFactorSetting(OSc_AcqTemplate *tmpl, OS
 OSc_API OSc_Error OSc_AcqTemplate_SetROI(OSc_AcqTemplate *tmpl, uint32_t xOffset, uint32_t yOffset, uint32_t width, uint32_t height);
 OSc_API void OSc_AcqTemplate_ResetROI(OSc_AcqTemplate *tmpl);
 OSc_API OSc_Error OSc_AcqTemplate_GetROI(OSc_AcqTemplate *tmpl, uint32_t *xOffset, uint32_t *yOffset, uint32_t *width, uint32_t *height);
-// TODO AcqTemplate should also have numberOfChannels and bytesPerSample, but
-// that requires detector settings to apply to AcqTemplate rather than the
-// device.
+
+// The implementation of these 2 functions is currently a hack: it reads the
+// current state of the detector device, not of the AcqTemplate
+OSc_API OSc_Error OSc_AcqTemplate_GetNumberOfChannels(OSc_AcqTemplate *tmpl, uint32_t *numberOfChannels);
+OSc_API OSc_Error OSc_AcqTemplate_GetBytesPerSample(OSc_AcqTemplate *tmpl, uint32_t *bytesPerSample);
 
 OSc_API OSc_Error OSc_Acquisition_Create(OSc_Acquisition **acq, OSc_AcqTemplate *tmpl);
 OSc_API OSc_Error OSc_Acquisition_Destroy(OSc_Acquisition *acq);

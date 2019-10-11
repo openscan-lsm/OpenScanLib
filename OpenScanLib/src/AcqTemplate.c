@@ -451,11 +451,39 @@ void OSc_AcqTemplate_ResetROI(OSc_AcqTemplate *tmpl)
 
 OSc_Error OSc_AcqTemplate_GetROI(OSc_AcqTemplate *tmpl, uint32_t *xOffset, uint32_t *yOffset, uint32_t *width, uint32_t *height)
 {
-    if (!tmpl)
+    if (!tmpl || !xOffset || !yOffset || !width || !height)
         return OSc_Error_Illegal_Argument;
     *xOffset = tmpl->xOffset;
     *yOffset = tmpl->yOffset;
     *width = tmpl->width;
     *height = tmpl->height;
     return OSc_Error_OK;
+}
+
+
+OSc_Error OSc_AcqTemplate_GetNumberOfChannels(OSc_AcqTemplate *tmpl, uint32_t *numberOfChannels)
+{
+	if (!tmpl || !numberOfChannels)
+		return OSc_Error_Illegal_Argument;
+
+	// This implementation is temporary; device-specific settings that affect
+	// the number of channels should belong to the AcqTemplate and we need a
+	// mechanism to allow the device implementation to compute the number of
+	// channels with the AcqTemplate settings as sole input.
+	OSc_Device *detectorDevice = OSc_LSM_GetDetectorDevice(tmpl->lsm);
+	return OScInternal_Device_GetNumberOfChannels(detectorDevice, numberOfChannels);
+}
+
+
+OSc_Error OSc_AcqTemplate_GetBytesPerSample(OSc_AcqTemplate *tmpl, uint32_t *bytesPerSample)
+{
+	if (!tmpl || !bytesPerSample)
+		return OSc_Error_Illegal_Argument;
+
+	// This implementation is temporary; device-specific settings that affect
+	// the sample format should belong to the AcqTemplate and we need a
+	// mechanism to allow the device implementation to compute the sample
+	// format with the AcqTemplate settings as sole input.
+	OSc_Device *detectorDevice = OSc_LSM_GetDetectorDevice(tmpl->lsm);
+	return OScInternal_Device_GetNumberOfChannels(detectorDevice, bytesPerSample);
 }
