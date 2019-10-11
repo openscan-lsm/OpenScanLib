@@ -206,7 +206,11 @@ static OScDev_Error GetResolution(OScDev_Setting *setting, int32_t *value)
 static OScDev_Error SetResolution(OScDev_Setting *setting, int32_t value)
 {
     OSc_AcqTemplate *tmpl = OScInternal_Setting_GetImplData(setting);
-    tmpl->resolution = value;
+	if (tmpl->resolution != value) {
+		tmpl->resolution = value;
+		tmpl->xOffset = tmpl->yOffset = 0;
+		tmpl->width = tmpl->height = value;
+	}
     return OSc_Error_OK;
 }
 
