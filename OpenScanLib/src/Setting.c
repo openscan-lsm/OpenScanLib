@@ -16,6 +16,9 @@ struct OScInternal_Setting
 
 	char name[OSc_MAX_STR_LEN + 1];
 
+	OSc_SettingInvalidateFunc invalidateFunc;
+	void *invalidateData;
+
 	// Memoization should be avoided, but we need it for now to support the API
 	// returning a static array.
     int32_t *i32DiscreteValues;
@@ -60,6 +63,15 @@ OSc_Error OSc_Setting_GetNumericConstraintType(OSc_Setting *setting, OSc_ValueCo
 		return err;
 	*constraintType = (OSc_ValueConstraint)dConstraintType;
 	return OSc_Error_OK;
+}
+
+
+void OSc_Setting_SetInvalidateCallback(OSc_Setting *setting, OSc_SettingInvalidateFunc func, void *data)
+{
+	if (!setting)
+		return;
+	setting->invalidateFunc = func;
+	setting->invalidateData = data;
 }
 
 
@@ -217,6 +229,13 @@ OSc_Error OSc_Setting_GetEnumValueForName(OSc_Setting *setting, uint32_t *value,
 void *OScInternal_Setting_GetImplData(OSc_Setting *setting)
 {
 	return setting->implData;
+}
+
+
+void OScInternal_Setting_Invalidate(OSc_Setting *setting)
+{
+	if (setting->invalidateFunc)
+		setting->invalidateFunc(setting, setting->invalidateData);
 }
 
 

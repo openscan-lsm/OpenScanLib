@@ -86,6 +86,7 @@ OSc_Error OScInternal_Device_IsRunning(OSc_Device *device, bool *isRunning);
 OSc_Error OScInternal_Setting_Create(OSc_Setting **setting, const char *name, OSc_ValueType valueType, OScDev_SettingImpl *impl, void *data);
 void OScInternal_Setting_Destroy(OSc_Setting *setting);
 void *OScInternal_Setting_GetImplData(OSc_Setting *setting);
+void OScInternal_Setting_Invalidate(OSc_Setting *setting);
 
 OSc_Device *OScInternal_AcquisitionForDevice_GetDevice(OScDev_Acquisition *devAcq);
 OSc_Acquisition *OScInternal_AcquisitionForDevice_GetAcquisition(OScDev_Acquisition *devAcq);

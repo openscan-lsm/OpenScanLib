@@ -11,6 +11,7 @@ struct OScInternal_AcqTemplate
     OSc_Setting *pixelRateSetting;
     OSc_Setting *resolutionSetting;
     OSc_Setting *zoomFactorSetting;
+	OSc_Setting *magnificationSetting;
 
     double pixelRateHz;
     uint32_t resolution;
@@ -210,6 +211,7 @@ static OScDev_Error SetResolution(OScDev_Setting *setting, int32_t value)
 		tmpl->resolution = value;
 		tmpl->xOffset = tmpl->yOffset = 0;
 		tmpl->width = tmpl->height = value;
+		OScInternal_Setting_Invalidate(tmpl->magnificationSetting);
 	}
     return OSc_Error_OK;
 }
@@ -300,7 +302,10 @@ static OScDev_Error GetZoom(OScDev_Setting *setting, double *value)
 static OScDev_Error SetZoom(OScDev_Setting *setting, double value)
 {
     OSc_AcqTemplate *tmpl = OScInternal_Setting_GetImplData(setting);
-    tmpl->zoomFactor = value;
+	if (value != tmpl->zoomFactor) {
+		tmpl->zoomFactor = value;
+		OScInternal_Setting_Invalidate(tmpl->magnificationSetting);
+	}
     return OSc_Error_OK;
 }
 
@@ -311,6 +316,28 @@ static OScDev_SettingImpl ZoomSettingImpl = {
 	.SetFloat64 = SetZoom,
 	.GetFloat64Range = GetZoomRange,
 	.GetFloat64DiscreteValues = GetZoomDiscreteValues,
+};
+
+
+static OScDev_Error IsMagnificationWritable(OScDev_Setting *setting, bool *writable)
+{
+	*writable = false;
+	return OSc_Error_OK;
+}
+
+
+static OScDev_Error GetMagnification(OScDev_Setting *setting, double *value)
+{
+	OSc_AcqTemplate *tmpl = OScInternal_Setting_GetImplData(setting);
+	int32_t defaultResolution = GetDefaultResolution(tmpl);
+	*value = tmpl->zoomFactor * tmpl->resolution / defaultResolution;
+	return OSc_Error_OK;
+}
+
+
+static OScDev_SettingImpl MagnificationSettingImpl = {
+	.IsWritable = IsMagnificationWritable,
+	.GetFloat64 = GetMagnification,
 };
 
 
@@ -343,6 +370,11 @@ OSc_Error OSc_AcqTemplate_Create(OSc_AcqTemplate **tmpl, OSc_LSM *lsm)
         OSc_ValueType_Float64, &ZoomSettingImpl, *tmpl)))
         goto error;
     (*tmpl)->zoomFactorSetting = setting;
+
+	if (OSc_CHECK_ERROR(err, OScInternal_Setting_Create(&setting, "Magnification",
+		OSc_ValueType_Float64, &MagnificationSettingImpl, *tmpl)))
+		goto error;
+	(*tmpl)->magnificationSetting = setting;
 
     (*tmpl)->pixelRateHz = GetDefaultPixelRate(*tmpl);
     (*tmpl)->resolution = GetDefaultResolution(*tmpl);
@@ -420,6 +452,15 @@ OSc_Error OSc_AcqTemplate_GetZoomFactorSetting(OSc_AcqTemplate *tmpl, OSc_Settin
         return OSc_Error_Illegal_Argument;
     *setting = tmpl->zoomFactorSetting;
     return OSc_Error_OK;
+}
+
+
+OSc_Error OSc_AcqTemplate_GetMagnificationSetting(OSc_AcqTemplate *tmpl, OSc_Setting **setting)
+{
+	if (!tmpl)
+		return OSc_Error_Illegal_Argument;
+	*setting = tmpl->magnificationSetting;
+	return OSc_Error_OK;
 }
 
 

@@ -88,7 +88,7 @@ extern "C" {
  *
  * The above list is not comprehensive.
  */
-#define OScInternal_ABI_VERSION OScInternal_MAKE_VERSION(3, 1)
+#define OScInternal_ABI_VERSION OScInternal_MAKE_VERSION(3, 2)
 
 /**
  * \addtogroup api
@@ -220,6 +220,8 @@ typedef struct OScInternal_Acquisition OSc_Acquisition;
  * \sa OSc_Device_SetLogFunc()
  */
 typedef void (*OSc_LogFunc)(const char *message, OSc_LogLevel level, void *data);
+
+typedef void (*OSc_SettingInvalidateFunc)(OSc_Setting *setting, void *data);
 
 /**
  * \brief Pointer to function that receives acquired frame data.
@@ -412,6 +414,8 @@ OSc_API OSc_Error OSc_Setting_IsEnabled(OSc_Setting *setting, bool *enabled);
 OSc_API OSc_Error OSc_Setting_IsWritable(OSc_Setting *setting, bool *writable);
 OSc_API OSc_Error OSc_Setting_GetNumericConstraintType(OSc_Setting *setting, OSc_ValueConstraint *constraintType);
 
+OSc_API void OSc_Setting_SetInvalidateCallback(OSc_Setting *setting, OSc_SettingInvalidateFunc func, void *data);
+
 OSc_API OSc_Error OSc_Setting_GetStringValue(OSc_Setting *setting, char *value);
 OSc_API OSc_Error OSc_Setting_SetStringValue(OSc_Setting *setting, const char *value);
 
@@ -442,6 +446,7 @@ OSc_API uint32_t OSc_AcqTemplate_GetNumberOfFrames(OSc_AcqTemplate *tmpl);
 OSc_API OSc_Error OSc_AcqTemplate_GetPixelRateSetting(OSc_AcqTemplate *tmpl, OSc_Setting **setting);
 OSc_API OSc_Error OSc_AcqTemplate_GetResolutionSetting(OSc_AcqTemplate *tmpl, OSc_Setting **setting);
 OSc_API OSc_Error OSc_AcqTemplate_GetZoomFactorSetting(OSc_AcqTemplate *tmpl, OSc_Setting **setting);
+OSc_API OSc_Error OSc_AcqTemplate_GetMagnificationSetting(OSc_AcqTemplate *tmpl, OSc_Setting **setting);
 OSc_API OSc_Error OSc_AcqTemplate_SetROI(OSc_AcqTemplate *tmpl, uint32_t xOffset, uint32_t yOffset, uint32_t width, uint32_t height);
 OSc_API void OSc_AcqTemplate_ResetROI(OSc_AcqTemplate *tmpl);
 OSc_API OSc_Error OSc_AcqTemplate_GetROI(OSc_AcqTemplate *tmpl, uint32_t *xOffset, uint32_t *yOffset, uint32_t *width, uint32_t *height);
