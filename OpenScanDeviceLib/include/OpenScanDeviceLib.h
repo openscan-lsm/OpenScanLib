@@ -93,7 +93,7 @@ extern "C" {
  * set of changes is to be made over multiple commits, the version number
  * can be set to `(-1, 0)` in intermediate commits to indicate "experimental".
  */
-#define OScDevInternal_ABI_VERSION OScDevInternal_MAKE_VERSION(9, 0)
+#define OScDevInternal_ABI_VERSION OScDevInternal_MAKE_VERSION(10, 0)
 
 
 /** \addtogroup dpi
@@ -458,16 +458,22 @@ struct OScDevInternal_Interface
 	void (*Log)(OScDev_ModuleImpl *modImpl, OScDev_Device *device, OScDev_LogLevel level, const char *message);
 
 	OScDev_PtrArray *(*PtrArray_Create)(OScDev_ModuleImpl *modImpl);
-	void (*PtrArray_Destroy)(OScDev_ModuleImpl *modImpl, OScDev_PtrArray *arr);
+	void (*PtrArray_Destroy)(OScDev_ModuleImpl *modImpl, const OScDev_PtrArray *arr);
 	void (*PtrArray_Append)(OScDev_ModuleImpl *modImpl, OScDev_PtrArray *arr, void *obj);
+	size_t (*PtrArray_Size)(OScDev_ModuleImpl *modImpl, const OScDev_PtrArray *arr);
+	bool (*PtrArray_Empty)(OScDev_ModuleImpl *modImpl, const OScDev_PtrArray *arr);
+	void *(*PtrArray_At)(OScDev_ModuleImpl *modImpl, const OScDev_PtrArray *arr, size_t index);
 
 	OScDev_NumArray *(*NumArray_Create)(OScDev_ModuleImpl *modImpl);
-	void (*NumArray_Destroy)(OScDev_ModuleImpl *modImpl, OScDev_NumArray *arr);
+	void (*NumArray_Destroy)(OScDev_ModuleImpl *modImpl, const OScDev_NumArray *arr);
 	void (*NumArray_Append)(OScDev_ModuleImpl *modImpl, OScDev_NumArray *arr, double val);
+	size_t (*NumArray_Size)(OScDev_ModuleImpl *modImpl, const OScDev_NumArray *arr);
+	bool (*NumArray_Empty)(OScDev_ModuleImpl *modImpl, const OScDev_NumArray *arr);
+	double (*NumArray_At)(OScDev_ModuleImpl *modImpl, const OScDev_NumArray *arr, size_t index);
 
 	OScDev_NumRange *(*NumRange_CreateContinuous)(OScDev_ModuleImpl *modImpl, double rMin, double rMax);
 	OScDev_NumRange *(*NumRange_CreateDiscrete)(OScDev_ModuleImpl *modImpl);
-	void (*NumRange_Destroy)(OScDev_ModuleImpl *modImpl, OScDev_NumRange *range);
+	void (*NumRange_Destroy)(OScDev_ModuleImpl *modImpl, const OScDev_NumRange *range);
 	void (*NumRange_AppendDiscrete)(OScDev_ModuleImpl *modImpl, OScDev_NumRange *range, double val);
 
 	OScDev_Error (*Device_Create)(OScDev_ModuleImpl *modImpl, OScDev_Device **device, OScDev_DeviceImpl *impl, void *data);
@@ -1020,7 +1026,7 @@ OScDev_API OScDev_PtrArray *OScDev_PtrArray_Create(void)
 }
 
 /// Destroy (free) an array of objects.
-OScDev_API void OScDev_PtrArray_Destroy(OScDev_PtrArray *arr)
+OScDev_API void OScDev_PtrArray_Destroy(const OScDev_PtrArray *arr)
 {
 	OScDevInternal_FunctionTable->PtrArray_Destroy(&OScDevInternal_TheModuleImpl, arr);
 }
@@ -1031,6 +1037,21 @@ OScDev_API void OScDev_PtrArray_Append(OScDev_PtrArray *arr, void *obj)
 	OScDevInternal_FunctionTable->PtrArray_Append(&OScDevInternal_TheModuleImpl, arr, obj);
 }
 
+OScDev_API size_t OScDev_PtrArray_Size(const OScDev_PtrArray *arr)
+{
+	return OScDevInternal_FunctionTable->PtrArray_Size(&OScDevInternal_TheModuleImpl, arr);
+}
+
+OScDev_API bool OScDev_PtrArray_Empty(const OScDev_PtrArray *arr)
+{
+	return OScDevInternal_FunctionTable->PtrArray_Empty(&OScDevInternal_TheModuleImpl, arr);
+}
+
+OScDev_API void *OScDev_PtrArray_At(const OScDev_PtrArray *arr, size_t index)
+{
+	return OScDevInternal_FunctionTable->PtrArray_At(&OScDevInternal_TheModuleImpl, arr, index);
+}
+
 /// Create an array of numbers.
 OScDev_API OScDev_NumArray *OScDev_NumArray_Create(void)
 {
@@ -1038,7 +1059,7 @@ OScDev_API OScDev_NumArray *OScDev_NumArray_Create(void)
 }
 
 /// Destroy (free) an array of numbers.
-OScDev_API void OScDev_NumArray_Destroy(OScDev_NumArray *arr)
+OScDev_API void OScDev_NumArray_Destroy(const OScDev_NumArray *arr)
 {
 	OScDevInternal_FunctionTable->NumArray_Destroy(&OScDevInternal_TheModuleImpl, arr);
 }
@@ -1047,6 +1068,21 @@ OScDev_API void OScDev_NumArray_Destroy(OScDev_NumArray *arr)
 OScDev_API void OScDev_NumArray_Append(OScDev_NumArray *arr, double val)
 {
 	OScDevInternal_FunctionTable->NumArray_Append(&OScDevInternal_TheModuleImpl, arr, val);
+}
+
+OScDev_API size_t OScDev_NumArray_Size(const OScDev_NumArray *arr)
+{
+	return OScDevInternal_FunctionTable->NumArray_Size(&OScDevInternal_TheModuleImpl, arr);
+}
+
+OScDev_API bool OScDev_NumArray_Empty(const OScDev_NumArray *arr)
+{
+	return OScDevInternal_FunctionTable->NumArray_Empty(&OScDevInternal_TheModuleImpl, arr);
+}
+
+OScDev_API double OScDev_NumArray_At(const OScDev_NumArray *arr, size_t index)
+{
+	return OScDevInternal_FunctionTable->NumArray_At(&OScDevInternal_TheModuleImpl, arr, index);
 }
 
 OScDev_API OScDev_NumRange *OScDev_NumRange_CreateContinuous(double rMin, double rMax)
@@ -1059,7 +1095,7 @@ OScDev_API OScDev_NumRange *OScDev_NumRange_CreateDiscrete(void)
 	return OScDevInternal_FunctionTable->NumRange_CreateDiscrete(&OScDevInternal_TheModuleImpl);
 }
 
-OScDev_API void OScDev_NumRange_Destroy(OScDev_NumRange *range)
+OScDev_API void OScDev_NumRange_Destroy(const OScDev_NumRange *range)
 {
 	OScDevInternal_FunctionTable->NumRange_Destroy(&OScDevInternal_TheModuleImpl, range);
 }

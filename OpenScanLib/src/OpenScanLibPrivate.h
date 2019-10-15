@@ -32,14 +32,18 @@ static inline OScInternal_LogError(OSc_Device *device, const char *message)
 OScDev_PtrArray *OScInternal_PtrArray_Create(void);
 void OScInternal_PtrArray_Destroy(const OScDev_PtrArray *arr);
 void OScInternal_PtrArray_Append(OScDev_PtrArray *arr, void *obj);
+size_t OScInternal_PtrArray_Size(const OScDev_PtrArray *arr);
+bool OScInternal_PtrArray_Empty(const OScDev_PtrArray *arr);
+void *OScInternal_PtrArray_At(const OScDev_PtrArray *arr, size_t index);
 
 OScDev_NumArray *OScInternal_NumArray_Create(void);
 OScDev_NumArray *OScInternal_NumArray_Copy(const OScDev_NumArray *arr);
 void OScInternal_NumArray_Destroy(const OScDev_NumArray *arr);
 void OScInternal_NumArray_Append(OScDev_NumArray *arr, double val);
 void OScInternal_NumArray_SortAscending(OScDev_NumArray *arr);
-size_t OScInternal_NumArray_Size(OScDev_NumArray *arr);
-double OScInternal_NumArray_At(OScDev_NumArray *arr, size_t index);
+size_t OScInternal_NumArray_Size(const OScDev_NumArray *arr);
+bool OScInternal_NumArray_Empty(const OScDev_NumArray *arr);
+double OScInternal_NumArray_At(const OScDev_NumArray *arr, size_t index);
 double OScInternal_NumArray_Min(const OScDev_NumArray *range);
 double OScInternal_NumArray_Max(const OScDev_NumArray *range);
 

@@ -218,7 +218,7 @@ void OScInternal_NumArray_SortAscending(OScDev_NumArray *arr)
 }
 
 
-size_t OScInternal_NumArray_Size(OScDev_NumArray *arr)
+size_t OScInternal_PtrArray_Size(const OScDev_PtrArray *arr)
 {
 	if (!arr)
 		return 0;
@@ -226,7 +226,35 @@ size_t OScInternal_NumArray_Size(OScDev_NumArray *arr)
 }
 
 
-double OScInternal_NumArray_At(OScDev_NumArray *arr, size_t index)
+bool OScInternal_PtrArray_Empty(const OScDev_PtrArray *arr)
+{
+	return OScInternal_PtrArray_Size(arr) == 0;
+}
+
+
+size_t OScInternal_NumArray_Size(const OScDev_NumArray *arr)
+{
+	if (!arr)
+		return 0;
+	return arr->size;
+}
+
+
+bool OScInternal_NumArray_Empty(const OScDev_NumArray *arr)
+{
+	return OScInternal_NumArray_Size(arr) == 0;
+}
+
+
+void *OScInternal_PtrArray_At(const OScDev_PtrArray *arr, size_t index)
+{
+	if (!arr || index >= arr->size)
+		return NULL;
+	return arr->ptr[index];
+}
+
+
+double OScInternal_NumArray_At(const OScDev_NumArray *arr, size_t index)
 {
 	if (!arr || index >= arr->size)
 		return NAN;

@@ -21,7 +21,7 @@ static OScDev_PtrArray *PtrArray_Create(OScDev_ModuleImpl *modImpl)
 }
 
 
-static void PtrArray_Destroy(OScDev_ModuleImpl *modImpl, OScDev_PtrArray *arr)
+static void PtrArray_Destroy(OScDev_ModuleImpl *modImpl, const OScDev_PtrArray *arr)
 {
 	OScInternal_PtrArray_Destroy(arr);
 }
@@ -33,13 +33,31 @@ static void PtrArray_Append(OScDev_ModuleImpl *modImpl, OScDev_PtrArray *arr, vo
 }
 
 
+static size_t PtrArray_Size(OScDev_ModuleImpl *modImpl, const OScDev_PtrArray *arr)
+{
+	return OScInternal_PtrArray_Size(arr);
+}
+
+
+static bool PtrArray_Empty(OScDev_ModuleImpl *modImpl, const OScDev_PtrArray *arr)
+{
+	return OScInternal_PtrArray_Empty(arr);
+}
+
+
+static void *PtrArray_At(OScDev_ModuleImpl *modImpl, const OScDev_PtrArray *arr, size_t index)
+{
+	return OScInternal_PtrArray_At(arr, index);
+}
+
+
 static OScDev_NumArray *NumArray_Create(OScDev_ModuleImpl *modImpl)
 {
 	return OScInternal_NumArray_Create();
 }
 
 
-static void NumArray_Destroy(OScDev_ModuleImpl *modImpl, OScDev_NumArray *arr)
+static void NumArray_Destroy(OScDev_ModuleImpl *modImpl, const OScDev_NumArray *arr)
 {
 	OScInternal_NumArray_Destroy(arr);
 }
@@ -48,6 +66,24 @@ static void NumArray_Destroy(OScDev_ModuleImpl *modImpl, OScDev_NumArray *arr)
 static void NumArray_Append(OScDev_ModuleImpl *modImpl, OScDev_NumArray *arr, double val)
 {
 	OScInternal_NumArray_Append(arr, val);
+}
+
+
+static size_t NumArray_Size(OScDev_ModuleImpl *modImpl, const OScDev_NumArray *arr)
+{
+	return OScInternal_NumArray_Size(arr);
+}
+
+
+static bool NumArray_Empty(OScDev_ModuleImpl *modImpl, const OScDev_NumArray *arr)
+{
+	return OScInternal_NumArray_Empty(arr);
+}
+
+
+static double NumArray_At(OScDev_ModuleImpl *modImpl, const OScDev_NumArray *arr, size_t index)
+{
+	return OScInternal_NumArray_At(arr, index);
 }
 
 
@@ -63,7 +99,7 @@ static OScDev_NumRange *NumRange_CreateDiscrete(OScDev_ModuleImpl *modImpl)
 }
 
 
-static void NumRange_Destroy(OScDev_ModuleImpl *modImpl, OScDev_NumRange *range)
+static void NumRange_Destroy(OScDev_ModuleImpl *modImpl, const OScDev_NumRange *range)
 {
 	OScInternal_NumRange_Destroy(range);
 }
@@ -201,9 +237,15 @@ struct OScDevInternal_Interface DeviceInterfaceFunctionTable = {
 	.PtrArray_Create = PtrArray_Create,
 	.PtrArray_Destroy = PtrArray_Destroy,
 	.PtrArray_Append = PtrArray_Append,
+	.PtrArray_Size = PtrArray_Size,
+	.PtrArray_Empty = PtrArray_Empty,
+	.PtrArray_At = PtrArray_At,
 	.NumArray_Create = NumArray_Create,
 	.NumArray_Destroy = NumArray_Destroy,
 	.NumArray_Append = NumArray_Append,
+	.NumArray_Size = NumArray_Size,
+	.NumArray_Empty = NumArray_Empty,
+	.NumArray_At = NumArray_At,
 	.NumRange_CreateContinuous = NumRange_CreateContinuous,
 	.NumRange_CreateDiscrete = NumRange_CreateDiscrete,
 	.NumRange_Destroy = NumRange_Destroy,
