@@ -7,13 +7,13 @@
 
 // Until we update the API to have proper array memory management, we fill this
 // static array once and never modify it again.
-static OScDev_PtrArray *g_deviceInstances; // Elements: struct OScInternal_Device*
+static OScInternal_PtrArray *g_deviceInstances; // Elements: struct OScInternal_Device*
 
 
 static void EnumerateDevicesForImpl(const char *moduleName, OScDev_DeviceImpl *impl)
 {
 	OSc_Error err;
-	OScDev_PtrArray *devices = NULL;
+	OScInternal_PtrArray *devices = NULL;
 	if (OSc_CHECK_ERROR(err, impl->EnumerateInstances(&devices))) {
 		char msg[OSc_MAX_STR_LEN + 1];
 		const char *model = NULL;
@@ -40,8 +40,8 @@ static void EnumerateDevicesForImpl(const char *moduleName, OScDev_DeviceImpl *i
 		return; // No devices
 	}
 
-	for (size_t i = 0; i < devices->size; ++i) {
-		struct OScInternal_Device *device = devices->ptr[i];
+	for (size_t i = 0; i < OScInternal_PtrArray_Size(devices); ++i) {
+		struct OScInternal_Device *device = OScInternal_PtrArray_At(devices, i);
 		if (!device) {
 			continue;
 		}
@@ -76,7 +76,7 @@ static OSc_Error EnumerateDevices(void)
 	{
 		const char* moduleName = moduleNames[i];
 
-		const OScDev_PtrArray *deviceImpls = NULL;
+		OScInternal_PtrArray *deviceImpls = NULL;
 		err = OScInternal_DeviceModule_GetDeviceImpls(moduleName, &deviceImpls);
 		if (err) {
 			char msg[OSc_MAX_STR_LEN + 1] = "Cannot get device implementations from module: ";
@@ -87,9 +87,9 @@ static OSc_Error EnumerateDevices(void)
 			continue;
 		}
 
-		for (size_t i = 0; i < deviceImpls->size; ++i) {
+		for (size_t i = 0; i < OScInternal_PtrArray_Size(deviceImpls); ++i) {
 			EnumerateDevicesForImpl(moduleName,
-				(OScDev_DeviceImpl *)(deviceImpls->ptr[i]));
+				(OScDev_DeviceImpl *)OScInternal_PtrArray_At(deviceImpls, i));
 		}
 		OScInternal_PtrArray_Destroy(deviceImpls);
 	}
@@ -105,8 +105,8 @@ OSc_Error OSc_GetAllDevices(OSc_Device ***devices, size_t *count)
 	if (OSc_CHECK_ERROR(err, EnumerateDevices()))
 		return err;
 
-	*devices = (struct OScInternal_Device **)g_deviceInstances->ptr;
-	*count = g_deviceInstances->size;
+	*devices = (struct OScInternal_Device **)OScInternal_PtrArray_Data(g_deviceInstances);
+	*count = OScInternal_PtrArray_Size(g_deviceInstances);
 	return OSc_Error_OK;
 }
 
@@ -114,7 +114,7 @@ OSc_Error OSc_GetAllDevices(OSc_Device ***devices, size_t *count)
 OSc_Error OSc_GetNumberOfAvailableDevices(size_t *count)
 {
 	EnumerateDevices();
-	*count = g_deviceInstances->size;
+	*count = OScInternal_PtrArray_Size(g_deviceInstances);
 
 	return OSc_Error_OK;
 }

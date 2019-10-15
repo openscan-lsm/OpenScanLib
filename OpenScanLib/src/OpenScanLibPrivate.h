@@ -29,44 +29,54 @@ static inline OScInternal_LogError(OSc_Device *device, const char *message)
 	OScInternal_Log(device, OSc_LogLevel_Error, message);
 }
 
-OScDev_PtrArray *OScInternal_PtrArray_Create(void);
-void OScInternal_PtrArray_Destroy(const OScDev_PtrArray *arr);
-void OScInternal_PtrArray_Append(OScDev_PtrArray *arr, void *obj);
-size_t OScInternal_PtrArray_Size(const OScDev_PtrArray *arr);
-bool OScInternal_PtrArray_Empty(const OScDev_PtrArray *arr);
-void *OScInternal_PtrArray_At(const OScDev_PtrArray *arr, size_t index);
 
-OScDev_NumArray *OScInternal_NumArray_Create(void);
-OScDev_NumArray *OScInternal_NumArray_Copy(const OScDev_NumArray *arr);
-void OScInternal_NumArray_Destroy(const OScDev_NumArray *arr);
-void OScInternal_NumArray_Append(OScDev_NumArray *arr, double val);
-void OScInternal_NumArray_SortAscending(OScDev_NumArray *arr);
-size_t OScInternal_NumArray_Size(const OScDev_NumArray *arr);
-bool OScInternal_NumArray_Empty(const OScDev_NumArray *arr);
-double OScInternal_NumArray_At(const OScDev_NumArray *arr, size_t index);
-double OScInternal_NumArray_Min(const OScDev_NumArray *range);
-double OScInternal_NumArray_Max(const OScDev_NumArray *range);
+typedef struct OScInternal_PtrArray OScInternal_PtrArray;
+typedef struct OScInternal_NumArray OScInternal_NumArray;
+typedef struct OScInternal_NumRange OScInternal_NumRange;
 
-OScDev_NumRange *OScInternal_NumRange_CreateContinuous(double rMin, double rMax);
-OScDev_NumRange *OScInternal_NumRange_CreateDiscrete(void);
-void OScInternal_NumRange_Destroy(const OScDev_NumRange *range);
-void OScInternal_NumRange_AppendDiscrete(OScDev_NumRange *range, double val);
-bool OScInternal_NumRange_IsDiscrete(const OScDev_NumRange *range);
-OScDev_NumArray *OScInternal_NumRange_DiscreteValues(const OScDev_NumRange *range);
-double OScInternal_NumRange_Min(const OScDev_NumRange *range);
-double OScInternal_NumRange_Max(const OScDev_NumRange *range);
-double OScInternal_NumRange_ClosestValue(const OScDev_NumRange *range, double value);
-OScDev_NumRange *OScInternal_NumRange_Intersection(
-	const OScDev_NumRange *r1, const OScDev_NumRange *r2);
-OScDev_NumRange *OScInternal_NumRange_Intersection3(
-	const OScDev_NumRange *r1, const OScDev_NumRange *r2, const OScDev_NumRange *r3);
-OScDev_NumRange *OScInternal_NumRange_Intersection4(
-	const OScDev_NumRange *r1, const OScDev_NumRange *r2, const OScDev_NumRange *r3,
-	const OScDev_NumRange *r4);
+
+OScInternal_PtrArray *OScInternal_PtrArray_Create(void);
+OScInternal_PtrArray *OScInternal_PtrArray_CreateFromNullTerminated(void *const *nullTerminatedArray);
+void OScInternal_PtrArray_Destroy(const OScInternal_PtrArray *arr);
+void OScInternal_PtrArray_Append(OScInternal_PtrArray *arr, void *obj);
+size_t OScInternal_PtrArray_Size(const OScInternal_PtrArray *arr);
+bool OScInternal_PtrArray_Empty(const OScInternal_PtrArray *arr);
+void *OScInternal_PtrArray_At(const OScInternal_PtrArray *arr, size_t index);
+void *const *OScInternal_PtrArray_Data(const OScInternal_PtrArray *arr);
+
+OScInternal_NumArray *OScInternal_NumArray_Create(void);
+OScInternal_NumArray *OScInternal_NumArray_CreateFromNaNTerminated(const double *nanTerminatedArray);
+OScInternal_NumArray *OScInternal_NumArray_Copy(const OScInternal_NumArray *arr);
+void OScInternal_NumArray_Destroy(const OScInternal_NumArray *arr);
+void OScInternal_NumArray_Append(OScInternal_NumArray *arr, double val);
+void OScInternal_NumArray_SortAscending(OScInternal_NumArray *arr);
+size_t OScInternal_NumArray_Size(const OScInternal_NumArray *arr);
+bool OScInternal_NumArray_Empty(const OScInternal_NumArray *arr);
+double OScInternal_NumArray_At(const OScInternal_NumArray *arr, size_t index);
+double OScInternal_NumArray_Min(const OScInternal_NumArray *range);
+double OScInternal_NumArray_Max(const OScInternal_NumArray *range);
+
+OScInternal_NumRange *OScInternal_NumRange_CreateContinuous(double rMin, double rMax);
+OScInternal_NumRange *OScInternal_NumRange_CreateDiscrete(void);
+OScInternal_NumRange *OScInternal_NumRange_CreateDiscreteFromNaNTerminated(const double *nanTerminatedArray);
+void OScInternal_NumRange_Destroy(const OScInternal_NumRange *range);
+void OScInternal_NumRange_AppendDiscrete(OScInternal_NumRange *range, double val);
+bool OScInternal_NumRange_IsDiscrete(const OScInternal_NumRange *range);
+OScInternal_NumArray *OScInternal_NumRange_DiscreteValues(const OScInternal_NumRange *range);
+double OScInternal_NumRange_Min(const OScInternal_NumRange *range);
+double OScInternal_NumRange_Max(const OScInternal_NumRange *range);
+double OScInternal_NumRange_ClosestValue(const OScInternal_NumRange *range, double value);
+OScInternal_NumRange *OScInternal_NumRange_Intersection(
+	const OScInternal_NumRange *r1, const OScInternal_NumRange *r2);
+OScInternal_NumRange *OScInternal_NumRange_Intersection3(
+	const OScInternal_NumRange *r1, const OScInternal_NumRange *r2, const OScInternal_NumRange *r3);
+OScInternal_NumRange *OScInternal_NumRange_Intersection4(
+	const OScInternal_NumRange *r1, const OScInternal_NumRange *r2, const OScInternal_NumRange *r3,
+	const OScInternal_NumRange *r4);
 
 OSc_Error OScInternal_DeviceModule_GetCount(size_t *count);
 OSc_Error OScInternal_DeviceModule_GetNames(const char **modules, size_t *count);
-OSc_Error OScInternal_DeviceModule_GetDeviceImpls(const char *module, const OScDev_PtrArray **deviceImpls);
+OSc_Error OScInternal_DeviceModule_GetDeviceImpls(const char *module, OScInternal_PtrArray **deviceImpls);
 
 OSc_Error OScInternal_LSM_Associate_Device(OSc_LSM *lsm, OSc_Device *device);
 OSc_Error OScInternal_LSM_Dissociate_Device(OSc_LSM *lsm, OSc_Device *device);
@@ -76,9 +86,9 @@ OSc_Error OScInternal_Device_Create(OSc_Device **device, OScDev_DeviceImpl *impl
 OSc_Error OScInternal_Device_Destroy(OSc_Device *device);
 bool OScInternal_Device_Log(OSc_Device *device, OSc_LogLevel level, const char *message);
 void *OScInternal_Device_GetImplData(OSc_Device *device);
-OScDev_NumRange *OScInternal_Device_GetPixelRates(OSc_Device *device);
-OScDev_NumRange *OScInternal_Device_GetResolutions(OSc_Device *device);
-OScDev_NumRange *OScInternal_Device_GetZooms(OSc_Device *device);
+OScInternal_NumRange *OScInternal_Device_GetPixelRates(OSc_Device *device);
+OScInternal_NumRange *OScInternal_Device_GetResolutions(OSc_Device *device);
+OScInternal_NumRange *OScInternal_Device_GetZooms(OSc_Device *device);
 OSc_Error OScInternal_Device_GetNumberOfChannels(OSc_Device *device, uint32_t *numberOfChannels);
 OSc_Error OScInternal_Device_GetBytesPerSample(OSc_Device *device, uint32_t *bytesPerSample);
 OSc_Error OScInternal_Device_Arm(OSc_Device *device, OSc_Acquisition *acq);

@@ -24,12 +24,6 @@ struct OScInternal_AcqTemplate
 };
 
 
-// Built-in absolute limits
-OScDev_STATIC_NUM_RANGE_CONTINUOUS(PixelRateRange, 1e-3, 1e10);
-OScDev_STATIC_NUM_RANGE_CONTINUOUS(ResolutionRange, 1, INT32_MAX);
-OScDev_STATIC_NUM_RANGE_CONTINUOUS(ZoomRange, 1e-6, 1e6);
-
-
 static OScDev_NumRange *GetPixelRates(OSc_AcqTemplate *tmpl)
 {
 	OSc_Device *clockDevice = OSc_LSM_GetClockDevice(tmpl->lsm);
@@ -39,10 +33,12 @@ static OScDev_NumRange *GetPixelRates(OSc_AcqTemplate *tmpl)
 	OScDev_NumRange *clockRange = OScInternal_Device_GetPixelRates(clockDevice);
 	OScDev_NumRange *scannerRange = OScInternal_Device_GetPixelRates(scannerDevice);
 	OScDev_NumRange *detectorRange = OScInternal_Device_GetPixelRates(detectorDevice);
+	OScDev_NumRange *maxRange = OScInternal_NumRange_CreateContinuous(1e-3, 1e10);
 
 	OScDev_NumRange *range = OScInternal_NumRange_Intersection4(
-		clockRange, scannerRange, detectorRange, &PixelRateRange);
+		clockRange, scannerRange, detectorRange, maxRange);
 
+	OScInternal_NumRange_Destroy(maxRange);
 	OScInternal_NumRange_Destroy(detectorRange);
 	OScInternal_NumRange_Destroy(scannerRange);
 	OScInternal_NumRange_Destroy(clockRange);
@@ -131,13 +127,15 @@ static OScDev_NumRange *GetResolutions(OSc_AcqTemplate *tmpl)
 {
 	OSc_Device *scannerDevice = OSc_LSM_GetScannerDevice(tmpl->lsm);
 	OScDev_NumRange *scannerRange = OScInternal_Device_GetResolutions(scannerDevice);
+	OScDev_NumRange *maxRange = OScInternal_NumRange_CreateContinuous(1, INT32_MAX);
 
 	OScDev_NumRange *range = OScInternal_NumRange_Intersection(
-		scannerRange, &ResolutionRange);
+		scannerRange, maxRange);
 
 	// TODO We should also take intersection with clock/scanner/detector raster
 	// widths and heights, to ensure that full frame acquisition will work.
 
+	OScInternal_NumRange_Destroy(maxRange);
 	OScInternal_NumRange_Destroy(scannerRange);
 
 	return range;
@@ -230,10 +228,12 @@ static OScDev_NumRange *GetZooms(OSc_AcqTemplate *tmpl)
 {
 	OSc_Device *scannerDevice = OSc_LSM_GetScannerDevice(tmpl->lsm);
 	OScDev_NumRange *scannerRange = OScInternal_Device_GetZooms(scannerDevice);
+	OScDev_NumRange *maxRange = OScInternal_NumRange_CreateContinuous(1e-6, 1e6);
 
 	OScDev_NumRange *range = OScInternal_NumRange_Intersection(
-		scannerRange, &ZoomRange);
+		scannerRange, maxRange);
 
+	OScInternal_NumRange_Destroy(maxRange);
 	OScInternal_NumRange_Destroy(scannerRange);
 
 	return range;

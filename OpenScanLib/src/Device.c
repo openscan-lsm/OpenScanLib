@@ -17,7 +17,7 @@ struct OScInternal_Device
 
 	OSc_LSM *associatedLSM;
 
-	OScDev_PtrArray *settings;
+	OScInternal_PtrArray *settings;
 
 	char name[OSc_MAX_STR_LEN + 1];
 	char displayName[OSc_MAX_STR_LEN + 1];
@@ -146,8 +146,8 @@ OSc_Error OSc_Device_GetSettings(OSc_Device *device, OSc_Setting ***settings, si
 			return err;
 	}
 
-	*settings = (OScDev_Setting**)device->settings->ptr;
-	*count = device->settings->size;
+	*settings = (OScDev_Setting**)OScInternal_PtrArray_Data(device->settings);
+	*count = OScInternal_PtrArray_Size(device->settings);
 	return OSc_Error_OK;
 }
 
@@ -170,8 +170,9 @@ OSc_Error OScInternal_Device_Destroy(OSc_Device *device)
 	device->impl->ReleaseInstance(device);
 
 	if (device->settings) {
-		for (size_t i = 0; i < device->settings->size; ++i) {
-			OSc_Setting *setting = device->settings->ptr[i];
+		size_t nSettings = OScInternal_PtrArray_Size(device->settings);
+		for (size_t i = 0; i < nSettings; ++i) {
+			OSc_Setting *setting = OScInternal_PtrArray_At(device->settings, i);
 			OScInternal_Setting_Destroy(setting);
 		}
 		OScInternal_PtrArray_Destroy(device->settings);

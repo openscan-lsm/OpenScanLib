@@ -4,31 +4,124 @@
 #include <string.h>
 
 
-OScDev_PtrArray *OScInternal_PtrArray_Create(void)
+struct OScInternal_PtrArray {
+	void **ptr; // Array of void*
+	size_t size;
+	size_t capacity;
+};
+
+
+struct OScInternal_NumArray {
+	double *ptr; // Array of double
+	size_t size;
+	size_t capacity;
+};
+
+
+struct OScInternal_NumContinuousRange {
+	double rMin;
+	double rMax;
+};
+
+
+struct OScInternal_NumRange {
+	bool isList;
+	union {
+		struct OScInternal_NumArray list;
+		struct OScInternal_NumContinuousRange range;
+	} rep;
+};
+
+
+OScInternal_PtrArray *OScInternal_PtrArray_Create(void)
 {
-	OScDev_PtrArray *ret = calloc(1, sizeof(OScDev_PtrArray));
+	OScInternal_PtrArray *ret = calloc(1, sizeof(OScInternal_PtrArray));
 	if (!ret) {
 		return NULL;
 	}
-	ret->isDynamic = true;
 	return ret;
 }
 
 
-OScDev_NumArray *OScInternal_NumArray_Create(void)
+OScInternal_NumArray *OScInternal_NumArray_Create(void)
 {
-	OScDev_NumArray *ret = calloc(1, sizeof(OScDev_NumArray));
+	OScInternal_NumArray *ret = calloc(1, sizeof(OScInternal_NumArray));
 	if (!ret) {
 		return NULL;
 	}
-	ret->isDynamic = true;
 	return ret;
 }
 
 
-OScDev_NumArray *OScInternal_NumArray_Copy(const OScDev_NumArray *src)
+OScInternal_NumRange *OScInternal_NumRange_CreateContinuous(double rMin, double rMax)
 {
-	OScDev_NumArray *ret = OScInternal_NumArray_Create();
+	OScInternal_NumRange *ret = calloc(1, sizeof(OScInternal_NumRange));
+	if (!ret) {
+		return NULL;
+	}
+	ret->isList = false;
+	ret->rep.range.rMin = rMin;
+	ret->rep.range.rMax = rMax;
+	return ret;
+}
+
+
+OScInternal_NumRange *OScInternal_NumRange_CreateDiscrete(void)
+{
+	OScInternal_NumRange *ret = calloc(1, sizeof(OScInternal_NumRange));
+	if (!ret) {
+		return NULL;
+	}
+	ret->isList = true;
+	return ret;
+}
+
+
+OScInternal_PtrArray *OScInternal_PtrArray_CreateFromNullTerminated(void *const *nullTerminatedArray)
+{
+	OScInternal_PtrArray *ret = OScInternal_PtrArray_Create();
+
+	if (!nullTerminatedArray)
+		return ret;
+
+	while (*nullTerminatedArray) {
+		OScInternal_PtrArray_Append(ret, *nullTerminatedArray++);
+	}
+	return ret;
+}
+
+
+OScInternal_NumArray *OScInternal_NumArray_CreateFromNaNTerminated(const double *nanTerminatedArray)
+{
+	OScInternal_NumArray *ret = OScInternal_NumArray_Create();
+
+	if (!nanTerminatedArray)
+		return ret;
+
+	while (!isnan(*nanTerminatedArray)) {
+		OScInternal_NumArray_Append(ret, *nanTerminatedArray++);
+	}
+	return ret;
+}
+
+
+OScInternal_NumRange *OScInternal_NumRange_CreateDiscreteFromNaNTerminated(const double *nanTerminatedArray)
+{
+	OScInternal_NumRange *ret = OScInternal_NumRange_CreateDiscrete();
+
+	if (!nanTerminatedArray)
+		return ret;
+
+	while (!isnan(*nanTerminatedArray)) {
+		OScInternal_NumRange_AppendDiscrete(ret, *nanTerminatedArray++);
+	}
+	return ret;
+}
+
+
+OScInternal_NumArray *OScInternal_NumArray_Copy(const OScInternal_NumArray *src)
+{
+	OScInternal_NumArray *ret = OScInternal_NumArray_Create();
 	ret->capacity = src->size;
 	ret->ptr = malloc(src->size * sizeof(double));
 	memcpy(ret->ptr, src->ptr, src->size * sizeof(double));
@@ -37,69 +130,31 @@ OScDev_NumArray *OScInternal_NumArray_Copy(const OScDev_NumArray *src)
 }
 
 
-OScDev_NumRange *OScInternal_NumRange_CreateContinuous(double rMin, double rMax)
+void OScInternal_PtrArray_Destroy(const OScInternal_PtrArray *arr)
 {
-	OScDev_NumRange *ret = calloc(1, sizeof(OScDev_NumRange));
-	if (!ret) {
-		return NULL;
-	}
-	ret->isDynamic = true;
-	ret->isList = false;
-	ret->rep.range.rMin = rMin;
-	ret->rep.range.rMax = rMax;
-	return ret;
-}
-
-
-OScDev_NumRange *OScInternal_NumRange_CreateDiscrete(void)
-{
-	OScDev_NumRange *ret = calloc(1, sizeof(OScDev_NumRange));
-	if (!ret) {
-		return NULL;
-	}
-	ret->isDynamic = true;
-	ret->isList = true;
-	return ret;
-}
-
-
-void OScInternal_PtrArray_Destroy(const OScDev_PtrArray *arr)
-{
-	if (!arr->isDynamic) {
-		return;
-	}
-
 	free(arr->ptr);
 
 	// Clear for safety (this marks the array static, which is harmless because
 	// it will no longer be used as a dynamically allocated array).
-	memset((void *)arr, 0, sizeof(OScDev_PtrArray));
+	memset((void *)arr, 0, sizeof(OScInternal_PtrArray));
 }
 
 
-void OScInternal_NumArray_Destroy(const OScDev_NumArray *arr)
+void OScInternal_NumArray_Destroy(const OScInternal_NumArray *arr)
 {
-	if (!arr->isDynamic) {
-		return;
-	}
-
 	free(arr->ptr);
 
-	memset((void *)arr, 0, sizeof(OScDev_NumArray));
+	memset((void *)arr, 0, sizeof(OScInternal_NumArray));
 }
 
 
-void OScInternal_NumRange_Destroy(const OScDev_NumRange *range)
+void OScInternal_NumRange_Destroy(const OScInternal_NumRange *range)
 {
-	if (!range->isDynamic) {
-		return;
-	}
-
 	if (range->isList) {
 		free(range->rep.list.ptr);
 	}
 
-	memset((void *)range, 0, sizeof(OScDev_NumRange));
+	memset((void *)range, 0, sizeof(OScInternal_NumRange));
 }
 
 
@@ -116,16 +171,12 @@ static size_t CapForSize(size_t size)
 }
 
 
-void OScInternal_PtrArray_Append(OScDev_PtrArray *arr, void *obj)
+void OScInternal_PtrArray_Append(OScInternal_PtrArray *arr, void *obj)
 {
 	// We do not currently report errors. All errors that may occur are severe
 	// (either out of memory or a programming error), so logging and crashing
 	// would be a good way to handle. (Returning an error will only complicate
 	// device module code or get ignored.)
-
-	if (!arr->isDynamic) {
-		return; // Programming error: cannot modify static PtrArray
-	}
 
 	size_t newSize = arr->size + 1;
 	if (newSize > arr->capacity) {
@@ -151,12 +202,8 @@ void OScInternal_PtrArray_Append(OScDev_PtrArray *arr, void *obj)
 }
 
 
-void OScInternal_NumArray_Append(OScDev_NumArray *arr, double val)
+void OScInternal_NumArray_Append(OScInternal_NumArray *arr, double val)
 {
-	if (!arr->isDynamic) {
-		return; // Programming error
-	}
-
 	size_t newSize = arr->size + 1;
 	if (newSize > arr->capacity) {
 		size_t newCap = CapForSize(newSize);
@@ -181,15 +228,12 @@ void OScInternal_NumArray_Append(OScDev_NumArray *arr, double val)
 }
 
 
-void OScInternal_NumRange_AppendDiscrete(OScDev_NumRange *range, double val)
+void OScInternal_NumRange_AppendDiscrete(OScInternal_NumRange *range, double val)
 {
-	if (!range->isDynamic || !range->isList) {
+	if (!range->isList) {
 		return; // Programming error
 	}
-
-	range->rep.list.isDynamic = true;
 	OScInternal_NumArray_Append(&range->rep.list, val);
-	range->rep.list.isDynamic = false;
 }
 
 
@@ -212,13 +256,13 @@ static int CompareDouble(const void *pLhs, const void *pRhs)
 }
 
 
-void OScInternal_NumArray_SortAscending(OScDev_NumArray *arr)
+void OScInternal_NumArray_SortAscending(OScInternal_NumArray *arr)
 {
 	qsort(arr->ptr, arr->size, sizeof(double), CompareDouble);
 }
 
 
-size_t OScInternal_PtrArray_Size(const OScDev_PtrArray *arr)
+size_t OScInternal_PtrArray_Size(const OScInternal_PtrArray *arr)
 {
 	if (!arr)
 		return 0;
@@ -226,13 +270,13 @@ size_t OScInternal_PtrArray_Size(const OScDev_PtrArray *arr)
 }
 
 
-bool OScInternal_PtrArray_Empty(const OScDev_PtrArray *arr)
+bool OScInternal_PtrArray_Empty(const OScInternal_PtrArray *arr)
 {
 	return OScInternal_PtrArray_Size(arr) == 0;
 }
 
 
-size_t OScInternal_NumArray_Size(const OScDev_NumArray *arr)
+size_t OScInternal_NumArray_Size(const OScInternal_NumArray *arr)
 {
 	if (!arr)
 		return 0;
@@ -240,13 +284,13 @@ size_t OScInternal_NumArray_Size(const OScDev_NumArray *arr)
 }
 
 
-bool OScInternal_NumArray_Empty(const OScDev_NumArray *arr)
+bool OScInternal_NumArray_Empty(const OScInternal_NumArray *arr)
 {
 	return OScInternal_NumArray_Size(arr) == 0;
 }
 
 
-void *OScInternal_PtrArray_At(const OScDev_PtrArray *arr, size_t index)
+void *OScInternal_PtrArray_At(const OScInternal_PtrArray *arr, size_t index)
 {
 	if (!arr || index >= arr->size)
 		return NULL;
@@ -254,7 +298,7 @@ void *OScInternal_PtrArray_At(const OScDev_PtrArray *arr, size_t index)
 }
 
 
-double OScInternal_NumArray_At(const OScDev_NumArray *arr, size_t index)
+double OScInternal_NumArray_At(const OScInternal_NumArray *arr, size_t index)
 {
 	if (!arr || index >= arr->size)
 		return NAN;
@@ -262,7 +306,15 @@ double OScInternal_NumArray_At(const OScDev_NumArray *arr, size_t index)
 }
 
 
-bool OScInternal_NumRange_IsDiscrete(const OScDev_NumRange *range)
+void *const *OScInternal_PtrArray_Data(const OScInternal_PtrArray *arr)
+{
+	if (!arr)
+		return NULL;
+	return arr->ptr;
+}
+
+
+bool OScInternal_NumRange_IsDiscrete(const OScInternal_NumRange *range)
 {
 	if (!range)
 		return false;
@@ -270,7 +322,7 @@ bool OScInternal_NumRange_IsDiscrete(const OScDev_NumRange *range)
 }
 
 
-OScDev_NumArray *OScInternal_NumRange_DiscreteValues(const OScDev_NumRange *range)
+OScInternal_NumArray *OScInternal_NumRange_DiscreteValues(const OScInternal_NumRange *range)
 {
 	if (!range || !range->isList)
 		return NULL; // Programming error
@@ -278,7 +330,7 @@ OScDev_NumArray *OScInternal_NumRange_DiscreteValues(const OScDev_NumRange *rang
 }
 
 
-double OScInternal_NumArray_Min(const OScDev_NumArray *arr)
+double OScInternal_NumArray_Min(const OScInternal_NumArray *arr)
 {
 	double min = INFINITY;
 	for (size_t i = 0; i < arr->size; ++i) {
@@ -289,7 +341,7 @@ double OScInternal_NumArray_Min(const OScDev_NumArray *arr)
 }
 
 
-double OScInternal_NumArray_Max(const OScDev_NumArray *arr)
+double OScInternal_NumArray_Max(const OScInternal_NumArray *arr)
 {
 	double max = -INFINITY;
 	for (size_t i = 0; i < arr->size; ++i) {
@@ -300,7 +352,7 @@ double OScInternal_NumArray_Max(const OScDev_NumArray *arr)
 }
 
 
-double OScInternal_NumRange_Min(const OScDev_NumRange *range)
+double OScInternal_NumRange_Min(const OScInternal_NumRange *range)
 {
 	if (!range)
 		return NAN;
@@ -313,7 +365,7 @@ double OScInternal_NumRange_Min(const OScDev_NumRange *range)
 }
 
 
-double OScInternal_NumRange_Max(const OScDev_NumRange *range)
+double OScInternal_NumRange_Max(const OScInternal_NumRange *range)
 {
 	if (!range)
 		return NAN;
@@ -326,7 +378,7 @@ double OScInternal_NumRange_Max(const OScDev_NumRange *range)
 }
 
 
-double OScInternal_NumRange_ClosestValue(const OScDev_NumRange *range, double value)
+double OScInternal_NumRange_ClosestValue(const OScInternal_NumRange *range, double value)
 {
 	if (range->isList) {
 		double minAbsDiff = INFINITY;
@@ -350,15 +402,15 @@ double OScInternal_NumRange_ClosestValue(const OScDev_NumRange *range, double va
 }
 
 
-static OScDev_NumRange *DiscreteRangeIntersection(
-	const OScDev_NumRange *r1, const OScDev_NumRange *r2)
+static OScInternal_NumRange *DiscreteRangeIntersection(
+	const OScInternal_NumRange *r1, const OScInternal_NumRange *r2)
 {
-	OScDev_NumArray *a1 = OScInternal_NumRange_DiscreteValues(r1);
-	OScDev_NumArray *a2 = OScInternal_NumRange_DiscreteValues(r2);
+	OScInternal_NumArray *a1 = OScInternal_NumRange_DiscreteValues(r1);
+	OScInternal_NumArray *a2 = OScInternal_NumRange_DiscreteValues(r2);
 	OScInternal_NumArray_SortAscending(a1);
 	OScInternal_NumArray_SortAscending(a2);
 
-	OScDev_NumRange *ret = OScInternal_NumRange_CreateDiscrete();
+	OScInternal_NumRange *ret = OScInternal_NumRange_CreateDiscrete();
 	for (size_t i = 0, j = 0; i < a1->size && j < a2->size; ) {
 		if (a1->ptr[i] < a2->ptr[j]) {
 			++i;
@@ -379,9 +431,9 @@ static OScDev_NumRange *DiscreteRangeIntersection(
 }
 
 
-static OScDev_NumRange *ClipDiscreteRange(const OScDev_NumRange *r, double min, double max)
+static OScInternal_NumRange *ClipDiscreteRange(const OScInternal_NumRange *r, double min, double max)
 {
-	OScDev_NumRange *ret = OScInternal_NumRange_CreateDiscrete();
+	OScInternal_NumRange *ret = OScInternal_NumRange_CreateDiscrete();
 	for (size_t i = 0; i < r->rep.list.size; ++i) {
 		double v = r->rep.list.ptr[i];
 		if (min <= v && v <= max) {
@@ -392,8 +444,8 @@ static OScDev_NumRange *ClipDiscreteRange(const OScDev_NumRange *r, double min, 
 }
 
 
-static OScDev_NumRange *ContinuousRangeIntersection(const OScDev_NumRange *r1,
-	const OScDev_NumRange *r2)
+static OScInternal_NumRange *ContinuousRangeIntersection(const OScInternal_NumRange *r1,
+	const OScInternal_NumRange *r2)
 {
 	if (r1->rep.range.rMax < r2->rep.range.rMin ||
 		r2->rep.range.rMax < r1->rep.range.rMin) {
@@ -408,8 +460,8 @@ static OScDev_NumRange *ContinuousRangeIntersection(const OScDev_NumRange *r1,
 }
 
 
-OScDev_NumRange *OScInternal_NumRange_Intersection(
-	const OScDev_NumRange *r1, const OScDev_NumRange *r2)
+OScInternal_NumRange *OScInternal_NumRange_Intersection(
+	const OScInternal_NumRange *r1, const OScInternal_NumRange *r2)
 {
 	if (!r1 || !r2)
 		return NULL;
@@ -419,7 +471,7 @@ OScDev_NumRange *OScInternal_NumRange_Intersection(
 	}
 
 	if (r1->isList) {
-		const OScDev_NumRange *wk = r1;
+		const OScInternal_NumRange *wk = r1;
 		r1 = r2;
 		r2 = wk;
 	}
@@ -433,22 +485,22 @@ OScDev_NumRange *OScInternal_NumRange_Intersection(
 }
 
 
-OScDev_NumRange *OScInternal_NumRange_Intersection3(
-	const OScDev_NumRange *r1, const OScDev_NumRange *r2, const OScDev_NumRange *r3)
+OScInternal_NumRange *OScInternal_NumRange_Intersection3(
+	const OScInternal_NumRange *r1, const OScInternal_NumRange *r2, const OScInternal_NumRange *r3)
 {
-	OScDev_NumRange *tmp = OScInternal_NumRange_Intersection(r1, r2);
-	OScDev_NumRange *ret = OScInternal_NumRange_Intersection(tmp, r3);
+	OScInternal_NumRange *tmp = OScInternal_NumRange_Intersection(r1, r2);
+	OScInternal_NumRange *ret = OScInternal_NumRange_Intersection(tmp, r3);
 	OScInternal_NumRange_Destroy(tmp);
 	return ret;
 }
 
 
-OScDev_NumRange *OScInternal_NumRange_Intersection4(
-	const OScDev_NumRange *r1, const OScDev_NumRange *r2, const OScDev_NumRange *r3,
-	const OScDev_NumRange *r4)
+OScInternal_NumRange *OScInternal_NumRange_Intersection4(
+	const OScInternal_NumRange *r1, const OScInternal_NumRange *r2, const OScInternal_NumRange *r3,
+	const OScInternal_NumRange *r4)
 {
-	OScDev_NumRange *tmp = OScInternal_NumRange_Intersection3(r1, r2, r3);
-	OScDev_NumRange *ret = OScInternal_NumRange_Intersection(tmp, r4);
+	OScInternal_NumRange *tmp = OScInternal_NumRange_Intersection3(r1, r2, r3);
+	OScInternal_NumRange *ret = OScInternal_NumRange_Intersection(tmp, r4);
 	OScInternal_NumRange_Destroy(tmp);
 	return ret;
 }

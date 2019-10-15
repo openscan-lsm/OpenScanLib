@@ -93,7 +93,7 @@ extern "C" {
  * set of changes is to be made over multiple commits, the version number
  * can be set to `(-1, 0)` in intermediate commits to indicate "experimental".
  */
-#define OScDevInternal_ABI_VERSION OScDevInternal_MAKE_VERSION(10, 0)
+#define OScDevInternal_ABI_VERSION OScDevInternal_MAKE_VERSION(11, 0)
 
 
 /** \addtogroup dpi
@@ -227,76 +227,6 @@ enum
 };
 
 
-/** @} */ // addtogroup dpi
-
-
-/** \ingroup internal
- * \brief Internal implementation of OScDev_PtrArray.
- *
- * Device modules must _not_ access fields of this structure directly.
- *
- * \sa OScDev_PtrArray
- * \sa OScDev_STATIC_PTR_ARRAY
- */
-struct OScDevInternal_PtrArray {
-	void **ptr; // Array of void*
-	size_t size;
-	size_t capacity;
-	bool isDynamic;
-};
-
-
-/** \ingroup internal
- * \brief Internal implementation of OScDev_NumArray.
- *
- * Device modules must _not_ access fields of this structure directly.
- *
- * \sa OScDev_NumArray
- * \sa OScDev_STATIC_NUM_ARRAY
- */
-struct OScDevInternal_NumArray {
-	double *ptr; // Array of double
-	size_t size;
-	size_t capacity;
-	bool isDynamic;
-};
-
-
-/** \ingroup internal
- * \brief Part of internal implementation of OScDev_NumRange.
- *
- * Device modules must _not_ access fields of this structure directly.
- */
-struct OScDevInternal_NumContinuousRange {
-	double rMin;
-	double rMax;
-};
-
-
-/** \ingroup internal
- * \brief Internal implementation of OScDev_NumRange.
- *
- * Device modules must _not_ access fields of this structure directly.
- *
- * \sa OScDev_NumRange
- * \sa OScDev_STATIC_NUM_RANGE_DISCRETE
- * \sa OScDev_STATIC_NUM_RANGE_CONTINUOUS
- */
-struct OScDevInternal_NumRange {
-	bool isDynamic;
-	bool isList;
-	union {
-		struct OScDevInternal_NumArray list;
-		struct OScDevInternal_NumContinuousRange range;
-	} rep;
-};
-
-
-/** \addtogroup dpi
-* @{
-*/
-
-
 /// Dynamic or static array of pointers.
 /**
  * This data type is used to pass lists of objects from device modules to
@@ -307,13 +237,12 @@ struct OScDevInternal_NumRange {
  * sure to check the documentation of the function accepting or returning the
  * array.
  *
- * An array can be created dynamically by calling OScDev_PtrArray_Create(),
- * or can be defined statically using #OScDev_STATIC_PTR_ARRAY.
+ * An array can be created dynamically by calling OScDev_PtrArray_Create().
  *
  * (Because this type is intended solely for passing short lists, the only
  * available operation is appending elements.)
  */
-typedef struct OScDevInternal_PtrArray OScDev_PtrArray;
+typedef struct OScInternal_PtrArray OScDev_PtrArray;
 
 
 /// Dynamic or static array of numbers.
@@ -324,13 +253,12 @@ typedef struct OScDevInternal_PtrArray OScDev_PtrArray;
  * Although it holds double values, we use it for integer lists, too, for
  * simplicity.
  *
- * An array can be created dynamically by calling OScDev_NumArray_Create(),
- * or can be defined statically using #OScDev_STATIC_NUM_ARRAY.
+ * An array can be created dynamically by calling OScDev_NumArray_Create().
  *
  * (Because this type is intended solely for passing short lists, the only
  * available operation is appending elements.)
  */
-typedef struct OScDevInternal_NumArray OScDev_NumArray;
+typedef struct OScInternal_NumArray OScDev_NumArray;
 
 
 /// Continuous or discrete numerical range.
@@ -340,67 +268,8 @@ typedef struct OScDevInternal_NumArray OScDev_NumArray;
  *
  * A range can be created dynamically by calling
  * OScDev_NumRange_CreateContinuous() or OScDev_NumRange_CreateDiscrete().
- * Or one can be defined statically using
- * #OScDev_STATIC_NUM_RANGE_CONTINUOUS() or
- * #OScDev_STATIC_NUM_RANGE_DISCRETE().
  */
-typedef struct OScDevInternal_NumRange OScDev_NumRange;
-
-
-/// Define a static array of objects.
-/**
- * This defines a static ::OScDev_PtrArray.
- *
- * For example,
- *
- *     static const MyObject* const list[] = { definitions... };
- *     OScDev_STATIC_PTR_ARRAY(myArray, list);
- *     // Now &myArray can be passed where an OScDev_PtrArray* is required.
- *
- * When the array is defined statically using this macro, every object pointed
- * to by the array must also be statically defined. Modifying a statically
- * defined array will almost certainly result in bugs and should be avoided.
- *
- * Note that \p arr _must_ be the name of a static array of pointers, _not_
- * any other kind of pointer.
- *
- * \param name the name of the static pointer array
- * \param arr name of the raw array containing the pointers to elements
- */
-#define OScDev_STATIC_PTR_ARRAY(name, arr) \
-static const OScDev_PtrArray name = { .size = sizeof(arr) / sizeof(void*), .ptr = (arr) }
-
-
-/// Define a static array of numbers.
-/**
- * This defines a static ::OScDev_NumArray.
- *
- * For example,
- *
- *     static const double list[] = { 0.0, 1.0, 2.0, };
- *     OScDev_STATIC_NUM_ARRAY(myArray, list);
- *     // Now &myArray can be passed where an OScDev_NumArray* is required.
- *
- * Modifying a statically defined array will almost certainly result in bugs
- * and should be avoided.
- *
- * Note that \p arr _must_ be the name of a static array of `double`, _not_
- * any other kind of pointer.
- *
- * \param name the name of the static numeric array
- * \param arr name of the raw double array containing the values
- */
-#define OScDev_STATIC_NUM_ARRAY(name, arr) \
-static const OScDev_NumArray name = { .size = sizeof(arr) / sizeof(double), .ptr = (arr) }
-
-
-#define OScDev_STATIC_NUM_RANGE_CONTINUOUS(name, rangeMin, rangeMax) \
-static const OScDev_NumRange name = { .isList = false, .rep = { \
-	.range = { .rMin = (rangeMin), .rMax = (rangeMax) } } }
-
-#define OScDev_STATIC_NUM_RANGE_DISCRETE(name, arr) \
-static const OScDev_NumRange name = { .isList = true, .rep = { \
-	.list = { .size = sizeof(arr) / sizeof(double), .ptr = (arr) } } }
+typedef struct OScInternal_NumRange OScDev_NumRange;
 
 
 /** @} */ // addtogroup dpi
@@ -458,6 +327,7 @@ struct OScDevInternal_Interface
 	void (*Log)(OScDev_ModuleImpl *modImpl, OScDev_Device *device, OScDev_LogLevel level, const char *message);
 
 	OScDev_PtrArray *(*PtrArray_Create)(OScDev_ModuleImpl *modImpl);
+	OScDev_PtrArray *(*PtrArray_CreateFromNullTerminated)(OScDev_ModuleImpl *modImpl, void *const *nullTerminatedArray);
 	void (*PtrArray_Destroy)(OScDev_ModuleImpl *modImpl, const OScDev_PtrArray *arr);
 	void (*PtrArray_Append)(OScDev_ModuleImpl *modImpl, OScDev_PtrArray *arr, void *obj);
 	size_t (*PtrArray_Size)(OScDev_ModuleImpl *modImpl, const OScDev_PtrArray *arr);
@@ -465,6 +335,7 @@ struct OScDevInternal_Interface
 	void *(*PtrArray_At)(OScDev_ModuleImpl *modImpl, const OScDev_PtrArray *arr, size_t index);
 
 	OScDev_NumArray *(*NumArray_Create)(OScDev_ModuleImpl *modImpl);
+	OScDev_NumArray *(*NumArray_CreateFromNaNTerminated)(OScDev_ModuleImpl *modImpl, const double *nanTerminatedArray);
 	void (*NumArray_Destroy)(OScDev_ModuleImpl *modImpl, const OScDev_NumArray *arr);
 	void (*NumArray_Append)(OScDev_ModuleImpl *modImpl, OScDev_NumArray *arr, double val);
 	size_t (*NumArray_Size)(OScDev_ModuleImpl *modImpl, const OScDev_NumArray *arr);
@@ -473,6 +344,7 @@ struct OScDevInternal_Interface
 
 	OScDev_NumRange *(*NumRange_CreateContinuous)(OScDev_ModuleImpl *modImpl, double rMin, double rMax);
 	OScDev_NumRange *(*NumRange_CreateDiscrete)(OScDev_ModuleImpl *modImpl);
+	OScDev_NumRange *(*NumRange_CreateDiscreteFromNaNTerminated)(OScDev_ModuleImpl *modImpl, const double *nanTerminatedArray);
 	void (*NumRange_Destroy)(OScDev_ModuleImpl *modImpl, const OScDev_NumRange *range);
 	void (*NumRange_AppendDiscrete)(OScDev_ModuleImpl *modImpl, OScDev_NumRange *range, double val);
 
@@ -555,7 +427,7 @@ struct OScDev_ModuleImpl
 	 * module remains loaded (i.e. indefinitely since we do not support
 	 * unloading).
 	 */
-	OScDev_Error (*GetDeviceImpls)(const OScDev_PtrArray **deviceImpls);
+	OScDev_Error (*GetDeviceImpls)(OScDev_PtrArray **deviceImpls);
 };
 
 
@@ -1025,6 +897,11 @@ OScDev_API OScDev_PtrArray *OScDev_PtrArray_Create(void)
 	return OScDevInternal_FunctionTable->PtrArray_Create(&OScDevInternal_TheModuleImpl);
 }
 
+OScDev_API OScDev_PtrArray *OScDev_PtrArray_CreateFromNullTerminated(void *const *nullTerminatedArray)
+{
+	return OScDevInternal_FunctionTable->PtrArray_CreateFromNullTerminated(&OScDevInternal_TheModuleImpl, nullTerminatedArray);
+}
+
 /// Destroy (free) an array of objects.
 OScDev_API void OScDev_PtrArray_Destroy(const OScDev_PtrArray *arr)
 {
@@ -1056,6 +933,11 @@ OScDev_API void *OScDev_PtrArray_At(const OScDev_PtrArray *arr, size_t index)
 OScDev_API OScDev_NumArray *OScDev_NumArray_Create(void)
 {
 	return OScDevInternal_FunctionTable->NumArray_Create(&OScDevInternal_TheModuleImpl);
+}
+
+OScDev_API OScDev_NumArray *OScDev_NumArray_CreateFromNaNTerminated(const double *nanTerminatedArray)
+{
+	return OScDevInternal_FunctionTable->NumArray_CreateFromNaNTerminated(&OScDevInternal_TheModuleImpl, nanTerminatedArray);
 }
 
 /// Destroy (free) an array of numbers.
@@ -1093,6 +975,11 @@ OScDev_API OScDev_NumRange *OScDev_NumRange_CreateContinuous(double rMin, double
 OScDev_API OScDev_NumRange *OScDev_NumRange_CreateDiscrete(void)
 {
 	return OScDevInternal_FunctionTable->NumRange_CreateDiscrete(&OScDevInternal_TheModuleImpl);
+}
+
+OScDev_API OScDev_NumRange *OScDev_NumRange_CreateDiscreteFromNaNTerminated(const double *nanTerminatedArray)
+{
+	return OScDevInternal_FunctionTable->NumRange_CreateDiscreteFromNaNTerminated(&OScDevInternal_TheModuleImpl, nanTerminatedArray);
 }
 
 OScDev_API void OScDev_NumRange_Destroy(const OScDev_NumRange *range)

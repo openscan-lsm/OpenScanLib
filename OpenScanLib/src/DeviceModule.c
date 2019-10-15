@@ -150,7 +150,7 @@ OSc_Error OScInternal_DeviceModule_GetNames(const char **modules, size_t *count)
 }
 
 
-OSc_Error OScInternal_DeviceModule_GetDeviceImpls(const char *module, const OScDev_PtrArray **deviceImpls)
+OSc_Error OScInternal_DeviceModule_GetDeviceImpls(const char *module, OScInternal_PtrArray **deviceImpls)
 {
 	struct Module *mod = NULL;
 	for (size_t i = 0; i < g_loadedAdapterCount; ++i)

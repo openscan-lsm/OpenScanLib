@@ -15,37 +15,43 @@ static void Log(OScDev_ModuleImpl *modImpl, OScDev_Device *device, OScDev_LogLev
 }
 
 
-static OScDev_PtrArray *PtrArray_Create(OScDev_ModuleImpl *modImpl)
+static OScInternal_PtrArray *PtrArray_Create(OScDev_ModuleImpl *modImpl)
 {
 	return OScInternal_PtrArray_Create();
 }
 
 
-static void PtrArray_Destroy(OScDev_ModuleImpl *modImpl, const OScDev_PtrArray *arr)
+static OScInternal_PtrArray *PtrArray_CreateFromNullTerminated(OScDev_ModuleImpl *modImpl, void *const *nullTerminatedArray)
+{
+	return OScInternal_PtrArray_CreateFromNullTerminated(nullTerminatedArray);
+}
+
+
+static void PtrArray_Destroy(OScDev_ModuleImpl *modImpl, const OScInternal_PtrArray *arr)
 {
 	OScInternal_PtrArray_Destroy(arr);
 }
 
 
-static void PtrArray_Append(OScDev_ModuleImpl *modImpl, OScDev_PtrArray *arr, void *obj)
+static void PtrArray_Append(OScDev_ModuleImpl *modImpl, OScInternal_PtrArray *arr, void *obj)
 {
 	OScInternal_PtrArray_Append(arr, obj);
 }
 
 
-static size_t PtrArray_Size(OScDev_ModuleImpl *modImpl, const OScDev_PtrArray *arr)
+static size_t PtrArray_Size(OScDev_ModuleImpl *modImpl, const OScInternal_PtrArray *arr)
 {
 	return OScInternal_PtrArray_Size(arr);
 }
 
 
-static bool PtrArray_Empty(OScDev_ModuleImpl *modImpl, const OScDev_PtrArray *arr)
+static bool PtrArray_Empty(OScDev_ModuleImpl *modImpl, const OScInternal_PtrArray *arr)
 {
 	return OScInternal_PtrArray_Empty(arr);
 }
 
 
-static void *PtrArray_At(OScDev_ModuleImpl *modImpl, const OScDev_PtrArray *arr, size_t index)
+static void *PtrArray_At(OScDev_ModuleImpl *modImpl, const OScInternal_PtrArray *arr, size_t index)
 {
 	return OScInternal_PtrArray_At(arr, index);
 }
@@ -54,6 +60,12 @@ static void *PtrArray_At(OScDev_ModuleImpl *modImpl, const OScDev_PtrArray *arr,
 static OScDev_NumArray *NumArray_Create(OScDev_ModuleImpl *modImpl)
 {
 	return OScInternal_NumArray_Create();
+}
+
+
+static OScDev_NumArray *NumArray_CreateFromNaNTerminated(OScDev_ModuleImpl *modImpl, const double *nanTerminatedArray)
+{
+	return OScInternal_NumArray_CreateFromNaNTerminated(nanTerminatedArray);
 }
 
 
@@ -96,6 +108,12 @@ static OScDev_NumRange *NumRange_CreateContinuous(OScDev_ModuleImpl *modImpl, do
 static OScDev_NumRange *NumRange_CreateDiscrete(OScDev_ModuleImpl *modImpl)
 {
 	return OScInternal_NumRange_CreateDiscrete();
+}
+
+
+static OScDev_NumRange *NumRange_CreateDiscreteFromNaNTerminated(OScDev_ModuleImpl *modImpl, const double *nanTerminatedArray)
+{
+	return OScInternal_NumRange_CreateDiscreteFromNaNTerminated(nanTerminatedArray);
 }
 
 
@@ -235,12 +253,14 @@ static bool Acquisition_CallFrameCallback(OScDev_ModuleImpl *modImpl, OScDev_Acq
 struct OScDevInternal_Interface DeviceInterfaceFunctionTable = {
 	.Log = Log,
 	.PtrArray_Create = PtrArray_Create,
+	.PtrArray_CreateFromNullTerminated = PtrArray_CreateFromNullTerminated,
 	.PtrArray_Destroy = PtrArray_Destroy,
 	.PtrArray_Append = PtrArray_Append,
 	.PtrArray_Size = PtrArray_Size,
 	.PtrArray_Empty = PtrArray_Empty,
 	.PtrArray_At = PtrArray_At,
 	.NumArray_Create = NumArray_Create,
+	.NumArray_CreateFromNaNTerminated = NumArray_CreateFromNaNTerminated,
 	.NumArray_Destroy = NumArray_Destroy,
 	.NumArray_Append = NumArray_Append,
 	.NumArray_Size = NumArray_Size,
@@ -248,6 +268,7 @@ struct OScDevInternal_Interface DeviceInterfaceFunctionTable = {
 	.NumArray_At = NumArray_At,
 	.NumRange_CreateContinuous = NumRange_CreateContinuous,
 	.NumRange_CreateDiscrete = NumRange_CreateDiscrete,
+	.NumRange_CreateDiscreteFromNaNTerminated = NumRange_CreateDiscreteFromNaNTerminated,
 	.NumRange_Destroy = NumRange_Destroy,
 	.NumRange_AppendDiscrete = NumRange_AppendDiscrete,
 	.Device_Create = Device_Create,

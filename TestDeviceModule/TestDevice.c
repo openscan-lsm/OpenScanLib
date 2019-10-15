@@ -91,15 +91,10 @@ static OScDev_DeviceImpl g_TestDeviceImpl = {
 };
 
 
-OScDev_Error TestGetDeviceImpls(const OScDev_PtrArray **deviceImpls)
+OScDev_Error TestGetDeviceImpls(OScDev_PtrArray **deviceImpls)
 {
-	static OScDev_DeviceImpl *arr[] = {
-		&g_TestDeviceImpl
-	};
-
-	OScDev_STATIC_PTR_ARRAY(impls, arr);
-
-	*deviceImpls = &impls;
+	*deviceImpls = OScDev_PtrArray_CreateFromNullTerminated(
+		(OScDev_DeviceImpl *[]){ &g_TestDeviceImpl, NULL });
 	return OScDev_OK;
 }
 
