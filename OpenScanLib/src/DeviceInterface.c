@@ -149,6 +149,12 @@ static OScDev_Error Setting_Create(OScDev_ModuleImpl *modImpl, OScDev_Setting **
 }
 
 
+static void Setting_Destroy(OScDev_ModuleImpl *modImpl, OScDev_Setting *setting)
+{
+	OScInternal_Setting_Destroy(setting);
+}
+
+
 static void *Setting_GetImplData(OScDev_ModuleImpl *modImpl, OScDev_Setting *setting)
 {
 	return OScInternal_Setting_GetImplData(setting);

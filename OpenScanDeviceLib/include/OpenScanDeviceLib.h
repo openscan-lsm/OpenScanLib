@@ -93,7 +93,7 @@ extern "C" {
  * set of changes is to be made over multiple commits, the version number
  * can be set to `(-1, 0)` in intermediate commits to indicate "experimental".
  */
-#define OScDevInternal_ABI_VERSION OScDevInternal_MAKE_VERSION(11, 0)
+#define OScDevInternal_ABI_VERSION OScDevInternal_MAKE_VERSION(12, 0)
 
 
 /** \addtogroup dpi
@@ -352,6 +352,7 @@ struct OScDevInternal_Interface
 	void *(*Device_GetImplData)(OScDev_ModuleImpl *modImpl, OScDev_Device *device);
 
 	OScDev_Error (*Setting_Create)(OScDev_ModuleImpl *modImpl, OScDev_Setting **setting, const char *name, OScDev_ValueType valueType, OScDev_SettingImpl *impl, void *data);
+	void (*Setting_Destroy)(OScDev_ModuleImpl *modImpl, OScDev_Setting *setting);
 	void *(*Setting_GetImplData)(OScDev_ModuleImpl *modImpl, OScDev_Setting *setting);
 
 	// TODO These can return void
@@ -1005,6 +1006,11 @@ OScDev_API void *OScDev_Device_GetImplData(OScDev_Device *device)
 OScDev_API OScDev_Error OScDev_Setting_Create(OScDev_Setting **setting, const char *name, OScDev_ValueType valueType, OScDev_SettingImpl *impl, void *data)
 {
 	return OScDevInternal_FunctionTable->Setting_Create(&OScDevInternal_TheModuleImpl, setting, name, valueType, impl, data);
+}
+
+OScDev_API void OScDev_Setting_Destroy(OScDev_Setting *setting)
+{
+	OScDevInternal_FunctionTable->Setting_Destroy(&OScDevInternal_TheModuleImpl, setting);
 }
 
 OScDev_API void *OScDev_Setting_GetImplData(OScDev_Setting *setting)
