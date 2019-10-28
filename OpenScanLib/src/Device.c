@@ -248,6 +248,55 @@ OScDev_NumRange *OScInternal_Device_GetZooms(OSc_Device *device)
 }
 
 
+bool OScInternal_Device_IsROIScanSupported(OSc_Device *device)
+{
+	if (!device)
+		return false;
+	if (!device->impl->IsROIScanSupported) {
+		return false;
+	}
+
+	bool supported;
+	OSc_Error err;
+	if (OSc_CHECK_ERROR(err, device->impl->IsROIScanSupported(device, &supported))) {
+		return false;
+	}
+	return supported;
+}
+
+
+OScInternal_NumRange *OScInternal_Device_GetRasterWidths(OSc_Device *device)
+{
+	if (!device)
+		return NULL;
+	if (device->impl->GetRasterWidths) {
+		OScDev_NumRange *ret;
+		OSc_Error err;
+		if (OSc_CHECK_ERROR(err, device->impl->GetRasterWidths(device, &ret))) {
+			return OScInternal_NumRange_CreateDiscrete();
+		}
+		return ret;
+	}
+	return OScInternal_NumRange_CreateContinuous(1, INT32_MAX);
+}
+
+
+OScInternal_NumRange *OScInternal_Device_GetRasterHeights(OSc_Device *device)
+{
+	if (!device)
+		return NULL;
+	if (device->impl->GetRasterHeights) {
+		OScDev_NumRange *ret;
+		OSc_Error err;
+		if (OSc_CHECK_ERROR(err, device->impl->GetRasterHeights(device, &ret))) {
+			return OScInternal_NumRange_CreateDiscrete();
+		}
+		return ret;
+	}
+	return OScInternal_NumRange_CreateContinuous(1, INT32_MAX);
+}
+
+
 OSc_Error OScInternal_Device_GetNumberOfChannels(OSc_Device *device, uint32_t *numberOfChannels)
 {
 	if (!device || !numberOfChannels)

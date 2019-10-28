@@ -66,6 +66,7 @@ OScInternal_NumArray *OScInternal_NumRange_DiscreteValues(const OScInternal_NumR
 double OScInternal_NumRange_Min(const OScInternal_NumRange *range);
 double OScInternal_NumRange_Max(const OScInternal_NumRange *range);
 double OScInternal_NumRange_ClosestValue(const OScInternal_NumRange *range, double value);
+bool OScInternal_NumRange_Contains(const OScInternal_NumRange *range, double value);
 OScInternal_NumRange *OScInternal_NumRange_Intersection(
 	const OScInternal_NumRange *r1, const OScInternal_NumRange *r2);
 OScInternal_NumRange *OScInternal_NumRange_Intersection3(
@@ -73,6 +74,12 @@ OScInternal_NumRange *OScInternal_NumRange_Intersection3(
 OScInternal_NumRange *OScInternal_NumRange_Intersection4(
 	const OScInternal_NumRange *r1, const OScInternal_NumRange *r2, const OScInternal_NumRange *r3,
 	const OScInternal_NumRange *r4);
+OScInternal_NumRange *OScInternal_NumRange_Intersection5(
+	const OScInternal_NumRange *r1, const OScInternal_NumRange *r2, const OScInternal_NumRange *r3,
+	const OScInternal_NumRange *r4, const OScInternal_NumRange *r5);
+OScInternal_NumRange *OScInternal_NumRange_Intersection6(
+	const OScInternal_NumRange *r1, const OScInternal_NumRange *r2, const OScInternal_NumRange *r3,
+	const OScInternal_NumRange *r4, const OScInternal_NumRange *r5, const OScInternal_NumRange *r6);
 
 OSc_Error OScInternal_DeviceModule_GetCount(size_t *count);
 OSc_Error OScInternal_DeviceModule_GetNames(const char **modules, size_t *count);
@@ -89,6 +96,9 @@ void *OScInternal_Device_GetImplData(OSc_Device *device);
 OScInternal_NumRange *OScInternal_Device_GetPixelRates(OSc_Device *device);
 OScInternal_NumRange *OScInternal_Device_GetResolutions(OSc_Device *device);
 OScInternal_NumRange *OScInternal_Device_GetZooms(OSc_Device *device);
+bool OScInternal_Device_IsROIScanSupported(OSc_Device *device);
+OScInternal_NumRange *OScInternal_Device_GetRasterWidths(OSc_Device *device);
+OScInternal_NumRange *OScInternal_Device_GetRasterHeights(OSc_Device *device);
 OSc_Error OScInternal_Device_GetNumberOfChannels(OSc_Device *device, uint32_t *numberOfChannels);
 OSc_Error OScInternal_Device_GetBytesPerSample(OSc_Device *device, uint32_t *bytesPerSample);
 OSc_Error OScInternal_Device_Arm(OSc_Device *device, OSc_Acquisition *acq);

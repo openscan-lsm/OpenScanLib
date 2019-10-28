@@ -594,7 +594,8 @@ struct OScDev_DeviceImpl
 	 * Raster size applies to the clock, scanner, and detector.
 	 *
 	 * **Optional**; the default implementation will allow all positive integer
-	 * widths.
+	 * widths. If the device only works with an internal scanner, the range
+	 * will be limited by the scanner resolution.
 	 */
 	OScDev_Error (*GetRasterWidths)(OScDev_Device *device, OScDev_NumRange **widths);
 
@@ -606,7 +607,8 @@ struct OScDev_DeviceImpl
 	 * Raster size applies to the clock, scanner, and detector.
 	 *
 	 * **Optional**; the default implementation will allow all positive integer
-	 * heights.
+	 * widths. If the device only works with an internal scanner, the range
+	 * will be limited by the scanner resolution.
 	 */
 	OScDev_Error (*GetRasterHeights)(OScDev_Device *device, OScDev_NumRange **heights);
 

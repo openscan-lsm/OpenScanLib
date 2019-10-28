@@ -447,6 +447,7 @@ OSc_API OSc_Error OSc_AcqTemplate_GetPixelRateSetting(OSc_AcqTemplate *tmpl, OSc
 OSc_API OSc_Error OSc_AcqTemplate_GetResolutionSetting(OSc_AcqTemplate *tmpl, OSc_Setting **setting);
 OSc_API OSc_Error OSc_AcqTemplate_GetZoomFactorSetting(OSc_AcqTemplate *tmpl, OSc_Setting **setting);
 OSc_API OSc_Error OSc_AcqTemplate_GetMagnificationSetting(OSc_AcqTemplate *tmpl, OSc_Setting **setting);
+// TODO API to get allowed ROIs (bool IsROISupported and width/height constraints)
 OSc_API OSc_Error OSc_AcqTemplate_SetROI(OSc_AcqTemplate *tmpl, uint32_t xOffset, uint32_t yOffset, uint32_t width, uint32_t height);
 OSc_API void OSc_AcqTemplate_ResetROI(OSc_AcqTemplate *tmpl);
 OSc_API OSc_Error OSc_AcqTemplate_GetROI(OSc_AcqTemplate *tmpl, uint32_t *xOffset, uint32_t *yOffset, uint32_t *width, uint32_t *height);

@@ -402,6 +402,19 @@ double OScInternal_NumRange_ClosestValue(const OScInternal_NumRange *range, doub
 }
 
 
+bool OScInternal_NumRange_Contains(const OScInternal_NumRange *range, double value)
+{
+	if (range->isList) {
+		for (size_t i = 0; i < range->rep.list.size; ++i) {
+			if (range->rep.list.ptr[i] == value)
+				return true;
+		}
+		return false;
+	}
+	return value >= range->rep.range.rMin && value <= range->rep.range.rMax;
+}
+
+
 static OScInternal_NumRange *DiscreteRangeIntersection(
 	const OScInternal_NumRange *r1, const OScInternal_NumRange *r2)
 {
@@ -501,6 +514,28 @@ OScInternal_NumRange *OScInternal_NumRange_Intersection4(
 {
 	OScInternal_NumRange *tmp = OScInternal_NumRange_Intersection3(r1, r2, r3);
 	OScInternal_NumRange *ret = OScInternal_NumRange_Intersection(tmp, r4);
+	OScInternal_NumRange_Destroy(tmp);
+	return ret;
+}
+
+
+OScInternal_NumRange *OScInternal_NumRange_Intersection5(
+	const OScInternal_NumRange *r1, const OScInternal_NumRange *r2, const OScInternal_NumRange *r3,
+	const OScInternal_NumRange *r4, const OScInternal_NumRange *r5)
+{
+	OScInternal_NumRange *tmp = OScInternal_NumRange_Intersection4(r1, r2, r3, r4);
+	OScInternal_NumRange *ret = OScInternal_NumRange_Intersection(tmp, r5);
+	OScInternal_NumRange_Destroy(tmp);
+	return ret;
+}
+
+
+OScInternal_NumRange *OScInternal_NumRange_Intersection6(
+	const OScInternal_NumRange *r1, const OScInternal_NumRange *r2, const OScInternal_NumRange *r3,
+	const OScInternal_NumRange *r4, const OScInternal_NumRange *r5, const OScInternal_NumRange *r6)
+{
+	OScInternal_NumRange *tmp = OScInternal_NumRange_Intersection5(r1, r2, r3, r4, r5);
+	OScInternal_NumRange *ret = OScInternal_NumRange_Intersection(tmp, r6);
 	OScInternal_NumRange_Destroy(tmp);
 	return ret;
 }

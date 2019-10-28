@@ -125,18 +125,30 @@ static OScDev_SettingImpl PixelRateSettingImpl = {
 
 static OScDev_NumRange *GetResolutions(OSc_AcqTemplate *tmpl)
 {
+	// A full-frame scan (ROI = [0, 0, res, res]) must always be possible, so
+	// resolutions are limited by both scanner resolutions and clock/detector
+	// raster width/height.
+
+	OSc_Device *clockDevice = OSc_LSM_GetClockDevice(tmpl->lsm);
 	OSc_Device *scannerDevice = OSc_LSM_GetScannerDevice(tmpl->lsm);
+	OSc_Device *detectorDevice = OSc_LSM_GetDetectorDevice(tmpl->lsm);
+	OScDev_NumRange *clockWidthRange = OScInternal_Device_GetRasterWidths(clockDevice);
+	OScDev_NumRange *clockHeightRange = OScInternal_Device_GetRasterHeights(clockDevice);
 	OScDev_NumRange *scannerRange = OScInternal_Device_GetResolutions(scannerDevice);
+	OScDev_NumRange *detectorWidthRange = OScInternal_Device_GetRasterWidths(detectorDevice);
+	OScDev_NumRange *detectorHeightRange = OScInternal_Device_GetRasterHeights(detectorDevice);
 	OScDev_NumRange *maxRange = OScInternal_NumRange_CreateContinuous(1, INT32_MAX);
 
-	OScDev_NumRange *range = OScInternal_NumRange_Intersection(
-		scannerRange, maxRange);
-
-	// TODO We should also take intersection with clock/scanner/detector raster
-	// widths and heights, to ensure that full frame acquisition will work.
+	OScDev_NumRange *range = OScInternal_NumRange_Intersection6(
+		clockWidthRange, clockHeightRange, scannerRange,
+		detectorWidthRange, detectorHeightRange, maxRange);
 
 	OScInternal_NumRange_Destroy(maxRange);
+	OScInternal_NumRange_Destroy(detectorHeightRange);
+	OScInternal_NumRange_Destroy(detectorWidthRange);
 	OScInternal_NumRange_Destroy(scannerRange);
+	OScInternal_NumRange_Destroy(clockHeightRange);
+	OScInternal_NumRange_Destroy(clockWidthRange);
 
 	return range;
 }
@@ -207,8 +219,7 @@ static OScDev_Error SetResolution(OScDev_Setting *setting, int32_t value)
 	OSc_AcqTemplate *tmpl = OScInternal_Setting_GetImplData(setting);
 	if (tmpl->resolution != value) {
 		tmpl->resolution = value;
-		tmpl->xOffset = tmpl->yOffset = 0;
-		tmpl->width = tmpl->height = value;
+		OSc_AcqTemplate_ResetROI(tmpl);
 		OScInternal_Setting_Invalidate(tmpl->magnificationSetting);
 	}
 	return OSc_Error_OK;
@@ -379,8 +390,7 @@ OSc_Error OSc_AcqTemplate_Create(OSc_AcqTemplate **tmpl, OSc_LSM *lsm)
 	(*tmpl)->pixelRateHz = GetDefaultPixelRate(*tmpl);
 	(*tmpl)->resolution = GetDefaultResolution(*tmpl);
 	(*tmpl)->zoomFactor = GetDefaultZoom(*tmpl);
-	(*tmpl)->xOffset = (*tmpl)->yOffset = 0;
-	(*tmpl)->width = (*tmpl)->height = (*tmpl)->resolution;
+	OSc_AcqTemplate_ResetROI(*tmpl);
 
 	return OSc_Error_OK;
 
@@ -468,11 +478,52 @@ OSc_Error OSc_AcqTemplate_SetROI(OSc_AcqTemplate *tmpl, uint32_t xOffset, uint32
 {
 	if (!tmpl)
 		return OSc_Error_Illegal_Argument;
+
+	// If ROI scan is not supported by the scanner, only full frame is allowed
+	if (!OScInternal_Device_IsROIScanSupported(OSc_LSM_GetScannerDevice(tmpl->lsm))) {
+		if (xOffset > 0 || yOffset > 0 || width != tmpl->resolution || height != tmpl->resolution) {
+			return OSc_Error_Unsupported_Operation;
+		}
+	}
+
+	// Otherwise, ROI must fit in resolution and be allowed by clock and
+	// detector raster size.
 	if (xOffset >= tmpl->resolution || xOffset + width > tmpl->resolution ||
 		yOffset >= tmpl->resolution || yOffset + height > tmpl->resolution)
 		return OSc_Error_Unknown; // TODO Out of range
 	if (width < 1 || height < 1)
 		return OSc_Error_Unknown; // TODO Empty raster
+
+	bool rasterSizeOk = true;
+
+	OSc_Device *clockDevice = OSc_LSM_GetClockDevice(tmpl->lsm);
+	OScInternal_NumRange *clockWidthRange = OScInternal_Device_GetRasterWidths(clockDevice);
+	if (!OScInternal_NumRange_Contains(clockWidthRange, width)) {
+		rasterSizeOk = false;
+	}
+	OScInternal_NumRange_Destroy(clockWidthRange);
+	OScInternal_NumRange *clockHeightRange = OScInternal_Device_GetRasterHeights(clockDevice);
+	if (!OScInternal_NumRange_Contains(clockHeightRange, height)) {
+		rasterSizeOk = false;
+	}
+	OScInternal_NumRange_Destroy(clockHeightRange);
+
+	OSc_Device *detectorDevice = OSc_LSM_GetDetectorDevice(tmpl->lsm);
+	OScInternal_NumRange *detectorWidthRange = OScInternal_Device_GetRasterWidths(detectorDevice);
+	if (!OScInternal_NumRange_Contains(detectorWidthRange, width)) {
+		rasterSizeOk = false;
+	}
+	OScInternal_NumRange_Destroy(detectorWidthRange);
+	OScInternal_NumRange *detectorHeightRange = OScInternal_Device_GetRasterHeights(detectorDevice);
+	if (!OScInternal_NumRange_Contains(detectorHeightRange, height)) {
+		rasterSizeOk = false;
+	}
+	OScInternal_NumRange_Destroy(detectorHeightRange);
+
+	if (!rasterSizeOk) {
+		return OSc_Error_Unsupported_Operation;
+	}
+
 	tmpl->xOffset = xOffset;
 	tmpl->yOffset = yOffset;
 	tmpl->width = width;
