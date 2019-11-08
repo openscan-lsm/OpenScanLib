@@ -65,13 +65,13 @@ extern "C" {
  */
 uint32_t OScDevInternal_ENTRY_POINT_EXPORT OScDevInternal_ENTRY_POINT(
 	struct OScDevInternal_Interface ***devif,
-	struct OScDev_ModuleImpl **impl);
+	OScDev_ModuleImpl **impl);
 
 
 /// Pointer to module entry point function.
 typedef uint32_t (*OScDevInternal_EntryPointPtr)(
 	struct OScDevInternal_Interface ***devif,
-	struct OScDev_ModuleImpl **impl);
+	OScDev_ModuleImpl **impl);
 
 
 /** @} */ // addtogroup internal

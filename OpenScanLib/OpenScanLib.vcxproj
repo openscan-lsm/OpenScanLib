@@ -19,24 +19,23 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\AcqTemplate.c" />
+    <ClCompile Include="src\Array.c" />
     <ClCompile Include="src\DeviceInterface.c" />
-    <ClCompile Include="src\Modules.c" />
-    <ClCompile Include="src\OpenScanAcquisition.c" />
-    <ClCompile Include="src\OpenScanClock.c" />
-    <ClCompile Include="src\OpenScanDetector.c" />
-    <ClCompile Include="src\OpenScanDevice.c" />
-    <ClCompile Include="src\OpenScanDeviceModules.c" />
-    <ClCompile Include="src\OpenScanDevices.c" />
-    <ClCompile Include="src\OpenScanLogging.c" />
-    <ClCompile Include="src\OpenScanLSM.c" />
-    <ClCompile Include="src\OpenScanScanner.c" />
-    <ClCompile Include="src\OpenScanSetting.c" />
+    <ClCompile Include="src\Module.c" />
+    <ClCompile Include="src\Acquisition.c" />
+    <ClCompile Include="src\Device.c" />
+    <ClCompile Include="src\DeviceModule.c" />
+    <ClCompile Include="src\DeviceEnumeration.c" />
+    <ClCompile Include="src\Logging.c" />
+    <ClCompile Include="src\LSM.c" />
+    <ClCompile Include="src\Setting.c" />
+    <ClCompile Include="src\Version.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\OpenScanLib.h" />
     <ClInclude Include="src\DeviceInterface.h" />
-    <ClInclude Include="src\Modules.h" />
-    <ClInclude Include="src\OpenScanDeviceModules.h" />
+    <ClInclude Include="src\Module.h" />
     <ClInclude Include="src\OpenScanLibPrivate.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

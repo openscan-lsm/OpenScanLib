@@ -1,9 +1,7 @@
-#include "OpenScanDeviceModules.h"
-
 #include "DeviceInterface.h"
-#include "Modules.h"
+#include "Module.h"
 
-#define OScDevInternal_BUILDING_OPENSCANLIB
+#define OScDevInternal_BUILDING_OPENSCANLIB 1
 #include "OpenScanDeviceLibPrivate.h"
 
 
@@ -14,7 +12,7 @@ static char **g_adapterPaths;
 // Array of valid module handles
 struct Module
 {
-	OSc_Module_Handle handle;
+	OScInternal_Module handle;
 	char *name;
 };
 static struct Module *g_loadedAdapters;
@@ -39,8 +37,10 @@ static OSc_Error LoadAdapter(const char *path, const char *name)
 			return OSc_Error_Device_Module_Already_Exists;
 	}
 
-	OSc_Module_Handle module;
-	OSc_Return_If_Error(LoadModuleLibrary(path, &module));
+	OScInternal_Module module;
+	OSc_Error err;
+	if (OSc_CHECK_ERROR(err, OScInternal_Module_Load(&module, path)))
+		return err;
 	if (g_loadedAdapterCount == g_loadedAdaptersCap)
 	{
 		g_loadedAdapters = realloc(g_loadedAdapters,
@@ -59,7 +59,7 @@ static OSc_Error LoadAdapter(const char *path, const char *name)
 static void LoadAdaptersAtPath(const char *path)
 {
 	char **files;
-	FindFilesWithSuffix(path, ".osdev", &files);
+	OScInternal_FileList_Create(&files, path, ".osdev");
 	for (char **pfile = files; *pfile; ++pfile)
 	{
 		char filePath[512];
@@ -68,12 +68,12 @@ static void LoadAdaptersAtPath(const char *path)
 		strncat(filePath, *pfile, sizeof(filePath) - 1 - strlen(filePath));
 		char name[512];
 		strncpy(name, *pfile, sizeof(name) - 1);
-		// Remove suffix (we trust FindFilesWithSuffix returned what it should)
+		// Remove suffix (we trust OScInternal_FileList_Create returned what it should)
 		*strrchr(name, '.') = '\0';
 		OSc_Error err = LoadAdapter(filePath, name);
 		// TODO Log or report error
 	}
-	FreeFileList(files);
+	OScInternal_FileList_Free(files);
 }
 
 
@@ -105,7 +105,7 @@ static void FreeAdapterPaths()
 }
 
 
-void OSc_DeviceModule_Set_Search_Paths(char **paths)
+void OSc_SetDeviceModuleSearchPaths(char **paths)
 {
 	FreeAdapterPaths();
 
@@ -127,7 +127,7 @@ void OSc_DeviceModule_Set_Search_Paths(char **paths)
 }
 
 
-OSc_Error OSc_DeviceModule_Get_Count(size_t *count)
+OSc_Error OScInternal_DeviceModule_GetCount(size_t *count)
 {
 	if (!g_loadedAdapters)
 		LoadAdapters();
@@ -137,7 +137,7 @@ OSc_Error OSc_DeviceModule_Get_Count(size_t *count)
 }
 
 
-OSc_Error OSc_DeviceModule_Get_Names(const char **modules, size_t *count)
+OSc_Error OScInternal_DeviceModule_GetNames(const char **modules, size_t *count)
 {
 	if (!g_loadedAdapters)
 		LoadAdapters();
@@ -150,7 +150,7 @@ OSc_Error OSc_DeviceModule_Get_Names(const char **modules, size_t *count)
 }
 
 
-OSc_Error OSc_DeviceModule_Get_Devices(const char *module, OSc_Device ***devices, size_t *count)
+OSc_Error OScInternal_DeviceModule_GetDeviceImpls(const char *module, OScInternal_PtrArray **deviceImpls)
 {
 	struct Module *mod = NULL;
 	for (size_t i = 0; i < g_loadedAdapterCount; ++i)
@@ -165,10 +165,12 @@ OSc_Error OSc_DeviceModule_Get_Devices(const char *module, OSc_Device ***devices
 		return OSc_Error_No_Such_Device_Module;
 
 	OScDevInternal_EntryPointPtr entryPoint;
-	OSc_Return_If_Error(GetEntryPoint(mod->handle, OScDevInternal_ENTRY_POINT_NAME, (void *)&entryPoint));
+	OSc_Error err;
+	if (OSc_CHECK_ERROR(err, OScInternal_Module_GetEntryPoint(mod->handle, OScDevInternal_ENTRY_POINT_NAME, (void *)&entryPoint)))
+		return err;
 
 	struct OScDevInternal_Interface **funcTablePtr;
-	struct OScDev_ModuleImpl *modImpl;
+	OScDev_ModuleImpl *modImpl;
 	uint32_t dpiVersion = entryPoint(&funcTablePtr, &modImpl);
 	if (dpiVersion != OScDevInternal_ABI_VERSION)
 	{
@@ -179,61 +181,13 @@ OSc_Error OSc_DeviceModule_Get_Devices(const char *module, OSc_Device ***devices
 	*funcTablePtr = &DeviceInterfaceFunctionTable;
 
 	if (modImpl->Open)
-		OSc_Return_If_Error(modImpl->Open());
+	{
+		if (OSc_CHECK_ERROR(err, modImpl->Open()))
+			return err;
+	}
 	// TODO We need to also call Close() when shutting down
 
-	size_t implsSize = 16;
-	struct OScDev_DeviceImpl **deviceImpls = malloc(sizeof(void *) * implsSize);
-	size_t implsCount = 0;
-	for (;;)
-	{
-		size_t count = implsSize;
-		OSc_Return_If_Error(modImpl->GetDeviceImpls(deviceImpls, &count));
-		if (count < implsSize)
-		{
-			implsCount = count;
-			break;
-		}
-		deviceImpls = realloc(deviceImpls, sizeof(void *) * (implsSize *= 2));
-	}
-
-	*devices = NULL;
-	*count = 0;
-	for (size_t i = 0; i < implsCount; ++i)
-	{
-		struct OSc_Device **implDevices;
-		size_t deviceCount;
-		OSc_Error err;
-		if (OSc_Check_Error(err, deviceImpls[i]->GetInstances(&implDevices, &deviceCount)))
-		{
-			char msg[OSc_MAX_STR_LEN + 1] = "Cannot enumerate devics: ";
-			const char *model = NULL;
-			deviceImpls[i]->GetModelName(&model);
-			strcat(msg, model ? model : "(unknown)");
-			OSc_Log_Warning(NULL, msg);
-			continue;
-		}
-
-		if (deviceCount == 0)
-			continue;
-
-		// Append the devices from this implementation to the list of all devices
-		size_t oldCount = *count;
-		if (!*devices)
-		{
-			*count = deviceCount;
-			*devices = malloc(sizeof(void *) * deviceCount);
-		}
-		else
-		{
-			*count += deviceCount;
-			*devices = realloc(*devices, sizeof(void *) * *count);
-		}
-
-		for (size_t j = 0; j < deviceCount; ++j)
-			(*devices)[oldCount + j] = (OSc_Device *)implDevices[j];
-	}
-
-	free(deviceImpls);
+	if (OSc_CHECK_ERROR(err, modImpl->GetDeviceImpls(deviceImpls)))
+		return err;
 	return OSc_Error_OK;
 }
