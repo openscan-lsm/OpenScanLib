@@ -577,5 +577,5 @@ OSc_Error OSc_AcqTemplate_GetBytesPerSample(OSc_AcqTemplate *tmpl, uint32_t *byt
 	// mechanism to allow the device implementation to compute the sample
 	// format with the AcqTemplate settings as sole input.
 	OSc_Device *detectorDevice = OSc_LSM_GetDetectorDevice(tmpl->lsm);
-	return OScInternal_Device_GetNumberOfChannels(detectorDevice, bytesPerSample);
+	return OScInternal_Device_GetBytesPerSample(detectorDevice, bytesPerSample);
 }
