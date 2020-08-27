@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2050
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30413.136
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenScanLib", "OpenScanLib\OpenScanLib.vcxproj", "{E10D1CA0-4F18-447B-8A08-966FA0887B36}"
 EndProject
@@ -10,6 +10,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ModuleLoadTest", "ModuleLoadTest\ModuleLoadTest.vcxproj", "{A6D864D4-DF37-4A9C-BF1D-142CAD2F7AFB}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenScanDeviceLib", "OpenScanDeviceLib\OpenScanDeviceLib.vcxproj", "{22D83709-EDC3-428D-9FCF-E6A5C2DB61CC}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenScanLibTests", "OpenScanLibTests\OpenScanLibTests.vcxproj", "{EFC1F5DA-8689-4020-990E-3EC4336262B7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,14 @@ Global
 		{22D83709-EDC3-428D-9FCF-E6A5C2DB61CC}.Release|x64.Build.0 = Release|x64
 		{22D83709-EDC3-428D-9FCF-E6A5C2DB61CC}.Release|x86.ActiveCfg = Release|Win32
 		{22D83709-EDC3-428D-9FCF-E6A5C2DB61CC}.Release|x86.Build.0 = Release|Win32
+		{EFC1F5DA-8689-4020-990E-3EC4336262B7}.Debug|x64.ActiveCfg = Debug|x64
+		{EFC1F5DA-8689-4020-990E-3EC4336262B7}.Debug|x64.Build.0 = Debug|x64
+		{EFC1F5DA-8689-4020-990E-3EC4336262B7}.Debug|x86.ActiveCfg = Debug|Win32
+		{EFC1F5DA-8689-4020-990E-3EC4336262B7}.Debug|x86.Build.0 = Debug|Win32
+		{EFC1F5DA-8689-4020-990E-3EC4336262B7}.Release|x64.ActiveCfg = Release|x64
+		{EFC1F5DA-8689-4020-990E-3EC4336262B7}.Release|x64.Build.0 = Release|x64
+		{EFC1F5DA-8689-4020-990E-3EC4336262B7}.Release|x86.ActiveCfg = Release|Win32
+		{EFC1F5DA-8689-4020-990E-3EC4336262B7}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

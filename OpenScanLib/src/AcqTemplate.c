@@ -291,7 +291,7 @@ static OScDev_Error GetZoomDiscreteValues(OScDev_Setting *setting, OScDev_NumArr
 static OScDev_Error GetZoomRange(OScDev_Setting *setting, double *min, double *max)
 {
 	OSc_AcqTemplate *tmpl = OScInternal_Setting_GetImplData(setting);
-	OScDev_NumRange *range = GetResolutions(tmpl);
+	OScDev_NumRange *range = GetZooms(tmpl);
 	if (OScInternal_NumRange_IsDiscrete(range)) {
 		return OSc_Error_Wrong_Constraint_Type;
 	}
