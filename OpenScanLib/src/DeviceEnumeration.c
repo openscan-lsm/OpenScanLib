@@ -12,9 +12,10 @@ static OScInternal_PtrArray *g_deviceInstances; // Elements: struct OScInternal_
 
 static void EnumerateDevicesForImpl(const char *moduleName, OScDev_DeviceImpl *impl)
 {
-	OSc_Error err;
+	OScDev_Error errCode;
 	OScInternal_PtrArray *devices = NULL;
-	if (OSc_CHECK_ERROR(err, impl->EnumerateInstances(&devices))) {
+	errCode = impl->EnumerateInstances(&devices);
+	if (errCode) {
 		char msg[OSc_MAX_STR_LEN + 1];
 		const char *model = NULL;
 		impl->GetModelName(&model);
@@ -50,14 +51,14 @@ static void EnumerateDevicesForImpl(const char *moduleName, OScDev_DeviceImpl *i
 }
 
 
-static OSc_Error EnumerateDevices(void)
+static OSc_Error *EnumerateDevices(void)
 {
 	// For now, enumerate once and for all
 	if (g_deviceInstances)
 		return OSc_Error_OK;
 
 	size_t nModules;
-	OSc_Error err;
+	OSc_Error *err;
 	if (OSc_CHECK_ERROR(err, OScInternal_DeviceModule_GetCount(&nModules)))
 		return err;
 	char **moduleNames = malloc(sizeof(void *) * nModules);
@@ -69,7 +70,7 @@ static OSc_Error EnumerateDevices(void)
 
 	g_deviceInstances = OScInternal_PtrArray_Create();
 	if (!g_deviceInstances) {
-		return OSc_Error_Unknown; // Out of memory
+		return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Unknown, "Error unknown."); // Out of memory
 	}
 
 	for (size_t i = 0; i < nModules; ++i)
@@ -99,9 +100,9 @@ static OSc_Error EnumerateDevices(void)
 }
 
 
-OSc_Error OSc_GetAllDevices(OSc_Device ***devices, size_t *count)
+OSc_Error *OSc_GetAllDevices(OSc_Device ***devices, size_t *count)
 {
-	OSc_Error err;
+	OSc_Error *err;
 	if (OSc_CHECK_ERROR(err, EnumerateDevices()))
 		return err;
 
@@ -111,7 +112,7 @@ OSc_Error OSc_GetAllDevices(OSc_Device ***devices, size_t *count)
 }
 
 
-OSc_Error OSc_GetNumberOfAvailableDevices(size_t *count)
+OSc_Error *OSc_GetNumberOfAvailableDevices(size_t *count)
 {
 	EnumerateDevices();
 	*count = OScInternal_PtrArray_Size(g_deviceInstances);

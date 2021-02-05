@@ -7,6 +7,8 @@
 
 struct OScInternal_Setting
 {
+	OScDev_ModuleImpl* modImpl;
+
 	OScDev_SettingImpl *impl;
 	// TODO It is such a common usage to set implData to the device instance,
 	// that we should just provide a dedicated field for the device.
@@ -28,41 +30,43 @@ struct OScInternal_Setting
 };
 
 
-OSc_Error OSc_API OSc_Setting_GetName(OSc_Setting *setting, char *name)
+OScDev_Error OSc_Setting_GetName(OSc_Setting *setting, char *name)
 {
 	strncpy(name, setting->name, OSc_MAX_STR_LEN);
-	return OSc_Error_OK;
+	return OScInternal_LegacyError_OK;
 }
 
 
-OSc_Error OSc_Setting_GetValueType(OSc_Setting *setting, OSc_ValueType *valueType)
+OScDev_Error OSc_Setting_GetValueType(OSc_Setting *setting, OSc_ValueType *valueType)
 {
 	*valueType = setting->valueType;
-	return OSc_Error_OK;
+	return OScInternal_LegacyError_OK;
 }
 
 
-OSc_Error OSc_Setting_IsEnabled(OSc_Setting *setting, bool *enabled)
+OScDev_Error OSc_Setting_IsEnabled(OSc_Setting *setting, bool *enabled)
 {
 	return setting->impl->IsEnabled(setting, enabled);
 }
 
 
-OSc_Error OSc_Setting_IsWritable(OSc_Setting *setting, bool *writable)
+OScDev_Error OSc_Setting_IsWritable(OSc_Setting *setting, bool *writable)
 {
 	return setting->impl->IsWritable(setting, writable);
 }
 
 
-OSc_Error OSc_Setting_GetNumericConstraintType(OSc_Setting *setting, OSc_ValueConstraint *constraintType)
+OScDev_Error OSc_Setting_GetNumericConstraintType(OSc_Setting *setting, OSc_ValueConstraint *constraintType)
 {
 	*constraintType = OSc_ValueConstraint_None;
 	OScDev_ValueConstraint dConstraintType;
-	OScDev_Error err;
-	if (OSc_CHECK_ERROR(err, setting->impl->GetNumericConstraintType(setting, &dConstraintType)))
-		return err;
+	OScDev_Error errCode;
+	errCode = setting->impl->GetNumericConstraintType(setting, &dConstraintType);
+	if (errCode) {
+		return errCode;
+	}
 	*constraintType = (OSc_ValueConstraint)dConstraintType;
-	return OSc_Error_OK;
+	return OScInternal_LegacyError_OK;
 }
 
 
@@ -75,60 +79,71 @@ void OSc_Setting_SetInvalidateCallback(OSc_Setting *setting, OSc_SettingInvalida
 }
 
 
-OSc_Error OSc_Setting_GetStringValue(OSc_Setting *setting, char *value)
+OSc_Error *OSc_Setting_GetStringValue(OSc_Setting *setting, char *value)
 {
-	return setting->impl->GetString(setting, value);
+	OScDev_Error errCode = setting->impl->GetString(setting, value);
+	return OScInternal_Error_RetrieveRichErrors(errCode);
 }
 
 
-OSc_Error OSc_Setting_SetStringValue(OSc_Setting *setting, const char *value)
+OSc_Error *OSc_Setting_SetStringValue(OSc_Setting *setting, const char *value)
 {
-	return setting->impl->SetString(setting, value);
+	OScDev_Error errCode = setting->impl->SetString(setting, value);
+	return OScInternal_Error_RetrieveRichErrors(errCode);
 }
 
 
-OSc_Error OSc_Setting_GetBoolValue(OSc_Setting *setting, bool *value)
+OSc_Error *OSc_Setting_GetBoolValue(OSc_Setting *setting, bool *value)
 {
-	return setting->impl->GetBool(setting, value);
+	OScDev_Error errCode = setting->impl->GetBool(setting, value);
+	return OScInternal_Error_RetrieveRichErrors(errCode);
 }
 
 
-OSc_Error OSc_Setting_SetBoolValue(OSc_Setting *setting, bool value)
+OSc_Error *OSc_Setting_SetBoolValue(OSc_Setting *setting, bool value)
 {
-	return setting->impl->SetBool(setting, value);
+	OScDev_Error errCode = setting->impl->SetBool(setting, value);
+	return OScInternal_Error_RetrieveRichErrors(errCode);
 }
 
 
-OSc_Error OSc_Setting_GetInt32Value(OSc_Setting *setting, int32_t *value)
+OSc_Error *OSc_Setting_GetInt32Value(OSc_Setting *setting, int32_t *value)
 {
-	return setting->impl->GetInt32(setting, value);
+	OScDev_Error errCode = setting->impl->GetInt32(setting, value);
+	return OScInternal_Error_RetrieveRichErrors(errCode);
 }
 
 
-OSc_Error OSc_Setting_SetInt32Value(OSc_Setting *setting, int32_t value)
+OSc_Error *OSc_Setting_SetInt32Value(OSc_Setting *setting, int32_t value)
 {
 	// TODO Should we validate the value here?
-	return setting->impl->SetInt32(setting, value);
+	OScDev_Error errCode = setting->impl->SetInt32(setting, value);
+	return OScInternal_Error_RetrieveRichErrors(errCode);
 }
 
 
-OSc_Error OSc_Setting_GetInt32ContinuousRange(OSc_Setting *setting, int32_t *min, int32_t *max)
+OSc_Error *OSc_Setting_GetInt32ContinuousRange(OSc_Setting *setting, int32_t *min, int32_t *max)
 {
-	return setting->impl->GetInt32Range(setting, min, max);
+	OScDev_Error errCode = setting->impl->GetInt32Range(setting, min, max);
+	return OScInternal_Error_RetrieveRichErrors(errCode);
 }
 
 
-OSc_Error OSc_Setting_GetInt32DiscreteValues(OSc_Setting *setting, int32_t **values, size_t *count)
+OSc_Error *OSc_Setting_GetInt32DiscreteValues(OSc_Setting *setting, int32_t **values, size_t *count)
 {
 	if (!setting || !count) {
-		return OSc_Error_Illegal_Argument;
+		return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Illegal_Argument, "Illegal argument.");
 	}
 
 	if (setting->i32DiscreteValues == NULL) {
 		OScDev_NumArray *values;
-		OSc_Error err;
-		if (OSc_CHECK_ERROR(err, setting->impl->GetInt32DiscreteValues(setting, &values))) {
-			return err;
+		OScDev_Error errCode;
+		errCode = setting->impl->GetInt32DiscreteValues(setting, &values);
+		if (setting->modImpl->supportsRichErrors) {
+			return OScInternal_Error_RetrieveRichErrors(errCode);
+		}
+		else {
+			return OScInternal_Error_Create(OScInternal_Error_ABIDomain(), errCode, "Error from ABI.");
 		}
 		if (values) {
 			size_t count = OScInternal_NumArray_Size(values);
@@ -147,36 +162,43 @@ OSc_Error OSc_Setting_GetInt32DiscreteValues(OSc_Setting *setting, int32_t **val
 }
 
 
-OSc_Error OSc_Setting_GetFloat64Value(OSc_Setting *setting, double *value)
+OSc_Error *OSc_Setting_GetFloat64Value(OSc_Setting *setting, double *value)
 {
-	return setting->impl->GetFloat64(setting, value);
+	OScDev_Error errCode = setting->impl->GetFloat64(setting, value);
+	return OScInternal_Error_RetrieveRichErrors(errCode);
 }
 
 
-OSc_Error OSc_Setting_SetFloat64Value(OSc_Setting *setting, double value)
+OSc_Error *OSc_Setting_SetFloat64Value(OSc_Setting *setting, double value)
 {
 	// TODO Should we validate the value here?
-	return setting->impl->SetFloat64(setting, value);
+	OScDev_Error errCode = setting->impl->SetFloat64(setting, value);
+	return OScInternal_Error_RetrieveRichErrors(errCode);
 }
 
 
-OSc_Error OSc_Setting_GetFloat64ContinuousRange(OSc_Setting *setting, double *min, double *max)
+OSc_Error *OSc_Setting_GetFloat64ContinuousRange(OSc_Setting *setting, double *min, double *max)
 {
-	return setting->impl->GetFloat64Range(setting, min, max);
+	OScDev_Error errCode = setting->impl->GetFloat64Range(setting, min, max);
+	return OScInternal_Error_RetrieveRichErrors(errCode);
 }
 
 
-OSc_Error OSc_Setting_GetFloat64DiscreteValues(OSc_Setting *setting, double **values, size_t *count)
+OSc_Error *OSc_Setting_GetFloat64DiscreteValues(OSc_Setting *setting, double **values, size_t *count)
 {
 	if (!setting || !count) {
-		return OSc_Error_Illegal_Argument;
+		return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Illegal_Argument, "Illegal argument.");
 	}
 
 	if (setting->f64DiscreteValues == NULL) {
 		OScDev_NumArray *values;
-		OSc_Error err;
-		if (OSc_CHECK_ERROR(err, setting->impl->GetFloat64DiscreteValues(setting, &values))) {
-			return err;
+		OScDev_Error errCode;
+		errCode = setting->impl->GetFloat64DiscreteValues(setting, &values);
+		if (setting->modImpl->supportsRichErrors) {
+			return OScInternal_Error_RetrieveRichErrors(errCode);
+		}
+		else {
+			return OScInternal_Error_Create(OScInternal_Error_ABIDomain(), errCode, "Error from ABI.");
 		}
 		if (values) {
 			size_t count = OScInternal_NumArray_Size(values);
@@ -195,34 +217,39 @@ OSc_Error OSc_Setting_GetFloat64DiscreteValues(OSc_Setting *setting, double **va
 }
 
 
-OSc_Error OSc_Setting_GetEnumValue(OSc_Setting *setting, uint32_t *value)
+OSc_Error *OSc_Setting_GetEnumValue(OSc_Setting *setting, uint32_t *value)
 {
-	return setting->impl->GetEnum(setting, value);
+	OScDev_Error errCode = setting->impl->GetEnum(setting, value);
+	return OScInternal_Error_RetrieveRichErrors(errCode);
 }
 
 
-OSc_Error OSc_Setting_SetEnumValue(OSc_Setting *setting, uint32_t value)
+OSc_Error *OSc_Setting_SetEnumValue(OSc_Setting *setting, uint32_t value)
 {
 	// TODO Should we validate the value here?
-	return setting->impl->SetEnum(setting, value);
+	OScDev_Error errCode = setting->impl->SetEnum(setting, value);
+	return OScInternal_Error_RetrieveRichErrors(errCode);
 }
 
 
-OSc_Error OSc_Setting_GetEnumNumValues(OSc_Setting *setting, uint32_t *count)
+OSc_Error *OSc_Setting_GetEnumNumValues(OSc_Setting *setting, uint32_t *count)
 {
-	return setting->impl->GetEnumNumValues(setting, count);
+	OScDev_Error errCode = setting->impl->GetEnumNumValues(setting, count);
+	return OScInternal_Error_RetrieveRichErrors(errCode);
 }
 
 
-OSc_Error OSc_Setting_GetEnumNameForValue(OSc_Setting *setting, uint32_t value, char *name)
+OSc_Error *OSc_Setting_GetEnumNameForValue(OSc_Setting *setting, uint32_t value, char *name)
 {
-	return setting->impl->GetEnumNameForValue(setting, value, name);
+	OScDev_Error errCode = setting->impl->GetEnumNameForValue(setting, value, name);
+	return OScInternal_Error_RetrieveRichErrors(errCode);
 }
 
 
-OSc_Error OSc_Setting_GetEnumValueForName(OSc_Setting *setting, uint32_t *value, const char *name)
+OSc_Error *OSc_Setting_GetEnumValueForName(OSc_Setting *setting, uint32_t *value, const char *name)
 {
-	return setting->impl->GetEnumValueForName(setting, value, name);
+	OScDev_Error errCode = setting->impl->GetEnumValueForName(setting, value, name);
+	return OScInternal_Error_RetrieveRichErrors(errCode);
 }
 
 
@@ -239,236 +266,246 @@ void OScInternal_Setting_Invalidate(OSc_Setting *setting)
 }
 
 
-static OSc_Error DefaultIsEnabled(OSc_Setting *setting, bool *enabled)
+static OScDev_Error DefaultIsEnabled(OSc_Setting *setting, bool *enabled)
 {
 	*enabled = true;
-	return OSc_Error_OK;
+	return OScInternal_LegacyError_OK;
 }
 
 
-static OSc_Error DefaultIsWritable(OSc_Setting *setting, bool *writable)
+static OScDev_Error DefaultIsWritable(OSc_Setting *setting, bool *writable)
 {
 	*writable = true;
-	return OSc_Error_OK;
+	return OScInternal_LegacyError_OK;
 }
 
 
-static OSc_Error DefaultGetNumericConstraint(OSc_Setting *setting, OScDev_ValueConstraint *constraintType)
+static OScDev_Error DefaultGetNumericConstraint(OSc_Setting *setting, OScDev_ValueConstraint *constraintType)
 {
 	*constraintType = OScDev_ValueConstraint_None;
 	switch (setting->valueType)
 	{
 	case OSc_ValueType_Int32:
 	case OSc_ValueType_Float64:
-		return OSc_Error_OK;
+		return OScInternal_LegacyError_OK;
 	}
 	return OSc_Error_Wrong_Value_Type;
 }
 
 
-static OSc_Error DefaultGetString(OSc_Setting *setting, char *value)
+static OScDev_Error DefaultGetString(OSc_Setting *setting, char *value)
 {
 	strcpy(value, "");
 	if (setting->valueType != OSc_ValueType_String)
 		return OSc_Error_Wrong_Value_Type;
-	return OSc_Error_OK;
+	return OScInternal_LegacyError_OK;
 }
 
 
-static OSc_Error DefaultSetString(OSc_Setting *setting, const char *value)
+static OScDev_Error DefaultSetString(OSc_Setting *setting, const char *value)
 {
 	if (setting->valueType != OSc_ValueType_String)
 		return OSc_Error_Wrong_Value_Type;
 
 	bool writable;
-	OSc_Error err;
-	if (OSc_CHECK_ERROR(err, OSc_Setting_IsWritable(setting, &writable)))
-		return err;
+	OScDev_Error errCode;
+	errCode = OSc_Setting_IsWritable(setting, &writable);
+	if (errCode)
+		return errCode;
 	if (!writable)
 		return OSc_Error_Setting_Not_Writable;
 
-	return OSc_Error_OK;
+	return OScInternal_LegacyError_OK;
 }
 
 
-static OSc_Error DefaultGetBool(OSc_Setting *setting, bool *value)
+static OScDev_Error DefaultGetBool(OSc_Setting *setting, bool *value)
 {
 	*value = false;
 	if (setting->valueType != OSc_ValueType_Bool)
 		return OSc_Error_Wrong_Value_Type;
-	return OSc_Error_OK;
+	return OScInternal_LegacyError_OK;
 }
 
 
-static OSc_Error DefaultSetBool(OSc_Setting *setting, bool value)
+static OScDev_Error DefaultSetBool(OSc_Setting *setting, bool value)
 {
 	if (setting->valueType != OSc_ValueType_Bool)
 		return OSc_Error_Wrong_Value_Type;
 
 	bool writable;
-	OSc_Error err;
-	if (OSc_CHECK_ERROR(err, OSc_Setting_IsWritable(setting, &writable)))
-		return err;
+	OScDev_Error errCode;
+	errCode = OSc_Setting_IsWritable(setting, &writable);
+	if (errCode)
+		return errCode;
 	if (!writable)
 		return OSc_Error_Setting_Not_Writable;
 
-	return OSc_Error_OK;
+	return OScInternal_LegacyError_OK;
 }
 
 
-static OSc_Error DefaultGetInt32(OSc_Setting *setting, int32_t *value)
+static OScDev_Error DefaultGetInt32(OSc_Setting *setting, int32_t *value)
 {
 	*value = 0;
 	if (setting->valueType != OSc_ValueType_Int32)
 		return OSc_Error_Wrong_Value_Type;
-	return OSc_Error_OK;
+	return OScInternal_LegacyError_OK;
 }
 
 
-static OSc_Error DefaultSetInt32(OSc_Setting *setting, int32_t value)
+static OScDev_Error DefaultSetInt32(OSc_Setting *setting, int32_t value)
 {
 	if (setting->valueType != OSc_ValueType_Int32)
 		return OSc_Error_Wrong_Value_Type;
 
 	bool writable;
-	OSc_Error err;
-	if (OSc_CHECK_ERROR(err, OSc_Setting_IsWritable(setting, &writable)))
-		return err;
+	OScDev_Error errCode;
+	errCode = OSc_Setting_IsWritable(setting, &writable);
+	if (errCode)
+		return errCode;
 	if (!writable)
 		return OSc_Error_Setting_Not_Writable;
 
 	// TODO Check constraint
 
-	return OSc_Error_OK;
+	return OScInternal_LegacyError_OK;
 }
 
 
-static OSc_Error DefaultGetInt32Range(OSc_Setting *setting, int32_t *min, int32_t *max)
+static OScDev_Error DefaultGetInt32Range(OSc_Setting *setting, int32_t *min, int32_t *max)
 {
 	*min = *max = 0;
 	if (setting->valueType != OSc_ValueType_Int32)
 		return OSc_Error_Wrong_Value_Type;
 	OSc_ValueConstraint constraint;
-	OSc_Error err;
-	if (OSc_CHECK_ERROR(err, OSc_Setting_GetNumericConstraintType(setting, &constraint)))
-		return err;
+	OScDev_Error errCode;
+	errCode = OSc_Setting_GetNumericConstraintType(setting, &constraint);
+	if (errCode)
+		return errCode;
 	if (constraint != OSc_ValueConstraint_Continuous)
 		return OSc_Error_Wrong_Constraint_Type;
-	return OSc_Error_OK;
+	return OScInternal_LegacyError_OK;
 }
 
 
-static OSc_Error DefaultGetInt32DiscreteValues(OSc_Setting *setting, OScDev_NumArray **values)
+static OScDev_Error DefaultGetInt32DiscreteValues(OSc_Setting *setting, OScDev_NumArray **values)
 {
 	*values = NULL;
 	if (setting->valueType != OSc_ValueType_Int32)
 		return OSc_Error_Wrong_Value_Type;
 	OSc_ValueConstraint constraint;
-	OSc_Error err;
-	if (OSc_CHECK_ERROR(err, OSc_Setting_GetNumericConstraintType(setting, &constraint)))
-		return err;
+	OScDev_Error errCode;
+	errCode = OSc_Setting_GetNumericConstraintType(setting, &constraint);
+	if (errCode)
+		return errCode;
 	if (constraint != OSc_ValueConstraint_Discrete)
 		return OSc_Error_Wrong_Constraint_Type;
+		
 	*values = OScInternal_NumArray_Create();
-	return OSc_Error_OK;
+	return OScInternal_LegacyError_OK;
 }
 
 
-static OSc_Error DefaultGetFloat64(OSc_Setting *setting, double *value)
+static OScDev_Error DefaultGetFloat64(OSc_Setting *setting, double *value)
 {
 	*value = 0.0;
 	if (setting->valueType != OSc_ValueType_Float64)
 		return OSc_Error_Wrong_Value_Type;
-	return OSc_Error_OK;
+	return OScInternal_LegacyError_OK;
 }
 
 
-static OSc_Error DefaultSetFloat64(OSc_Setting *setting, double value)
+static OScDev_Error DefaultSetFloat64(OSc_Setting *setting, double value)
 {
 	if (setting->valueType != OSc_ValueType_Float64)
 		return OSc_Error_Wrong_Value_Type;
 
 	bool writable;
-	OSc_Error err;
-	if (OSc_CHECK_ERROR(err, OSc_Setting_IsWritable(setting, &writable)))
-		return err;
+	OScDev_Error errCode;
+	errCode = OSc_Setting_IsWritable(setting, &writable);
+	if (errCode)
+		return errCode;
 	if (!writable)
 		return OSc_Error_Setting_Not_Writable;
 
 	// TODO Check constraint
 
-	return OSc_Error_OK;
+	return OScInternal_LegacyError_OK;
 }
 
 
-static OSc_Error DefaultGetFloat64Range(OSc_Setting *setting, double *min, double *max)
+static OScDev_Error DefaultGetFloat64Range(OSc_Setting *setting, double *min, double *max)
 {
 	*min = *max = 0.0;
 	if (setting->valueType != OSc_ValueType_Float64)
 		return OSc_Error_Wrong_Value_Type;
 	OSc_ValueConstraint constraint;
-	OSc_Error err;
-	if (OSc_CHECK_ERROR(err, OSc_Setting_GetNumericConstraintType(setting, &constraint)))
-		return err;
+	OScDev_Error errCode;
+	errCode = OSc_Setting_GetNumericConstraintType(setting, &constraint);
+	if (errCode)
+		return errCode;
 	if (constraint != OSc_ValueConstraint_Continuous)
 		return OSc_Error_Wrong_Constraint_Type;
-	return OSc_Error_OK;
+	return OScInternal_LegacyError_OK;
 }
 
 
-static OSc_Error DefaultGetFloat64DiscreteValues(OSc_Setting *setting, OScDev_NumArray **values)
+static OScDev_Error DefaultGetFloat64DiscreteValues(OSc_Setting *setting, OScDev_NumArray **values)
 {
 	*values = NULL;
 	if (setting->valueType != OSc_ValueType_Float64)
 		return OSc_Error_Wrong_Value_Type;
 	OSc_ValueConstraint constraint;
-	OSc_Error err;
-	if (OSc_CHECK_ERROR(err, OSc_Setting_GetNumericConstraintType(setting, &constraint)))
-		return err;
+	OScDev_Error errCode;
+	errCode = OSc_Setting_GetNumericConstraintType(setting, &constraint);
+	if (errCode)
+		return errCode;
 	if (constraint != OSc_ValueConstraint_Discrete)
 		return OSc_Error_Wrong_Constraint_Type;
 	*values = OScInternal_NumArray_Create();
-	return OSc_Error_OK;
+	return OScInternal_LegacyError_OK;
 }
 
 
-static OSc_Error DefaultGetEnum(OSc_Setting *setting, uint32_t *value)
+static OScDev_Error DefaultGetEnum(OSc_Setting *setting, uint32_t *value)
 {
 	*value = 0;
 	if (setting->valueType != OSc_ValueType_Enum)
 		return OSc_Error_Wrong_Value_Type;
-	return OSc_Error_OK;
+	return OScInternal_LegacyError_OK;
 }
 
 
-static OSc_Error DefaultSetEnum(OSc_Setting *setting, uint32_t value)
+static OScDev_Error DefaultSetEnum(OSc_Setting *setting, uint32_t value)
 {
 	if (setting->valueType != OSc_ValueType_Int32)
 		return OSc_Error_Wrong_Value_Type;
 
 	bool writable;
-	OSc_Error err;
-	if (OSc_CHECK_ERROR(err, OSc_Setting_IsWritable(setting, &writable)))
-		return err;
+	OScDev_Error errCode;
+	errCode = OSc_Setting_IsWritable(setting, &writable);
+	if (errCode)
+		return errCode;
 	if (!writable)
 		return OSc_Error_Setting_Not_Writable;
 
 	// TODO Range Check
 
-	return OSc_Error_OK;
+	return OScInternal_LegacyError_OK;
 }
 
 
-static OSc_Error DefaultGetEnumNumValues(OSc_Setting *setting, uint32_t *count)
+static OScDev_Error DefaultGetEnumNumValues(OSc_Setting *setting, uint32_t *count)
 {
 	*count = 1;
 	if (setting->valueType != OSc_ValueType_Enum)
 		return OSc_Error_Wrong_Value_Type;
-	return OSc_Error_OK;
+	return OScInternal_LegacyError_OK;
 }
 
 
-static OSc_Error DefaultGetEnumNameForValue(OSc_Setting *setting, uint32_t value, char *name)
+static OScDev_Error DefaultGetEnumNameForValue(OSc_Setting *setting, uint32_t value, char *name)
 {
 	strcpy(name, "");
 
@@ -478,11 +515,11 @@ static OSc_Error DefaultGetEnumNameForValue(OSc_Setting *setting, uint32_t value
 	// TODO Check range
 
 	snprintf(name, OSc_MAX_STR_LEN, "Value-%u", value);
-	return OSc_Error_OK;
+	return OScInternal_LegacyError_OK;
 }
 
 
-static OSc_Error DefaultGetEnumValueForName(OSc_Setting *setting, uint32_t *value, const char *name)
+static OScDev_Error DefaultGetEnumValueForName(OSc_Setting *setting, uint32_t *value, const char *name)
 {
 	value = 0;
 
@@ -496,7 +533,7 @@ static OSc_Error DefaultGetEnumValueForName(OSc_Setting *setting, uint32_t *valu
 	// TODO Check range
 
 	*value = parsedNum;
-	return OSc_Error_OK;
+	return OScInternal_LegacyError_OK;
 }
 
 
@@ -505,7 +542,7 @@ static void DefaultRelease(OSc_Setting *setting)
 }
 
 
-OSc_Error OScInternal_Setting_Create(OSc_Setting **setting, const char *name, OSc_ValueType valueType,
+OScDev_Error OScInternal_Setting_Create(OSc_Setting **setting, const char *name, OSc_ValueType valueType,
 	OScDev_SettingImpl *impl, void *data)
 {
 	// TODO We should not modify 'impl' which belongs to the device module.
@@ -557,7 +594,7 @@ OSc_Error OScInternal_Setting_Create(OSc_Setting **setting, const char *name, OS
 	(*setting)->implData = data;
 	(*setting)->valueType = valueType;
 	strncpy((*setting)->name, name, OSc_MAX_STR_LEN);
-	return OSc_Error_OK;
+	return OScInternal_LegacyError_OK;
 }
 
 
@@ -568,14 +605,14 @@ void OScInternal_Setting_Destroy(OSc_Setting *setting)
 }
 
 
-OSc_Error OSc_Setting_NumericConstraintRange(OSc_Setting *setting, OSc_ValueConstraint *constraintType)
+OSc_Error *OSc_Setting_NumericConstraintRange(OSc_Setting *setting, OSc_ValueConstraint *constraintType)
 {
 	*constraintType = OSc_ValueConstraint_Continuous;
 	return OSc_Error_OK;
 }
 
 
-OSc_Error OSc_Setting_NumericConstraintDiscreteValues(OSc_Setting *setting, OSc_ValueConstraint *constraintType)
+OSc_Error *OSc_Setting_NumericConstraintDiscreteValues(OSc_Setting *setting, OSc_ValueConstraint *constraintType)
 {
 	*constraintType = OSc_ValueConstraint_Discrete;
 	return OSc_Error_OK;

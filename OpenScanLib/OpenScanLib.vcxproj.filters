@@ -50,6 +50,9 @@
     <ClCompile Include="src\AcqTemplate.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Error.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\OpenScanLib.h">

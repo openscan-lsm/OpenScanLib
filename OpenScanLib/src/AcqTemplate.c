@@ -67,7 +67,7 @@ static OScDev_Error GetPixelRateConstraintType(OScDev_Setting *setting, OScDev_V
 		*constraint = OScDev_ValueConstraint_Range;
 	}
 	OScInternal_NumRange_Destroy(range);
-	return OSc_Error_OK;
+	return OScInternal_LegacyError_OK;
 }
 
 
@@ -76,11 +76,13 @@ static OScDev_Error GetPixelRateDiscreteValues(OScDev_Setting *setting, OScDev_N
 	OSc_AcqTemplate *tmpl = OScInternal_Setting_GetImplData(setting);
 	OScDev_NumRange *range = GetPixelRates(tmpl);
 	if (!OScInternal_NumRange_IsDiscrete(range)) {
-		return OSc_Error_Wrong_Constraint_Type;
+		OSc_Error* err = OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Wrong_Constraint_Type, "Wrong constraint type.");
+		OScDev_Error errCode = OScInternal_Error_ReturnAsCode(err);
+		return errCode;
 	}
 	*values = OScInternal_NumRange_DiscreteValues(range);
 	OScInternal_NumRange_Destroy(range);
-	return OSc_Error_OK;
+	return OScInternal_LegacyError_OK;
 }
 
 
@@ -89,12 +91,14 @@ static OScDev_Error GetPixelRateRange(OScDev_Setting *setting, double *min, doub
 	OSc_AcqTemplate *tmpl = OScInternal_Setting_GetImplData(setting);
 	OScDev_NumRange *range = GetPixelRates(tmpl);
 	if (OScInternal_NumRange_IsDiscrete(range)) {
-		return OSc_Error_Wrong_Constraint_Type;
+		OSc_Error* err = OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Wrong_Constraint_Type, "Wrong constraint type.");
+		OScDev_Error errCode = OScInternal_Error_ReturnAsCode(err);
+		return errCode;
 	}
 	*min = OScInternal_NumRange_Min(range);
 	*max = OScInternal_NumRange_Max(range);
 	OScInternal_NumRange_Destroy(range);
-	return OSc_Error_OK;
+	return OScInternal_LegacyError_OK;
 }
 
 
@@ -102,7 +106,7 @@ static OScDev_Error GetPixelRate(OScDev_Setting *setting, double *value)
 {
 	OSc_AcqTemplate *tmpl = OScInternal_Setting_GetImplData(setting);
 	*value = tmpl->pixelRateHz;
-	return OSc_Error_OK;
+	return OScInternal_LegacyError_OK;
 }
 
 
@@ -110,7 +114,7 @@ static OScDev_Error SetPixelRate(OScDev_Setting *setting, double value)
 {
 	OSc_AcqTemplate *tmpl = OScInternal_Setting_GetImplData(setting);
 	tmpl->pixelRateHz = value;
-	return OSc_Error_OK;
+	return OScInternal_LegacyError_OK;
 }
 
 
@@ -174,7 +178,7 @@ static OScDev_Error GetResolutionConstraintType(OScDev_Setting *setting, OScDev_
 		*constraint = OScDev_ValueConstraint_Range;
 	}
 	OScInternal_NumRange_Destroy(range);
-	return OSc_Error_OK;
+	return OScInternal_LegacyError_OK;
 }
 
 
@@ -183,11 +187,13 @@ static OScDev_Error GetResolutionDiscreteValues(OScDev_Setting *setting, OScDev_
 	OSc_AcqTemplate *tmpl = OScInternal_Setting_GetImplData(setting);
 	OScDev_NumRange *range = GetResolutions(tmpl);
 	if (!OScInternal_NumRange_IsDiscrete(range)) {
-		return OSc_Error_Wrong_Constraint_Type;
+		OSc_Error* err = OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Wrong_Constraint_Type, "Wrong constraint type.");
+		OScDev_Error errCode = OScInternal_Error_ReturnAsCode(err);
+		return errCode;
 	}
 	*values = OScInternal_NumRange_DiscreteValues(range);
 	OScInternal_NumRange_Destroy(range);
-	return OSc_Error_OK;
+	return OScInternal_LegacyError_OK;
 }
 
 
@@ -202,7 +208,7 @@ static OScDev_Error GetResolutionRange(OScDev_Setting *setting, int32_t *min, in
 	*min = (int32_t)ceil(OScInternal_NumRange_Min(range));
 	*max = (int32_t)floor(OScInternal_NumRange_Max(range));
 	OScInternal_NumRange_Destroy(range);
-	return OSc_Error_OK;
+	return OScInternal_LegacyError_OK;
 }
 
 
@@ -210,7 +216,7 @@ static OScDev_Error GetResolution(OScDev_Setting *setting, int32_t *value)
 {
 	OSc_AcqTemplate *tmpl = OScInternal_Setting_GetImplData(setting);
 	*value = tmpl->resolution;
-	return OSc_Error_OK;
+	return OScInternal_LegacyError_OK;
 }
 
 
@@ -222,7 +228,7 @@ static OScDev_Error SetResolution(OScDev_Setting *setting, int32_t value)
 		OSc_AcqTemplate_ResetROI(tmpl);
 		OScInternal_Setting_Invalidate(tmpl->magnificationSetting);
 	}
-	return OSc_Error_OK;
+	return OScInternal_LegacyError_OK;
 }
 
 
@@ -271,7 +277,7 @@ static OScDev_Error GetZoomConstraintType(OScDev_Setting *setting, OScDev_ValueC
 		*constraint = OScDev_ValueConstraint_Range;
 	}
 	OScInternal_NumRange_Destroy(range);
-	return OSc_Error_OK;
+	return OScInternal_LegacyError_OK;
 }
 
 
@@ -280,11 +286,13 @@ static OScDev_Error GetZoomDiscreteValues(OScDev_Setting *setting, OScDev_NumArr
 	OSc_AcqTemplate *tmpl = OScInternal_Setting_GetImplData(setting);
 	OScDev_NumRange *range = GetZooms(tmpl);
 	if (!OScInternal_NumRange_IsDiscrete(range)) {
-		return OSc_Error_Wrong_Constraint_Type;
+		OSc_Error* err = OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Wrong_Constraint_Type, "Wrong constraint type.");
+		OScDev_Error errCode = OScInternal_Error_ReturnAsCode(err);
+		return errCode;
 	}
 	*values = OScInternal_NumRange_DiscreteValues(range);
 	OScInternal_NumRange_Destroy(range);
-	return OSc_Error_OK;
+	return OScInternal_LegacyError_OK;
 }
 
 
@@ -293,20 +301,21 @@ static OScDev_Error GetZoomRange(OScDev_Setting *setting, double *min, double *m
 	OSc_AcqTemplate *tmpl = OScInternal_Setting_GetImplData(setting);
 	OScDev_NumRange *range = GetZooms(tmpl);
 	if (OScInternal_NumRange_IsDiscrete(range)) {
-		return OSc_Error_Wrong_Constraint_Type;
+		OSc_Error* err = OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Wrong_Constraint_Type, "Wrong constraint type.");
+		OScDev_Error errCode = OScInternal_Error_ReturnAsCode(err);
+		return errCode;
 	}
 	*min = OScInternal_NumRange_Min(range);
 	*max = OScInternal_NumRange_Max(range);
 	OScInternal_NumRange_Destroy(range);
-	return OSc_Error_OK;
+	return OScInternal_LegacyError_OK;
 }
 
 
-static OScDev_Error GetZoom(OScDev_Setting *setting, double *value)
-{
+static OScDev_Error GetZoom(OScDev_Setting *setting, double *value){
 	OSc_AcqTemplate *tmpl = OScInternal_Setting_GetImplData(setting);
 	*value = tmpl->zoomFactor;
-	return OSc_Error_OK;
+	return OScInternal_LegacyError_OK;
 }
 
 
@@ -317,7 +326,7 @@ static OScDev_Error SetZoom(OScDev_Setting *setting, double value)
 		tmpl->zoomFactor = value;
 		OScInternal_Setting_Invalidate(tmpl->magnificationSetting);
 	}
-	return OSc_Error_OK;
+	return OScInternal_LegacyError_OK;
 }
 
 
@@ -333,7 +342,7 @@ static OScDev_SettingImpl ZoomSettingImpl = {
 static OScDev_Error IsMagnificationWritable(OScDev_Setting *setting, bool *writable)
 {
 	*writable = false;
-	return OSc_Error_OK;
+	return OScInternal_LegacyError_OK;
 }
 
 
@@ -342,7 +351,7 @@ static OScDev_Error GetMagnification(OScDev_Setting *setting, double *value)
 	OSc_AcqTemplate *tmpl = OScInternal_Setting_GetImplData(setting);
 	int32_t defaultResolution = GetDefaultResolution(tmpl);
 	*value = tmpl->zoomFactor * tmpl->resolution / defaultResolution;
-	return OSc_Error_OK;
+	return OScInternal_LegacyError_OK;
 }
 
 
@@ -352,38 +361,42 @@ static OScDev_SettingImpl MagnificationSettingImpl = {
 };
 
 
-OSc_Error OSc_AcqTemplate_Create(OSc_AcqTemplate **tmpl, OSc_LSM *lsm)
+OSc_Error *OSc_AcqTemplate_Create(OSc_AcqTemplate **tmpl, OSc_LSM *lsm)
 {
 	if (!tmpl || !lsm)
-		return OSc_Error_Illegal_Argument;
+		return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Illegal_Argument, "Illegal argument.");
 
 	*tmpl = calloc(1, sizeof(struct OScInternal_AcqTemplate));
 	if (!*tmpl)
-		return OSc_Error_Unknown;
+		return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Unknown, "Error unknown.");
 
 	(*tmpl)->lsm = lsm;
 	(*tmpl)->numberOfFrames = UINT32_MAX; // Infinite
 
-	OSc_Error err;
+	OScDev_Error errCode;
 	OSc_Setting *setting;
 
-	if (OSc_CHECK_ERROR(err, OScInternal_Setting_Create(&setting, "PixelRateHz",
-		OSc_ValueType_Float64, &PixelRateSettingImpl, *tmpl)))
+	errCode = OScInternal_Setting_Create(&setting, "PixelRateHz",
+		OSc_ValueType_Float64, &PixelRateSettingImpl, *tmpl);
+	if (errCode)
 		goto error;
 	(*tmpl)->pixelRateSetting = setting;
 
-	if (OSc_CHECK_ERROR(err, OScInternal_Setting_Create(&setting, "Resolution",
-		OSc_ValueType_Int32, &ResolutionSettingImpl, *tmpl)))
+	errCode = OScInternal_Setting_Create(&setting, "Resolution",
+		OSc_ValueType_Int32, &ResolutionSettingImpl, *tmpl);
+	if (errCode)
 		goto error;
 	(*tmpl)->resolutionSetting = setting;
 
-	if (OSc_CHECK_ERROR(err, OScInternal_Setting_Create(&setting, "ZoomFactor",
-		OSc_ValueType_Float64, &ZoomSettingImpl, *tmpl)))
+	errCode = OScInternal_Setting_Create(&setting, "ZoomFactor",
+		OSc_ValueType_Float64, &ZoomSettingImpl, *tmpl);
+	if (errCode)
 		goto error;
 	(*tmpl)->zoomFactorSetting = setting;
 
-	if (OSc_CHECK_ERROR(err, OScInternal_Setting_Create(&setting, "Magnification",
-		OSc_ValueType_Float64, &MagnificationSettingImpl, *tmpl)))
+	errCode = OScInternal_Setting_Create(&setting, "Magnification",
+		OSc_ValueType_Float64, &MagnificationSettingImpl, *tmpl);
+	if (errCode)
 		goto error;
 	(*tmpl)->magnificationSetting = setting;
 
@@ -397,7 +410,7 @@ OSc_Error OSc_AcqTemplate_Create(OSc_AcqTemplate **tmpl, OSc_LSM *lsm)
 error:
 	OSc_AcqTemplate_Destroy(*tmpl);
 	*tmpl = NULL;
-	return err;
+	return OScInternal_Error_Create(OScInternal_Error_OScDomain(), errCode, "Sorry I don't know how to describe this err...");
 }
 
 
@@ -420,10 +433,10 @@ OSc_LSM *OSc_AcqTemplate_GetLSM(OSc_AcqTemplate *tmpl)
 }
 
 
-OSc_Error OSc_AcqTemplate_SetNumberOfFrames(OSc_AcqTemplate *tmpl, uint32_t numberOfFrames)
+OSc_Error *OSc_AcqTemplate_SetNumberOfFrames(OSc_AcqTemplate *tmpl, uint32_t numberOfFrames)
 {
 	if (!tmpl)
-		return OSc_Error_Illegal_Argument;
+		return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Illegal_Argument, "Illegal argument.");
 
 	tmpl->numberOfFrames = numberOfFrames;
 	return OSc_Error_OK;
@@ -438,51 +451,51 @@ uint32_t OSc_AcqTemplate_GetNumberOfFrames(OSc_AcqTemplate *tmpl)
 }
 
 
-OSc_Error OSc_AcqTemplate_GetPixelRateSetting(OSc_AcqTemplate *tmpl, OSc_Setting **setting)
+OSc_Error *OSc_AcqTemplate_GetPixelRateSetting(OSc_AcqTemplate *tmpl, OSc_Setting **setting)
 {
 	if (!tmpl)
-		return OSc_Error_Illegal_Argument;
+		return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Illegal_Argument, "Illegal argument.");
 	*setting = tmpl->pixelRateSetting;
 	return OSc_Error_OK;
 }
 
 
-OSc_Error OSc_AcqTemplate_GetResolutionSetting(OSc_AcqTemplate *tmpl, OSc_Setting **setting)
+OSc_Error *OSc_AcqTemplate_GetResolutionSetting(OSc_AcqTemplate *tmpl, OSc_Setting **setting)
 {
 	if (!tmpl)
-		return OSc_Error_Illegal_Argument;
+		return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Illegal_Argument, "Illegal argument.");
 	*setting = tmpl->resolutionSetting;
 	return OSc_Error_OK;
 }
 
 
-OSc_Error OSc_AcqTemplate_GetZoomFactorSetting(OSc_AcqTemplate *tmpl, OSc_Setting **setting)
+OSc_Error *OSc_AcqTemplate_GetZoomFactorSetting(OSc_AcqTemplate *tmpl, OSc_Setting **setting)
 {
 	if (!tmpl)
-		return OSc_Error_Illegal_Argument;
+		return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Illegal_Argument, "Illegal argument.");
 	*setting = tmpl->zoomFactorSetting;
 	return OSc_Error_OK;
 }
 
 
-OSc_Error OSc_AcqTemplate_GetMagnificationSetting(OSc_AcqTemplate *tmpl, OSc_Setting **setting)
+OSc_Error *OSc_AcqTemplate_GetMagnificationSetting(OSc_AcqTemplate *tmpl, OSc_Setting **setting)
 {
 	if (!tmpl)
-		return OSc_Error_Illegal_Argument;
+		return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Illegal_Argument, "Illegal argument.");
 	*setting = tmpl->magnificationSetting;
 	return OSc_Error_OK;
 }
 
 
-OSc_Error OSc_AcqTemplate_SetROI(OSc_AcqTemplate *tmpl, uint32_t xOffset, uint32_t yOffset, uint32_t width, uint32_t height)
+OSc_Error *OSc_AcqTemplate_SetROI(OSc_AcqTemplate *tmpl, uint32_t xOffset, uint32_t yOffset, uint32_t width, uint32_t height)
 {
 	if (!tmpl)
-		return OSc_Error_Illegal_Argument;
+		return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Illegal_Argument, "Illegal argument.");
 
 	// If ROI scan is not supported by the scanner, only full frame is allowed
 	if (!OScInternal_Device_IsROIScanSupported(OSc_LSM_GetScannerDevice(tmpl->lsm))) {
 		if (xOffset > 0 || yOffset > 0 || width != tmpl->resolution || height != tmpl->resolution) {
-			return OSc_Error_Unsupported_Operation;
+			return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Unsupported_Operation, "Unsupported operation.");
 		}
 	}
 
@@ -490,9 +503,9 @@ OSc_Error OSc_AcqTemplate_SetROI(OSc_AcqTemplate *tmpl, uint32_t xOffset, uint32
 	// detector raster size.
 	if (xOffset >= tmpl->resolution || xOffset + width > tmpl->resolution ||
 		yOffset >= tmpl->resolution || yOffset + height > tmpl->resolution)
-		return OSc_Error_Unknown; // TODO Out of range
+		return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Unknown, "Error unknown."); // TODO Out of range
 	if (width < 1 || height < 1)
-		return OSc_Error_Unknown; // TODO Empty raster
+		return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Unknown, "Error unknown."); // TODO Empty raster
 
 	bool rasterSizeOk = true;
 
@@ -521,7 +534,7 @@ OSc_Error OSc_AcqTemplate_SetROI(OSc_AcqTemplate *tmpl, uint32_t xOffset, uint32
 	OScInternal_NumRange_Destroy(detectorHeightRange);
 
 	if (!rasterSizeOk) {
-		return OSc_Error_Unsupported_Operation;
+		return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Unsupported_Operation, "Unsupported operation.");
 	}
 
 	tmpl->xOffset = xOffset;
@@ -541,10 +554,10 @@ void OSc_AcqTemplate_ResetROI(OSc_AcqTemplate *tmpl)
 }
 
 
-OSc_Error OSc_AcqTemplate_GetROI(OSc_AcqTemplate *tmpl, uint32_t *xOffset, uint32_t *yOffset, uint32_t *width, uint32_t *height)
+OSc_Error *OSc_AcqTemplate_GetROI(OSc_AcqTemplate *tmpl, uint32_t *xOffset, uint32_t *yOffset, uint32_t *width, uint32_t *height)
 {
 	if (!tmpl || !xOffset || !yOffset || !width || !height)
-		return OSc_Error_Illegal_Argument;
+		return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Illegal_Argument, "Illegal argument.");
 	*xOffset = tmpl->xOffset;
 	*yOffset = tmpl->yOffset;
 	*width = tmpl->width;
@@ -553,10 +566,10 @@ OSc_Error OSc_AcqTemplate_GetROI(OSc_AcqTemplate *tmpl, uint32_t *xOffset, uint3
 }
 
 
-OSc_Error OSc_AcqTemplate_GetNumberOfChannels(OSc_AcqTemplate *tmpl, uint32_t *numberOfChannels)
+OSc_Error *OSc_AcqTemplate_GetNumberOfChannels(OSc_AcqTemplate *tmpl, uint32_t *numberOfChannels)
 {
 	if (!tmpl || !numberOfChannels)
-		return OSc_Error_Illegal_Argument;
+		return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Illegal_Argument, "Illegal argument.");
 
 	// This implementation is temporary; device-specific settings that affect
 	// the number of channels should belong to the AcqTemplate and we need a
@@ -567,10 +580,10 @@ OSc_Error OSc_AcqTemplate_GetNumberOfChannels(OSc_AcqTemplate *tmpl, uint32_t *n
 }
 
 
-OSc_Error OSc_AcqTemplate_GetBytesPerSample(OSc_AcqTemplate *tmpl, uint32_t *bytesPerSample)
+OSc_Error *OSc_AcqTemplate_GetBytesPerSample(OSc_AcqTemplate *tmpl, uint32_t *bytesPerSample)
 {
 	if (!tmpl || !bytesPerSample)
-		return OSc_Error_Illegal_Argument;
+		return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Illegal_Argument, "Illegal argument.");
 
 	// This implementation is temporary; device-specific settings that affect
 	// the sample format should belong to the AcqTemplate and we need a

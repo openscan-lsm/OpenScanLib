@@ -20,7 +20,7 @@ void OScInternal_FileList_Free(char **files)
 
 // Finds all fils under 'path' that have 'suffix'.
 // Allocates array and element strings and places into 'files'.
-OSc_Error OScInternal_FileList_Create(char ***files, const char *path, const char *suffix)
+OSc_Error *OScInternal_FileList_Create(char ***files, const char *path, const char *suffix)
 {
 	// Windows implementation for now
 
@@ -78,23 +78,23 @@ OSc_Error OScInternal_FileList_Create(char ***files, const char *path, const cha
 error:
 	OScInternal_FileList_Free(*files);
 	*files = NULL;
-	return err;
+	return OScInternal_Error_Create(OScInternal_Error_OScDomain(), err, "Failed to list files.");
 }
 
 
-OSc_Error OScInternal_Module_Load(OScInternal_Module *module, const char *path)
+OSc_Error *OScInternal_Module_Load(OScInternal_Module *module, const char *path)
 {
 	*module = LoadLibraryA(path);
 	if (*module == NULL)
-		return OSc_Error_Unknown; // TODO
+		return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Unknown, "Error unknown!");
 	return OSc_Error_OK;
 }
 
 
-OSc_Error OScInternal_Module_GetEntryPoint(OScInternal_Module module, const char *funcName, void **func)
+OSc_Error *OScInternal_Module_GetEntryPoint(OScInternal_Module module, const char *funcName, void **func)
 {
 	*func = GetProcAddress(module, funcName);
 	if (!*func)
-		return OSc_Error_Unknown;
+		return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Unknown, "Error unknown!");
 	return OSc_Error_OK;
 }

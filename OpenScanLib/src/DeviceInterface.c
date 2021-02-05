@@ -14,6 +14,16 @@ static void Log(OScDev_ModuleImpl *modImpl, OScDev_Device *device, OScDev_LogLev
 	OScInternal_Log(device, level, message);
 }
 
+static OScDev_RichError *Error_RegisterCodeDomain(OScDev_ModuleImpl* modImpl, const char* domainName, RERR_CodeFormat codeFormat) {
+	return OScInternal_Error_RegisterCodeDomain(domainName, codeFormat);
+}
+static OScDev_Error Error_ReturnAsCode(OScDev_ModuleImpl* modImpl, OScDev_RichError *error) {
+	return OScInternal_Error_ReturnAsCode(error);
+}
+static OScDev_RichError *Error_Create(OScDev_ModuleImpl* modImpl, const char* domainName, OScDev_Error code, const char* message) {
+	return OScInternal_Error_Create(domainName, code, message);
+}
+
 
 static OScInternal_PtrArray *PtrArray_Create(OScDev_ModuleImpl *modImpl)
 {
@@ -258,6 +268,9 @@ static bool Acquisition_CallFrameCallback(OScDev_ModuleImpl *modImpl, OScDev_Acq
 
 struct OScDevInternal_Interface DeviceInterfaceFunctionTable = {
 	.Log = Log,
+	.Error_RegisterCodeDomain = Error_RegisterCodeDomain,
+	.Error_ReturnAsCode = Error_ReturnAsCode,
+	.Error_Create = Error_Create,
 	.PtrArray_Create = PtrArray_Create,
 	.PtrArray_CreateFromNullTerminated = PtrArray_CreateFromNullTerminated,
 	.PtrArray_Destroy = PtrArray_Destroy,

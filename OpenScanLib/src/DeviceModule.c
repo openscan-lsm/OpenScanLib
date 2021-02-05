@@ -4,6 +4,8 @@
 #define OScDevInternal_BUILDING_OPENSCANLIB 1
 #include "OpenScanDeviceLibPrivate.h"
 
+#include <RichErrors/Err2Code.h>
+
 
 // Array of strings; each element _and_ the array itself must be freed when
 // replacing; last element is always null
@@ -20,7 +22,7 @@ static size_t g_loadedAdapterCount;
 static size_t g_loadedAdaptersCap;
 
 
-static OSc_Error LoadAdapter(const char *path, const char *name)
+static OSc_Error *LoadAdapter(const char *path, const char *name)
 {
 	if (!g_loadedAdapters)
 	{
@@ -34,11 +36,11 @@ static OSc_Error LoadAdapter(const char *path, const char *name)
 	for (size_t i = 0; i < g_loadedAdapterCount; ++i)
 	{
 		if (strcmp(g_loadedAdapters[i].name, name) == 0)
-			return OSc_Error_Device_Module_Already_Exists;
+			return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Device_Module_Already_Exists, "Device module already exists.");
 	}
 
 	OScInternal_Module module;
-	OSc_Error err;
+	OSc_Error *err;
 	if (OSc_CHECK_ERROR(err, OScInternal_Module_Load(&module, path)))
 		return err;
 	if (g_loadedAdapterCount == g_loadedAdaptersCap)
@@ -70,7 +72,7 @@ static void LoadAdaptersAtPath(const char *path)
 		strncpy(name, *pfile, sizeof(name) - 1);
 		// Remove suffix (we trust OScInternal_FileList_Create returned what it should)
 		*strrchr(name, '.') = '\0';
-		OSc_Error err = LoadAdapter(filePath, name);
+		OSc_Error *err = LoadAdapter(filePath, name);
 		// TODO Log or report error
 	}
 	OScInternal_FileList_Free(files);
@@ -127,7 +129,7 @@ void OSc_SetDeviceModuleSearchPaths(char **paths)
 }
 
 
-OSc_Error OScInternal_DeviceModule_GetCount(size_t *count)
+OSc_Error *OScInternal_DeviceModule_GetCount(size_t *count)
 {
 	if (!g_loadedAdapters)
 		LoadAdapters();
@@ -137,7 +139,7 @@ OSc_Error OScInternal_DeviceModule_GetCount(size_t *count)
 }
 
 
-OSc_Error OScInternal_DeviceModule_GetNames(const char **modules, size_t *count)
+OSc_Error *OScInternal_DeviceModule_GetNames(const char **modules, size_t *count)
 {
 	if (!g_loadedAdapters)
 		LoadAdapters();
@@ -150,7 +152,7 @@ OSc_Error OScInternal_DeviceModule_GetNames(const char **modules, size_t *count)
 }
 
 
-OSc_Error OScInternal_DeviceModule_GetDeviceImpls(const char *module, OScInternal_PtrArray **deviceImpls)
+OSc_Error *OScInternal_DeviceModule_GetDeviceImpls(const char *module, OScInternal_PtrArray **deviceImpls)
 {
 	struct Module *mod = NULL;
 	for (size_t i = 0; i < g_loadedAdapterCount; ++i)
@@ -162,10 +164,11 @@ OSc_Error OScInternal_DeviceModule_GetDeviceImpls(const char *module, OScInterna
 		}
 	}
 	if (!mod)
-		return OSc_Error_No_Such_Device_Module;
+		return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_No_Such_Device_Module, "No such device module.");
 
 	OScDevInternal_EntryPointPtr entryPoint;
-	OSc_Error err;
+	OSc_Error *err;
+	OScDev_Error errCode;
 	if (OSc_CHECK_ERROR(err, OScInternal_Module_GetEntryPoint(mod->handle, OScDevInternal_ENTRY_POINT_NAME, (void *)&entryPoint)))
 		return err;
 
@@ -175,19 +178,29 @@ OSc_Error OScInternal_DeviceModule_GetDeviceImpls(const char *module, OScInterna
 	if (dpiVersion != OScDevInternal_ABI_VERSION)
 	{
 		// TODO We could support non-exact version matches.
-		return OSc_Error_Unknown;
+		return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Unknown, "Error unknown.");
 	}
 
 	*funcTablePtr = &DeviceInterfaceFunctionTable;
 
 	if (modImpl->Open)
 	{
-		if (OSc_CHECK_ERROR(err, modImpl->Open()))
-			return err;
+		errCode = modImpl->Open();
+		if (modImpl->supportsRichErrors) {
+			return OScInternal_Error_RetrieveRichErrors(errCode);
+		}
+		else {
+			return OScInternal_Error_Create(OScInternal_Error_ABIDomain(), errCode, "Error from ABI.");
+		}
 	}
 	// TODO We need to also call Close() when shutting down
 
-	if (OSc_CHECK_ERROR(err, modImpl->GetDeviceImpls(deviceImpls)))
-		return err;
+	errCode = modImpl->GetDeviceImpls(deviceImpls);
+	if (modImpl->supportsRichErrors) {
+		return OScInternal_Error_RetrieveRichErrors(errCode);
+	}
+	else {
+		return OScInternal_Error_Create(OScInternal_Error_ABIDomain(), errCode, "Error from ABI.");
+	}
 	return OSc_Error_OK;
 }

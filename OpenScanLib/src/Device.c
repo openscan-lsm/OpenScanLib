@@ -7,6 +7,7 @@
 
 struct OScInternal_Device
 {
+	OScDev_ModuleImpl *modImpl;
 	OScDev_DeviceImpl *impl;
 	void *implData;
 
@@ -34,13 +35,18 @@ void OSc_Device_SetLogFunc(OSc_Device *device, OSc_LogFunc func, void *data)
 }
 
 
-OSc_Error OSc_Device_GetName(OSc_Device *device, const char **name)
+OSc_Error *OSc_Device_GetName(OSc_Device *device, const char **name)
 {
-	OSc_Error err;
+	OScDev_Error errCode;
 	if (!strlen(device->name))
 	{
-		if (OSc_CHECK_ERROR(err, device->impl->GetName(device, device->name)))
-			return err;
+		errCode = device->impl->GetName(device, device->name);
+		if (device->modImpl->supportsRichErrors) {
+			return OScInternal_Error_RetrieveRichErrors(errCode);
+		}
+		else {
+			return OScInternal_Error_Create(OScInternal_Error_ABIDomain(), errCode, "Error from ABI.");
+		}
 	}
 
 	*name = device->name;
@@ -48,14 +54,20 @@ OSc_Error OSc_Device_GetName(OSc_Device *device, const char **name)
 }
 
 
-OSc_Error OSc_Device_GetDisplayName(OSc_Device *device, const char **name)
+OSc_Error *OSc_Device_GetDisplayName(OSc_Device *device, const char **name)
 {
 	if (!strlen(device->displayName))
 	{
-		OSc_Error err;
+		OSc_Error *err;
+		OScDev_Error errCode;
 		const char *modelName;
-		if (OSc_CHECK_ERROR(err, device->impl->GetModelName(&modelName)))
-			return err;
+		errCode = device->impl->GetModelName(&modelName);
+		if (device->modImpl->supportsRichErrors) {
+			return OScInternal_Error_RetrieveRichErrors(errCode);
+		}
+		else {
+			return OScInternal_Error_Create(OScInternal_Error_ABIDomain(), errCode, "Error from ABI.");
+		}
 		const char *deviceName;
 		if (OSc_CHECK_ERROR(err, OSc_Device_GetName(device, &deviceName)))
 			return err;
@@ -67,18 +79,24 @@ OSc_Error OSc_Device_GetDisplayName(OSc_Device *device, const char **name)
 	return OSc_Error_OK;
 }
 
-OSc_Error OSc_Device_Open(OSc_Device *device, OSc_LSM *lsm)
+OSc_Error *OSc_Device_Open(OSc_Device *device, OSc_LSM *lsm)
 {
 	if (device->isOpen)
 	{
 		if (device->associatedLSM == lsm)
 			return OSc_Error_OK;
-		return OSc_Error_Device_Already_Open;
+		return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Device_Already_Open, "Device already open!");
 	}
 
-	OSc_Error err;
-	if (OSc_CHECK_ERROR(err, device->impl->Open(device)))
-		return err;
+	OSc_Error *err;
+	OScDev_Error errCode;
+	errCode = device->impl->Open(device);
+	if (device->modImpl->supportsRichErrors) {
+		return OScInternal_Error_RetrieveRichErrors(errCode);
+	}
+	else {
+		return OScInternal_Error_Create(OScInternal_Error_ABIDomain(), errCode, "Error from ABI.");
+	}
 	device->isOpen = true;
 
 	if (OSc_CHECK_ERROR(err, OScInternal_LSM_Associate_Device(lsm, device)))
@@ -93,57 +111,86 @@ Error:
 }
 
 
-OSc_Error OSc_Device_Close(OSc_Device *device)
+OSc_Error *OSc_Device_Close(OSc_Device *device)
 {
 	if (!device || !device->isOpen)
 		return OSc_Error_OK;
 
-	OSc_Error err;
+	OSc_Error *err;
+	OScDev_Error errCode;
 	if (device->associatedLSM)
 	{
 		if (OSc_CHECK_ERROR(err, OScInternal_LSM_Dissociate_Device(device->associatedLSM, device)))
 			return err;
 	}
 
-	if (OSc_CHECK_ERROR(err, device->impl->Close(device)))
-		return err;
+	errCode = device->impl->Close(device);
+	if (device->modImpl->supportsRichErrors) {
+		return OScInternal_Error_RetrieveRichErrors(errCode);
+	}
+	else {
+		return OScInternal_Error_Create(OScInternal_Error_ABIDomain(), errCode, "Error from ABI.");
+	}
 	device->isOpen = false;
 
 	return OSc_Error_OK;
 }
 
 
-OSc_Error OSc_Device_HasClock(OSc_Device *device, bool *hasClock)
+OSc_Error *OSc_Device_HasClock(OSc_Device *device, bool *hasClock)
 {
 	*hasClock = false;
 
-	return device->impl->HasClock(device, hasClock);
+	OScDev_Error errCode = device->impl->HasClock(device, hasClock);
+	if (device->modImpl->supportsRichErrors) {
+		return OScInternal_Error_RetrieveRichErrors(errCode);
+	}
+	else {
+		return OScInternal_Error_Create(OScInternal_Error_ABIDomain(), errCode, "Error from ABI.");
+	}
 }
 
 
-OSc_Error OSc_Device_HasScanner(OSc_Device *device, bool *hasScanner)
+OSc_Error *OSc_Device_HasScanner(OSc_Device *device, bool *hasScanner)
 {
 	*hasScanner = false;
 
-	return device->impl->HasScanner(device, hasScanner);
+	OScDev_Error errCode = device->impl->HasScanner(device, hasScanner);
+	if (device->modImpl->supportsRichErrors) {
+		return OScInternal_Error_RetrieveRichErrors(errCode);
+	}
+	else {
+		return OScInternal_Error_Create(OScInternal_Error_ABIDomain(), errCode, "Error from ABI.");
+	}
 }
 
 
-OSc_Error OSc_Device_HasDetector(OSc_Device *device, bool *hasDetector)
+OSc_Error *OSc_Device_HasDetector(OSc_Device *device, bool *hasDetector)
 {
 	*hasDetector = false;
 
-	return device->impl->HasDetector(device, hasDetector);
+	OScDev_Error errCode = device->impl->HasDetector(device, hasDetector);
+	if (device->modImpl->supportsRichErrors) {
+		return OScInternal_Error_RetrieveRichErrors(errCode);
+	}
+	else {
+		return OScInternal_Error_Create(OScInternal_Error_ABIDomain(), errCode, "Error from ABI.");
+	}
 }
 
 
-OSc_Error OSc_Device_GetSettings(OSc_Device *device, OSc_Setting ***settings, size_t *count)
+OSc_Error *OSc_Device_GetSettings(OSc_Device *device, OSc_Setting ***settings, size_t *count)
 {
 	if (device->settings == NULL)
 	{
-		OSc_Error err;
-		if (OSc_CHECK_ERROR(err, device->impl->MakeSettings(device, &device->settings)))
-			return err;
+		OScDev_Error errCode;
+		errCode = device->impl->MakeSettings(device, &device->settings);
+		if (device->modImpl->supportsRichErrors) {
+			return OScInternal_Error_RetrieveRichErrors(errCode);
+		}
+		else {
+			return OScInternal_Error_Create(OScInternal_Error_ABIDomain(), errCode, "Error from ABI.");
+		}
 	}
 
 	*settings = (OScDev_Setting**)OScInternal_PtrArray_Data(device->settings);
@@ -152,16 +199,16 @@ OSc_Error OSc_Device_GetSettings(OSc_Device *device, OSc_Setting ***settings, si
 }
 
 
-OSc_Error OScInternal_Device_Create(OSc_Device **device, OScDev_DeviceImpl *impl, void *data)
+OScDev_Error OScInternal_Device_Create(OSc_Device **device, OScDev_DeviceImpl *impl, void *data)
 {
 	*device = calloc(1, sizeof(OSc_Device));
 	(*device)->impl = impl;
 	(*device)->implData = data;
-	return OSc_Error_OK;
+	return OScInternal_LegacyError_OK;
 }
 
 
-OSc_Error OScInternal_Device_Destroy(OSc_Device *device)
+OSc_Error *OScInternal_Device_Destroy(OSc_Device *device)
 {
 	if (!device) {
 		return OSc_Error_OK;
@@ -206,8 +253,9 @@ OScDev_NumRange *OScInternal_Device_GetPixelRates(OSc_Device *device)
 		return NULL;
 	if (device->impl->GetPixelRates) {
 		OScDev_NumRange *ret;
-		OSc_Error err;
-		if (OSc_CHECK_ERROR(err, device->impl->GetPixelRates(device, &ret))) {
+		OScDev_Error errCode;
+		errCode = device->impl->GetPixelRates(device, &ret);
+		if (errCode) {
 			return OScInternal_NumRange_CreateDiscrete();
 		}
 		return ret;
@@ -222,8 +270,9 @@ OScDev_NumRange *OScInternal_Device_GetResolutions(OSc_Device *device)
 		return NULL;
 	if (device->impl->GetResolutions) {
 		OScDev_NumRange *ret;
-		OSc_Error err;
-		if (OSc_CHECK_ERROR(err, device->impl->GetResolutions(device, &ret))) {
+		OScDev_Error errCode;
+		errCode = device->impl->GetResolutions(device, &ret);
+		if (errCode) {
 			return OScInternal_NumRange_CreateDiscrete();
 		}
 		return ret;
@@ -238,8 +287,9 @@ OScDev_NumRange *OScInternal_Device_GetZooms(OSc_Device *device)
 		return NULL;
 	if (device->impl->GetZoomFactors) {
 		OScDev_NumRange *ret;
-		OSc_Error err;
-		if (OSc_CHECK_ERROR(err, device->impl->GetZoomFactors(device, &ret))) {
+		OScDev_Error errCode;
+		errCode = device->impl->GetZoomFactors(device, &ret);
+		if (errCode) {
 			return OScInternal_NumRange_CreateDiscrete();
 		}
 		return ret;
@@ -257,8 +307,9 @@ bool OScInternal_Device_IsROIScanSupported(OSc_Device *device)
 	}
 
 	bool supported;
-	OSc_Error err;
-	if (OSc_CHECK_ERROR(err, device->impl->IsROIScanSupported(device, &supported))) {
+	OScDev_Error errCode;
+	errCode = device->impl->IsROIScanSupported(device, &supported);
+	if (errCode) {
 		return false;
 	}
 	return supported;
@@ -271,8 +322,8 @@ OScInternal_NumRange *OScInternal_Device_GetRasterWidths(OSc_Device *device)
 		return NULL;
 	if (device->impl->GetRasterWidths) {
 		OScDev_NumRange *ret;
-		OSc_Error err;
-		if (OSc_CHECK_ERROR(err, device->impl->GetRasterWidths(device, &ret))) {
+		OScDev_Error errCode = device->impl->GetRasterWidths(device, &ret);
+		if (errCode) {
 			return OScInternal_NumRange_CreateDiscrete();
 		}
 		return ret;
@@ -287,8 +338,9 @@ OScInternal_NumRange *OScInternal_Device_GetRasterHeights(OSc_Device *device)
 		return NULL;
 	if (device->impl->GetRasterHeights) {
 		OScDev_NumRange *ret;
-		OSc_Error err;
-		if (OSc_CHECK_ERROR(err, device->impl->GetRasterHeights(device, &ret))) {
+		OScDev_Error errCode;
+		errCode = device->impl->GetRasterHeights(device, &ret);
+		if (errCode) {
 			return OScInternal_NumRange_CreateDiscrete();
 		}
 		return ret;
@@ -297,45 +349,50 @@ OScInternal_NumRange *OScInternal_Device_GetRasterHeights(OSc_Device *device)
 }
 
 
-OSc_Error OScInternal_Device_GetNumberOfChannels(OSc_Device *device, uint32_t *numberOfChannels)
+OSc_Error *OScInternal_Device_GetNumberOfChannels(OSc_Device *device, uint32_t *numberOfChannels)
 {
 	if (!device || !numberOfChannels)
-		return OSc_Error_Illegal_Argument;
+		return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Illegal_Argument, "Illegal argument.");
 	if (device->impl->GetNumberOfChannels) {
-		return device->impl->GetNumberOfChannels(device, numberOfChannels);
+		OScDev_Error errCode = device->impl->GetNumberOfChannels(device, numberOfChannels);
+		return OScInternal_Error_RetrieveRichErrors(errCode);
 	}
 	*numberOfChannels = 0;
-	return OSc_Error_Device_Does_Not_Support_Detector;
+	return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Device_Does_Not_Support_Detector, "Device does not support detector.");
 }
 
 
-OSc_Error OScInternal_Device_GetBytesPerSample(OSc_Device *device, uint32_t *bytesPerSample)
+OSc_Error *OScInternal_Device_GetBytesPerSample(OSc_Device *device, uint32_t *bytesPerSample)
 {
 	if (!device || !bytesPerSample)
-		return OSc_Error_Illegal_Argument;
+		return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Illegal_Argument, "Illegal argument.");
 	if (device->impl->GetBytesPerSample) {
-		return device->impl->GetBytesPerSample(device, bytesPerSample);
+		OScDev_Error errCode = device->impl->GetBytesPerSample(device, bytesPerSample);
+		return OScInternal_Error_RetrieveRichErrors(errCode);
 	}
 	*bytesPerSample = 0;
-	return OSc_Error_Device_Does_Not_Support_Detector;
+	return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Device_Does_Not_Support_Detector, "Device does not support detector.");
 }
 
 
-OSc_Error OScInternal_Device_Arm(OSc_Device *device, OSc_Acquisition *acq)
+OSc_Error *OScInternal_Device_Arm(OSc_Device *device, OSc_Acquisition *acq)
 {
 	if (!device || !acq)
-		return OSc_Error_Illegal_Argument;
+		return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Illegal_Argument, "Illegal argument.");
 
-	return device->impl->Arm(device, OScInternal_Acquisition_GetForDevice(acq, device));
+	OScDev_Error errCode = device->impl->Arm(device, OScInternal_Acquisition_GetForDevice(acq, device));
+	return OScInternal_Error_RetrieveRichErrors(errCode);
 }
 
 
-OSc_Error OScInternal_Device_Start(OSc_Device *device)
+OSc_Error *OScInternal_Device_Start(OSc_Device *device)
 {
 	if (!device)
-		return OSc_Error_Illegal_Argument;
+		return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Illegal_Argument, "Illegal argument.");
 
-	return device->impl->Start(device);
+	OScDev_Error errCode = device->impl->Start(device);
+	return OScInternal_Error_RetrieveRichErrors(errCode);
+
 }
 
 
@@ -357,10 +414,11 @@ void OScInternal_Device_Wait(OSc_Device *device)
 }
 
 
-OSc_Error OScInternal_Device_IsRunning(OSc_Device *device, bool *isRunning)
+OSc_Error *OScInternal_Device_IsRunning(OSc_Device *device, bool *isRunning)
 {
 	if (!device || !isRunning)
-		return OSc_Error_Illegal_Argument;
+		return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Illegal_Argument, "Illegal argument.");
 
-	return device->impl->IsRunning(device, isRunning);
+	OScDev_Error errCode = device->impl->IsRunning(device, isRunning);
+	return OScInternal_Error_RetrieveRichErrors(errCode);
 }

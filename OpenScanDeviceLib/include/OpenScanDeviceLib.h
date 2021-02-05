@@ -10,7 +10,6 @@
 #include <stdint.h>
 #include <stdlib.h>
 
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -118,6 +117,7 @@ typedef struct OScDev_SettingImpl OScDev_SettingImpl;
 typedef struct OScInternal_Device OScDev_Device;
 typedef struct OScInternal_Setting OScDev_Setting;
 typedef struct OScInternal_AcquisitionForDevice OScDev_Acquisition;
+typedef struct RERR_Error OScDev_RichError;
 
 
 /// Log level.
@@ -130,6 +130,12 @@ enum
 	OScDev_LogLevel_Info,
 	OScDev_LogLevel_Warning,
 	OScDev_LogLevel_Error,
+};
+
+typedef int32_t OScDev_ErrorCodeFormat;
+enum
+{
+
 };
 
 
@@ -326,6 +332,10 @@ struct OScDevInternal_Interface
 
 	void (*Log)(OScDev_ModuleImpl *modImpl, OScDev_Device *device, OScDev_LogLevel level, const char *message);
 
+	OScDev_RichError *(*Error_RegisterCodeDomain)(OScDev_ModuleImpl* modImpl, const char* domainName, OScDev_ErrorCodeFormat codeFormat);
+	OScDev_Error (*Error_ReturnAsCode)(OScDev_ModuleImpl* modImpl, OScDev_RichError *error);
+	OScDev_RichError *(*Error_Create)(OScDev_ModuleImpl* modImpl, const char* domainName, OScDev_Error code, const char* message);
+
 	OScDev_PtrArray *(*PtrArray_Create)(OScDev_ModuleImpl *modImpl);
 	OScDev_PtrArray *(*PtrArray_CreateFromNullTerminated)(OScDev_ModuleImpl *modImpl, void *const *nullTerminatedArray);
 	void (*PtrArray_Destroy)(OScDev_ModuleImpl *modImpl, const OScDev_PtrArray *arr);
@@ -396,6 +406,12 @@ struct OScDev_ModuleImpl
 	 * **Required**, must not be `NULL`.
 	 */
 	const char *displayName;
+
+	/// If the device module supports RichErrors.
+	/*
+	* To do.
+	*/
+	const bool supportsRichErrors;
 
 	/// Called before OpenScanLib accesses any other functions in this module.
 	/**
@@ -892,6 +908,15 @@ OScDev_API void OScDev_Log_Warning(OScDev_Device *device, const char *message)
 OScDev_API void OScDev_Log_Error(OScDev_Device *device, const char *message)
 {
 	OScDev_Log(device, OScDev_LogLevel_Error, message);
+}
+
+// APIs for device modules
+OScDev_API OScDev_RichError *OScDev_Error_RegisterCodeDomain(const char* domainName, OScDev_ErrorCodeFormat codeFormat) {
+	return OScDevInternal_FunctionTable->Error_RegisterCodeDomain(&OScDevInternal_TheModuleImpl, domainName, codeFormat);
+}
+
+OScDev_API OScDev_Error OScDev_Error_ReturnAsCode(OScDev_RichError *error) {
+	return OScDevInternal_FunctionTable->Error_ReturnAsCode(&OScDevInternal_TheModuleImpl, error);
 }
 
 /// Create an array of objects.

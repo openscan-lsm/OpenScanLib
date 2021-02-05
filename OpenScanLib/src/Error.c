@@ -1,0 +1,68 @@
+#pragma once
+
+#include "OpenScanLibPrivate.h"
+#include <RichErrors/Err2Code.h>
+
+static RERR_ErrorMapPtr map;
+
+
+// APIs for device modules
+OSc_Error *OScInternal_Error_RegisterCodeDomain(const char* domainName, RERR_CodeFormat codeFormat) {
+	return RERR_Domain_Register(domainName, codeFormat);
+}
+
+OScDev_Error OScInternal_Error_ReturnAsCode(OScDev_RichError *error) {
+	return RERR_ErrorMap_RegisterThreadLocal(map, error);
+}
+
+// APIs for OpenScanLib
+OSc_Error *OScInternal_Error_RetrieveRichErrors(int32_t code) {
+	return RERR_ErrorMap_RetrieveThreadLocal(map, code);
+}
+
+OSc_Error *OScInternal_Error_Wrap(OSc_Error *cause, const char* domainName, int32_t code, const char* message) {
+	return RERR_Error_WrapWithCode(cause, domainName, code, message);
+}
+
+OSc_Error *OScInternal_Error_Create(const char* domainName, int32_t code, const char* message) {
+	return RERR_Error_CreateWithCode(domainName, code, message);
+}
+
+char* OScInternal_Error_OScDomain() {
+	static char* domainName = NULL;
+	if (domainName == NULL) {
+		domainName = "OpenScan";
+		RERR_Domain_Register(domainName, RERR_CodeFormat_I32);
+	}
+	return domainName;
+}
+
+char* OScInternal_Error_ABIDomain() {
+	static char* domainName = NULL;
+	if (domainName == NULL) {
+		domainName = "LegacyDeviceErrorDomain";
+		RERR_Domain_Register(domainName, RERR_CodeFormat_I32);
+	}
+	return domainName;
+}
+
+// APIs for MM
+const char* OSc_Error_GetMessage(OSc_Error *error) {
+	return RERR_Error_GetMessage(error);
+}
+
+const char* OSc_Error_GetDomain(OSc_Error *error) {
+	return RERR_Error_GetDomain(error);
+}
+
+int32_t OSc_Error_GetCode(OSc_Error *error) {
+	return RERR_Error_GetCode(error);
+}
+
+OSc_Error *OSc_Error_GetCause(OSc_Error *error) {
+	return RERR_Error_GetCause(error);
+}
+
+void OSc_Error_Destroy(OSc_Error *error) {
+	RERR_Error_Destroy(error);
+}
