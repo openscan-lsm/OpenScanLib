@@ -75,7 +75,7 @@ static OSc_RichError *EnumerateDevices(void)
 
 	for (size_t i = 0; i < nModules; ++i)
 	{
-		const char* moduleName = moduleNames[i];
+		const char *moduleName = moduleNames[i];
 
 		OScInternal_PtrArray *deviceImpls = NULL;
 		err = OScInternal_DeviceModule_GetDeviceImpls(moduleName, &deviceImpls);

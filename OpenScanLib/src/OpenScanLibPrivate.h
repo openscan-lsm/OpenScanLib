@@ -13,17 +13,17 @@ typedef struct RERR_Error OScInternal_RichError;
 // APIs for OpenScanLib
 OSc_RichError *OScInternal_Error_RetrieveRichErrors(int32_t code);
 
-OSc_RichError *OScInternal_Error_Warp(OSc_RichError *cause, const char* domainName, int32_t code, const char* message);
+OSc_RichError *OScInternal_Error_Warp(OSc_RichError *cause, const char *domainName, int32_t code, const char *message);
 
-OSc_RichError *OScInternal_Error_Create(const char* domainName, int32_t code, const char* message);
+OSc_RichError *OScInternal_Error_Create(const char *domainName, int32_t code, const char *message);
 
 OScDev_Error OScInternal_Error_ReturnAsCode(OScDev_RichError *error);
 
-OScDev_RichError* OScInternal_Error_RegisterCodeDomain(const char* domainName, RERR_CodeFormat codeFormat);
+OScDev_RichError* OScInternal_Error_RegisterCodeDomain(const char *domainName, RERR_CodeFormat codeFormat);
 
-char* OScInternal_Error_OScDomain();
+char *OScInternal_Error_OScDomain();
 
-char* OScInternal_Error_LegacyCodeDomain();
+char *OScInternal_Error_LegacyCodeDomain();
 
 // Internal functions
 

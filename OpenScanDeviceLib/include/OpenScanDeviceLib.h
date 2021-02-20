@@ -332,9 +332,9 @@ struct OScDevInternal_Interface
 
 	void (*Log)(OScDev_ModuleImpl *modImpl, OScDev_Device *device, OScDev_LogLevel level, const char *message);
 
-	OScDev_RichError *(*Error_RegisterCodeDomain)(OScDev_ModuleImpl* modImpl, const char* domainName, OScDev_ErrorCodeFormat codeFormat);
+	OScDev_RichError *(*Error_RegisterCodeDomain)(OScDev_ModuleImpl* modImpl, const char *domainName, OScDev_ErrorCodeFormat codeFormat);
 	OScDev_Error (*Error_ReturnAsCode)(OScDev_ModuleImpl* modImpl, OScDev_RichError *error);
-	OScDev_RichError *(*Error_Create)(OScDev_ModuleImpl* modImpl, const char* domainName, OScDev_Error code, const char* message);
+	OScDev_RichError *(*Error_Create)(OScDev_ModuleImpl* modImpl, const char *domainName, OScDev_Error code, const char *message);
 
 	OScDev_PtrArray *(*PtrArray_Create)(OScDev_ModuleImpl *modImpl);
 	OScDev_PtrArray *(*PtrArray_CreateFromNullTerminated)(OScDev_ModuleImpl *modImpl, void *const *nullTerminatedArray);
@@ -911,7 +911,7 @@ OScDev_API void OScDev_Log_Error(OScDev_Device *device, const char *message)
 }
 
 // APIs for device modules
-OScDev_API OScDev_RichError *OScDev_Error_RegisterCodeDomain(const char* domainName, OScDev_ErrorCodeFormat codeFormat) {
+OScDev_API OScDev_RichError *OScDev_Error_RegisterCodeDomain(const char *domainName, OScDev_ErrorCodeFormat codeFormat) {
 	return OScDevInternal_FunctionTable->Error_RegisterCodeDomain(&OScDevInternal_TheModuleImpl, domainName, codeFormat);
 }
 

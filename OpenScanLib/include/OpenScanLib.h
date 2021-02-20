@@ -122,9 +122,9 @@ typedef struct RERR_Error OSc_RichError;
 #define OScDev_Error_OK (int32_t)0
 
 // APIs for MM
-const char* OSc_Error_GetMessage(OSc_RichError *error);
+const char *OSc_Error_GetMessage(OSc_RichError *error);
 
-const char* OSc_Error_GetDomain(OSc_RichError *error);
+const char *OSc_Error_GetDomain(OSc_RichError *error);
 
 int32_t OSc_Error_GetCode(OSc_RichError *error);
 
