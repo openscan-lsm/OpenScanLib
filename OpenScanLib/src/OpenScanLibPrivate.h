@@ -23,7 +23,7 @@ OScDev_RichError* OScInternal_Error_RegisterCodeDomain(const char* domainName, R
 
 char* OScInternal_Error_OScDomain();
 
-char* OScInternal_Error_ABIDomain();
+char* OScInternal_Error_LegacyCodeDomain();
 
 // Internal functions
 

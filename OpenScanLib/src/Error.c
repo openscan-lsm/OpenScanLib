@@ -37,7 +37,7 @@ char* OScInternal_Error_OScDomain() {
 	return domainName;
 }
 
-char* OScInternal_Error_ABIDomain() {
+char* OScInternal_Error_LegacyCodeDomain() {
 	static char* domainName = NULL;
 	if (domainName == NULL) {
 		domainName = "LegacyDeviceErrorDomain";

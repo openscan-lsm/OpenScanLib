@@ -45,7 +45,7 @@ OSc_RichError *OSc_Device_GetName(OSc_Device *device, const char **name)
 			return OScInternal_Error_RetrieveRichErrors(errCode);
 		}
 		else {
-			return OScInternal_Error_Create(OScInternal_Error_ABIDomain(), errCode, "Error from ABI.");
+			return OScInternal_Error_Create(OScInternal_Error_LegacyCodeDomain(), errCode, "Error from ABI.");
 		}
 	}
 
@@ -66,7 +66,7 @@ OSc_RichError *OSc_Device_GetDisplayName(OSc_Device *device, const char **name)
 			return OScInternal_Error_RetrieveRichErrors(errCode);
 		}
 		else {
-			return OScInternal_Error_Create(OScInternal_Error_ABIDomain(), errCode, "Error from ABI.");
+			return OScInternal_Error_Create(OScInternal_Error_LegacyCodeDomain(), errCode, "Error from ABI.");
 		}
 		const char *deviceName;
 		if (OSc_CHECK_ERROR(err, OSc_Device_GetName(device, &deviceName)))
@@ -95,7 +95,7 @@ OSc_RichError *OSc_Device_Open(OSc_Device *device, OSc_LSM *lsm)
 		return OScInternal_Error_RetrieveRichErrors(errCode);
 	}
 	else {
-		return OScInternal_Error_Create(OScInternal_Error_ABIDomain(), errCode, "Error from ABI.");
+		return OScInternal_Error_Create(OScInternal_Error_LegacyCodeDomain(), errCode, "Error from ABI.");
 	}
 	device->isOpen = true;
 
@@ -129,7 +129,7 @@ OSc_RichError *OSc_Device_Close(OSc_Device *device)
 		return OScInternal_Error_RetrieveRichErrors(errCode);
 	}
 	else {
-		return OScInternal_Error_Create(OScInternal_Error_ABIDomain(), errCode, "Error from ABI.");
+		return OScInternal_Error_Create(OScInternal_Error_LegacyCodeDomain(), errCode, "Error from ABI.");
 	}
 	device->isOpen = false;
 
@@ -146,7 +146,7 @@ OSc_RichError *OSc_Device_HasClock(OSc_Device *device, bool *hasClock)
 		return OScInternal_Error_RetrieveRichErrors(errCode);
 	}
 	else {
-		return OScInternal_Error_Create(OScInternal_Error_ABIDomain(), errCode, "Error from ABI.");
+		return OScInternal_Error_Create(OScInternal_Error_LegacyCodeDomain(), errCode, "Error from ABI.");
 	}
 }
 
@@ -160,7 +160,7 @@ OSc_RichError *OSc_Device_HasScanner(OSc_Device *device, bool *hasScanner)
 		return OScInternal_Error_RetrieveRichErrors(errCode);
 	}
 	else {
-		return OScInternal_Error_Create(OScInternal_Error_ABIDomain(), errCode, "Error from ABI.");
+		return OScInternal_Error_Create(OScInternal_Error_LegacyCodeDomain(), errCode, "Error from ABI.");
 	}
 }
 
@@ -174,7 +174,7 @@ OSc_RichError *OSc_Device_HasDetector(OSc_Device *device, bool *hasDetector)
 		return OScInternal_Error_RetrieveRichErrors(errCode);
 	}
 	else {
-		return OScInternal_Error_Create(OScInternal_Error_ABIDomain(), errCode, "Error from ABI.");
+		return OScInternal_Error_Create(OScInternal_Error_LegacyCodeDomain(), errCode, "Error from ABI.");
 	}
 }
 
@@ -189,7 +189,7 @@ OSc_RichError *OSc_Device_GetSettings(OSc_Device *device, OSc_Setting ***setting
 			return OScInternal_Error_RetrieveRichErrors(errCode);
 		}
 		else {
-			return OScInternal_Error_Create(OScInternal_Error_ABIDomain(), errCode, "Error from ABI.");
+			return OScInternal_Error_Create(OScInternal_Error_LegacyCodeDomain(), errCode, "Error from ABI.");
 		}
 	}
 

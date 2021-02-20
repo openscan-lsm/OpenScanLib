@@ -143,7 +143,7 @@ OSc_RichError *OSc_Setting_GetInt32DiscreteValues(OSc_Setting *setting, int32_t 
 			return OScInternal_Error_RetrieveRichErrors(errCode);
 		}
 		else {
-			return OScInternal_Error_Create(OScInternal_Error_ABIDomain(), errCode, "Error from ABI.");
+			return OScInternal_Error_Create(OScInternal_Error_LegacyCodeDomain(), errCode, "Error from ABI.");
 		}
 		if (values) {
 			size_t count = OScInternal_NumArray_Size(values);
@@ -198,7 +198,7 @@ OSc_RichError *OSc_Setting_GetFloat64DiscreteValues(OSc_Setting *setting, double
 			return OScInternal_Error_RetrieveRichErrors(errCode);
 		}
 		else {
-			return OScInternal_Error_Create(OScInternal_Error_ABIDomain(), errCode, "Error from ABI.");
+			return OScInternal_Error_Create(OScInternal_Error_LegacyCodeDomain(), errCode, "Error from ABI.");
 		}
 		if (values) {
 			size_t count = OScInternal_NumArray_Size(values);

@@ -190,7 +190,7 @@ OSc_RichError *OScInternal_DeviceModule_GetDeviceImpls(const char *module, OScIn
 			return OScInternal_Error_RetrieveRichErrors(errCode);
 		}
 		else {
-			return OScInternal_Error_Create(OScInternal_Error_ABIDomain(), errCode, "Error from ABI.");
+			return OScInternal_Error_Create(OScInternal_Error_LegacyCodeDomain(), errCode, "Error from ABI.");
 		}
 	}
 	// TODO We need to also call Close() when shutting down
@@ -200,7 +200,7 @@ OSc_RichError *OScInternal_DeviceModule_GetDeviceImpls(const char *module, OScIn
 		return OScInternal_Error_RetrieveRichErrors(errCode);
 	}
 	else {
-		return OScInternal_Error_Create(OScInternal_Error_ABIDomain(), errCode, "Error from ABI.");
+		return OScInternal_Error_Create(OScInternal_Error_LegacyCodeDomain(), errCode, "Error from ABI.");
 	}
 	return OSc_Error_OK;
 }
