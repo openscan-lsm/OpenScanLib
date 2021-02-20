@@ -4,7 +4,6 @@
 #define OScDevInternal_BUILDING_OPENSCANLIB 1
 #include "OpenScanDeviceLibPrivate.h"
 
-#include <RichErrors/Err2Code.h>
 
 
 // Array of strings; each element _and_ the array itself must be freed when
