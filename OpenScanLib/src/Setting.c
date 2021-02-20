@@ -30,33 +30,33 @@ struct OScInternal_Setting
 };
 
 
-OScDev_Error OSc_Setting_GetName(OSc_Setting *setting, char *name)
+OSc_RichError *OSc_Setting_GetName(OSc_Setting *setting, char *name)
 {
 	strncpy(name, setting->name, OSc_MAX_STR_LEN);
-	return OScInternal_LegacyError_OK;
+	return OSc_Error_OK;
 }
 
 
-OScDev_Error OSc_Setting_GetValueType(OSc_Setting *setting, OSc_ValueType *valueType)
+OSc_RichError *OSc_Setting_GetValueType(OSc_Setting *setting, OSc_ValueType *valueType)
 {
 	*valueType = setting->valueType;
-	return OScInternal_LegacyError_OK;
+	return OSc_Error_OK;
 }
 
 
-OScDev_Error OSc_Setting_IsEnabled(OSc_Setting *setting, bool *enabled)
+OSc_RichError *OSc_Setting_IsEnabled(OSc_Setting *setting, bool *enabled)
 {
 	return setting->impl->IsEnabled(setting, enabled);
 }
 
 
-OScDev_Error OSc_Setting_IsWritable(OSc_Setting *setting, bool *writable)
+OSc_RichError *OSc_Setting_IsWritable(OSc_Setting *setting, bool *writable)
 {
 	return setting->impl->IsWritable(setting, writable);
 }
 
 
-OScDev_Error OSc_Setting_GetNumericConstraintType(OSc_Setting *setting, OSc_ValueConstraint *constraintType)
+OSc_RichError *OSc_Setting_GetNumericConstraintType(OSc_Setting *setting, OSc_ValueConstraint *constraintType)
 {
 	*constraintType = OSc_ValueConstraint_None;
 	OScDev_ValueConstraint dConstraintType;
@@ -542,7 +542,7 @@ static void DefaultRelease(OSc_Setting *setting)
 }
 
 
-OScDev_Error OScInternal_Setting_Create(OSc_Setting **setting, const char *name, OSc_ValueType valueType,
+OSc_RichError *OScInternal_Setting_Create(OSc_Setting **setting, const char *name, OSc_ValueType valueType,
 	OScDev_SettingImpl *impl, void *data)
 {
 	// TODO We should not modify 'impl' which belongs to the device module.
@@ -594,7 +594,7 @@ OScDev_Error OScInternal_Setting_Create(OSc_Setting **setting, const char *name,
 	(*setting)->implData = data;
 	(*setting)->valueType = valueType;
 	strncpy((*setting)->name, name, OSc_MAX_STR_LEN);
-	return OScInternal_LegacyError_OK;
+	return OSc_Error_OK;
 }
 
 

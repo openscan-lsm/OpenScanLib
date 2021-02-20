@@ -420,12 +420,12 @@ OSc_API OSc_RichError *OSc_Device_GetSettings(OSc_Device *device, OSc_Setting **
  * \param setting the setting.
  * \param[out] name a string buffer of size at least #OSc_MAX_STR_SIZE, where the name will be written.
  */
-OSc_API int32_t OSc_Setting_GetName(OSc_Setting *setting, char *name);
+OSc_API OSc_RichError *OSc_Setting_GetName(OSc_Setting *setting, char *name);
 
-OSc_API int32_t OSc_Setting_GetValueType(OSc_Setting *setting, OSc_ValueType *valueType);
-OSc_API int32_t OSc_Setting_IsEnabled(OSc_Setting *setting, bool *enabled);
-OSc_API int32_t OSc_Setting_IsWritable(OSc_Setting *setting, bool *writable);
-OSc_API int32_t OSc_Setting_GetNumericConstraintType(OSc_Setting *setting, OSc_ValueConstraint *constraintType);
+OSc_API OSc_RichError *OSc_Setting_GetValueType(OSc_Setting *setting, OSc_ValueType *valueType);
+OSc_API OSc_RichError *OSc_Setting_IsEnabled(OSc_Setting *setting, bool *enabled);
+OSc_API OSc_RichError *OSc_Setting_IsWritable(OSc_Setting *setting, bool *writable);
+OSc_API OSc_RichError *OSc_Setting_GetNumericConstraintType(OSc_Setting *setting, OSc_ValueConstraint *constraintType);
 
 OSc_API void OSc_Setting_SetInvalidateCallback(OSc_Setting *setting, OSc_SettingInvalidateFunc func, void *data);
 

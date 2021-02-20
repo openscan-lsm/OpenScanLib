@@ -373,30 +373,30 @@ OSc_RichError *OSc_AcqTemplate_Create(OSc_AcqTemplate **tmpl, OSc_LSM *lsm)
 	(*tmpl)->lsm = lsm;
 	(*tmpl)->numberOfFrames = UINT32_MAX; // Infinite
 
-	OScDev_Error errCode;
+	OScDev_Error *err;
 	OSc_Setting *setting;
 
-	errCode = OScInternal_Setting_Create(&setting, "PixelRateHz",
+	err = OScInternal_Setting_Create(&setting, "PixelRateHz",
 		OSc_ValueType_Float64, &PixelRateSettingImpl, *tmpl);
-	if (errCode)
+	if (err)
 		goto error;
 	(*tmpl)->pixelRateSetting = setting;
 
-	errCode = OScInternal_Setting_Create(&setting, "Resolution",
+	err = OScInternal_Setting_Create(&setting, "Resolution",
 		OSc_ValueType_Int32, &ResolutionSettingImpl, *tmpl);
-	if (errCode)
+	if (err)
 		goto error;
 	(*tmpl)->resolutionSetting = setting;
 
-	errCode = OScInternal_Setting_Create(&setting, "ZoomFactor",
+	err = OScInternal_Setting_Create(&setting, "ZoomFactor",
 		OSc_ValueType_Float64, &ZoomSettingImpl, *tmpl);
-	if (errCode)
+	if (err)
 		goto error;
 	(*tmpl)->zoomFactorSetting = setting;
 
-	errCode = OScInternal_Setting_Create(&setting, "Magnification",
+	err = OScInternal_Setting_Create(&setting, "Magnification",
 		OSc_ValueType_Float64, &MagnificationSettingImpl, *tmpl);
-	if (errCode)
+	if (err)
 		goto error;
 	(*tmpl)->magnificationSetting = setting;
 
@@ -410,7 +410,7 @@ OSc_RichError *OSc_AcqTemplate_Create(OSc_AcqTemplate **tmpl, OSc_LSM *lsm)
 error:
 	OSc_AcqTemplate_Destroy(*tmpl);
 	*tmpl = NULL;
-	return OScInternal_Error_Create(OScInternal_Error_OScDomain(), errCode, "Sorry I don't know how to describe this err...");
+	return err;
 }
 
 
