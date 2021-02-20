@@ -7,7 +7,7 @@
 
 struct OScInternal_Setting
 {
-	OScDev_ModuleImpl* modImpl;
+	OScDev_ModuleImpl *modImpl;
 
 	OScDev_SettingImpl *impl;
 	// TODO It is such a common usage to set implData to the device instance,
