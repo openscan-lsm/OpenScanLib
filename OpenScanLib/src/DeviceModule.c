@@ -22,7 +22,7 @@ static size_t g_loadedAdapterCount;
 static size_t g_loadedAdaptersCap;
 
 
-static OSc_Error *LoadAdapter(const char *path, const char *name)
+static OSc_RichError *LoadAdapter(const char *path, const char *name)
 {
 	if (!g_loadedAdapters)
 	{
@@ -40,7 +40,7 @@ static OSc_Error *LoadAdapter(const char *path, const char *name)
 	}
 
 	OScInternal_Module module;
-	OSc_Error *err;
+	OSc_RichError *err;
 	if (OSc_CHECK_ERROR(err, OScInternal_Module_Load(&module, path)))
 		return err;
 	if (g_loadedAdapterCount == g_loadedAdaptersCap)
@@ -72,7 +72,7 @@ static void LoadAdaptersAtPath(const char *path)
 		strncpy(name, *pfile, sizeof(name) - 1);
 		// Remove suffix (we trust OScInternal_FileList_Create returned what it should)
 		*strrchr(name, '.') = '\0';
-		OSc_Error *err = LoadAdapter(filePath, name);
+		OSc_RichError *err = LoadAdapter(filePath, name);
 		// TODO Log or report error
 	}
 	OScInternal_FileList_Free(files);
@@ -129,7 +129,7 @@ void OSc_SetDeviceModuleSearchPaths(char **paths)
 }
 
 
-OSc_Error *OScInternal_DeviceModule_GetCount(size_t *count)
+OSc_RichError *OScInternal_DeviceModule_GetCount(size_t *count)
 {
 	if (!g_loadedAdapters)
 		LoadAdapters();
@@ -139,7 +139,7 @@ OSc_Error *OScInternal_DeviceModule_GetCount(size_t *count)
 }
 
 
-OSc_Error *OScInternal_DeviceModule_GetNames(const char **modules, size_t *count)
+OSc_RichError *OScInternal_DeviceModule_GetNames(const char **modules, size_t *count)
 {
 	if (!g_loadedAdapters)
 		LoadAdapters();
@@ -152,7 +152,7 @@ OSc_Error *OScInternal_DeviceModule_GetNames(const char **modules, size_t *count
 }
 
 
-OSc_Error *OScInternal_DeviceModule_GetDeviceImpls(const char *module, OScInternal_PtrArray **deviceImpls)
+OSc_RichError *OScInternal_DeviceModule_GetDeviceImpls(const char *module, OScInternal_PtrArray **deviceImpls)
 {
 	struct Module *mod = NULL;
 	for (size_t i = 0; i < g_loadedAdapterCount; ++i)
@@ -167,7 +167,7 @@ OSc_Error *OScInternal_DeviceModule_GetDeviceImpls(const char *module, OScIntern
 		return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_No_Such_Device_Module, "No such device module.");
 
 	OScDevInternal_EntryPointPtr entryPoint;
-	OSc_Error *err;
+	OSc_RichError *err;
 	OScDev_Error errCode;
 	if (OSc_CHECK_ERROR(err, OScInternal_Module_GetEntryPoint(mod->handle, OScDevInternal_ENTRY_POINT_NAME, (void *)&entryPoint)))
 		return err;

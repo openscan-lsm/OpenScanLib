@@ -35,7 +35,7 @@ void OSc_Device_SetLogFunc(OSc_Device *device, OSc_LogFunc func, void *data)
 }
 
 
-OSc_Error *OSc_Device_GetName(OSc_Device *device, const char **name)
+OSc_RichError *OSc_Device_GetName(OSc_Device *device, const char **name)
 {
 	OScDev_Error errCode;
 	if (!strlen(device->name))
@@ -54,11 +54,11 @@ OSc_Error *OSc_Device_GetName(OSc_Device *device, const char **name)
 }
 
 
-OSc_Error *OSc_Device_GetDisplayName(OSc_Device *device, const char **name)
+OSc_RichError *OSc_Device_GetDisplayName(OSc_Device *device, const char **name)
 {
 	if (!strlen(device->displayName))
 	{
-		OSc_Error *err;
+		OSc_RichError *err;
 		OScDev_Error errCode;
 		const char *modelName;
 		errCode = device->impl->GetModelName(&modelName);
@@ -79,7 +79,7 @@ OSc_Error *OSc_Device_GetDisplayName(OSc_Device *device, const char **name)
 	return OSc_Error_OK;
 }
 
-OSc_Error *OSc_Device_Open(OSc_Device *device, OSc_LSM *lsm)
+OSc_RichError *OSc_Device_Open(OSc_Device *device, OSc_LSM *lsm)
 {
 	if (device->isOpen)
 	{
@@ -88,7 +88,7 @@ OSc_Error *OSc_Device_Open(OSc_Device *device, OSc_LSM *lsm)
 		return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Device_Already_Open, "Device already open!");
 	}
 
-	OSc_Error *err;
+	OSc_RichError *err;
 	OScDev_Error errCode;
 	errCode = device->impl->Open(device);
 	if (device->modImpl->supportsRichErrors) {
@@ -111,12 +111,12 @@ Error:
 }
 
 
-OSc_Error *OSc_Device_Close(OSc_Device *device)
+OSc_RichError *OSc_Device_Close(OSc_Device *device)
 {
 	if (!device || !device->isOpen)
 		return OSc_Error_OK;
 
-	OSc_Error *err;
+	OSc_RichError *err;
 	OScDev_Error errCode;
 	if (device->associatedLSM)
 	{
@@ -137,7 +137,7 @@ OSc_Error *OSc_Device_Close(OSc_Device *device)
 }
 
 
-OSc_Error *OSc_Device_HasClock(OSc_Device *device, bool *hasClock)
+OSc_RichError *OSc_Device_HasClock(OSc_Device *device, bool *hasClock)
 {
 	*hasClock = false;
 
@@ -151,7 +151,7 @@ OSc_Error *OSc_Device_HasClock(OSc_Device *device, bool *hasClock)
 }
 
 
-OSc_Error *OSc_Device_HasScanner(OSc_Device *device, bool *hasScanner)
+OSc_RichError *OSc_Device_HasScanner(OSc_Device *device, bool *hasScanner)
 {
 	*hasScanner = false;
 
@@ -165,7 +165,7 @@ OSc_Error *OSc_Device_HasScanner(OSc_Device *device, bool *hasScanner)
 }
 
 
-OSc_Error *OSc_Device_HasDetector(OSc_Device *device, bool *hasDetector)
+OSc_RichError *OSc_Device_HasDetector(OSc_Device *device, bool *hasDetector)
 {
 	*hasDetector = false;
 
@@ -179,7 +179,7 @@ OSc_Error *OSc_Device_HasDetector(OSc_Device *device, bool *hasDetector)
 }
 
 
-OSc_Error *OSc_Device_GetSettings(OSc_Device *device, OSc_Setting ***settings, size_t *count)
+OSc_RichError *OSc_Device_GetSettings(OSc_Device *device, OSc_Setting ***settings, size_t *count)
 {
 	if (device->settings == NULL)
 	{
@@ -208,7 +208,7 @@ OScDev_Error OScInternal_Device_Create(OSc_Device **device, OScDev_DeviceImpl *i
 }
 
 
-OSc_Error *OScInternal_Device_Destroy(OSc_Device *device)
+OSc_RichError *OScInternal_Device_Destroy(OSc_Device *device)
 {
 	if (!device) {
 		return OSc_Error_OK;
@@ -349,7 +349,7 @@ OScInternal_NumRange *OScInternal_Device_GetRasterHeights(OSc_Device *device)
 }
 
 
-OSc_Error *OScInternal_Device_GetNumberOfChannels(OSc_Device *device, uint32_t *numberOfChannels)
+OSc_RichError *OScInternal_Device_GetNumberOfChannels(OSc_Device *device, uint32_t *numberOfChannels)
 {
 	if (!device || !numberOfChannels)
 		return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Illegal_Argument, "Illegal argument.");
@@ -362,7 +362,7 @@ OSc_Error *OScInternal_Device_GetNumberOfChannels(OSc_Device *device, uint32_t *
 }
 
 
-OSc_Error *OScInternal_Device_GetBytesPerSample(OSc_Device *device, uint32_t *bytesPerSample)
+OSc_RichError *OScInternal_Device_GetBytesPerSample(OSc_Device *device, uint32_t *bytesPerSample)
 {
 	if (!device || !bytesPerSample)
 		return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Illegal_Argument, "Illegal argument.");
@@ -375,7 +375,7 @@ OSc_Error *OScInternal_Device_GetBytesPerSample(OSc_Device *device, uint32_t *by
 }
 
 
-OSc_Error *OScInternal_Device_Arm(OSc_Device *device, OSc_Acquisition *acq)
+OSc_RichError *OScInternal_Device_Arm(OSc_Device *device, OSc_Acquisition *acq)
 {
 	if (!device || !acq)
 		return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Illegal_Argument, "Illegal argument.");
@@ -385,7 +385,7 @@ OSc_Error *OScInternal_Device_Arm(OSc_Device *device, OSc_Acquisition *acq)
 }
 
 
-OSc_Error *OScInternal_Device_Start(OSc_Device *device)
+OSc_RichError *OScInternal_Device_Start(OSc_Device *device)
 {
 	if (!device)
 		return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Illegal_Argument, "Illegal argument.");
@@ -414,7 +414,7 @@ void OScInternal_Device_Wait(OSc_Device *device)
 }
 
 
-OSc_Error *OScInternal_Device_IsRunning(OSc_Device *device, bool *isRunning)
+OSc_RichError *OScInternal_Device_IsRunning(OSc_Device *device, bool *isRunning)
 {
 	if (!device || !isRunning)
 		return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Illegal_Argument, "Illegal argument.");

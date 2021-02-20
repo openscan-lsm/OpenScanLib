@@ -51,14 +51,14 @@ static void EnumerateDevicesForImpl(const char *moduleName, OScDev_DeviceImpl *i
 }
 
 
-static OSc_Error *EnumerateDevices(void)
+static OSc_RichError *EnumerateDevices(void)
 {
 	// For now, enumerate once and for all
 	if (g_deviceInstances)
 		return OSc_Error_OK;
 
 	size_t nModules;
-	OSc_Error *err;
+	OSc_RichError *err;
 	if (OSc_CHECK_ERROR(err, OScInternal_DeviceModule_GetCount(&nModules)))
 		return err;
 	char **moduleNames = malloc(sizeof(void *) * nModules);
@@ -100,9 +100,9 @@ static OSc_Error *EnumerateDevices(void)
 }
 
 
-OSc_Error *OSc_GetAllDevices(OSc_Device ***devices, size_t *count)
+OSc_RichError *OSc_GetAllDevices(OSc_Device ***devices, size_t *count)
 {
-	OSc_Error *err;
+	OSc_RichError *err;
 	if (OSc_CHECK_ERROR(err, EnumerateDevices()))
 		return err;
 
@@ -112,7 +112,7 @@ OSc_Error *OSc_GetAllDevices(OSc_Device ***devices, size_t *count)
 }
 
 
-OSc_Error *OSc_GetNumberOfAvailableDevices(size_t *count)
+OSc_RichError *OSc_GetNumberOfAvailableDevices(size_t *count)
 {
 	EnumerateDevices();
 	*count = OScInternal_PtrArray_Size(g_deviceInstances);

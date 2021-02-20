@@ -79,42 +79,42 @@ void OSc_Setting_SetInvalidateCallback(OSc_Setting *setting, OSc_SettingInvalida
 }
 
 
-OSc_Error *OSc_Setting_GetStringValue(OSc_Setting *setting, char *value)
+OSc_RichError *OSc_Setting_GetStringValue(OSc_Setting *setting, char *value)
 {
 	OScDev_Error errCode = setting->impl->GetString(setting, value);
 	return OScInternal_Error_RetrieveRichErrors(errCode);
 }
 
 
-OSc_Error *OSc_Setting_SetStringValue(OSc_Setting *setting, const char *value)
+OSc_RichError *OSc_Setting_SetStringValue(OSc_Setting *setting, const char *value)
 {
 	OScDev_Error errCode = setting->impl->SetString(setting, value);
 	return OScInternal_Error_RetrieveRichErrors(errCode);
 }
 
 
-OSc_Error *OSc_Setting_GetBoolValue(OSc_Setting *setting, bool *value)
+OSc_RichError *OSc_Setting_GetBoolValue(OSc_Setting *setting, bool *value)
 {
 	OScDev_Error errCode = setting->impl->GetBool(setting, value);
 	return OScInternal_Error_RetrieveRichErrors(errCode);
 }
 
 
-OSc_Error *OSc_Setting_SetBoolValue(OSc_Setting *setting, bool value)
+OSc_RichError *OSc_Setting_SetBoolValue(OSc_Setting *setting, bool value)
 {
 	OScDev_Error errCode = setting->impl->SetBool(setting, value);
 	return OScInternal_Error_RetrieveRichErrors(errCode);
 }
 
 
-OSc_Error *OSc_Setting_GetInt32Value(OSc_Setting *setting, int32_t *value)
+OSc_RichError *OSc_Setting_GetInt32Value(OSc_Setting *setting, int32_t *value)
 {
 	OScDev_Error errCode = setting->impl->GetInt32(setting, value);
 	return OScInternal_Error_RetrieveRichErrors(errCode);
 }
 
 
-OSc_Error *OSc_Setting_SetInt32Value(OSc_Setting *setting, int32_t value)
+OSc_RichError *OSc_Setting_SetInt32Value(OSc_Setting *setting, int32_t value)
 {
 	// TODO Should we validate the value here?
 	OScDev_Error errCode = setting->impl->SetInt32(setting, value);
@@ -122,14 +122,14 @@ OSc_Error *OSc_Setting_SetInt32Value(OSc_Setting *setting, int32_t value)
 }
 
 
-OSc_Error *OSc_Setting_GetInt32ContinuousRange(OSc_Setting *setting, int32_t *min, int32_t *max)
+OSc_RichError *OSc_Setting_GetInt32ContinuousRange(OSc_Setting *setting, int32_t *min, int32_t *max)
 {
 	OScDev_Error errCode = setting->impl->GetInt32Range(setting, min, max);
 	return OScInternal_Error_RetrieveRichErrors(errCode);
 }
 
 
-OSc_Error *OSc_Setting_GetInt32DiscreteValues(OSc_Setting *setting, int32_t **values, size_t *count)
+OSc_RichError *OSc_Setting_GetInt32DiscreteValues(OSc_Setting *setting, int32_t **values, size_t *count)
 {
 	if (!setting || !count) {
 		return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Illegal_Argument, "Illegal argument.");
@@ -162,14 +162,14 @@ OSc_Error *OSc_Setting_GetInt32DiscreteValues(OSc_Setting *setting, int32_t **va
 }
 
 
-OSc_Error *OSc_Setting_GetFloat64Value(OSc_Setting *setting, double *value)
+OSc_RichError *OSc_Setting_GetFloat64Value(OSc_Setting *setting, double *value)
 {
 	OScDev_Error errCode = setting->impl->GetFloat64(setting, value);
 	return OScInternal_Error_RetrieveRichErrors(errCode);
 }
 
 
-OSc_Error *OSc_Setting_SetFloat64Value(OSc_Setting *setting, double value)
+OSc_RichError *OSc_Setting_SetFloat64Value(OSc_Setting *setting, double value)
 {
 	// TODO Should we validate the value here?
 	OScDev_Error errCode = setting->impl->SetFloat64(setting, value);
@@ -177,14 +177,14 @@ OSc_Error *OSc_Setting_SetFloat64Value(OSc_Setting *setting, double value)
 }
 
 
-OSc_Error *OSc_Setting_GetFloat64ContinuousRange(OSc_Setting *setting, double *min, double *max)
+OSc_RichError *OSc_Setting_GetFloat64ContinuousRange(OSc_Setting *setting, double *min, double *max)
 {
 	OScDev_Error errCode = setting->impl->GetFloat64Range(setting, min, max);
 	return OScInternal_Error_RetrieveRichErrors(errCode);
 }
 
 
-OSc_Error *OSc_Setting_GetFloat64DiscreteValues(OSc_Setting *setting, double **values, size_t *count)
+OSc_RichError *OSc_Setting_GetFloat64DiscreteValues(OSc_Setting *setting, double **values, size_t *count)
 {
 	if (!setting || !count) {
 		return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Illegal_Argument, "Illegal argument.");
@@ -217,14 +217,14 @@ OSc_Error *OSc_Setting_GetFloat64DiscreteValues(OSc_Setting *setting, double **v
 }
 
 
-OSc_Error *OSc_Setting_GetEnumValue(OSc_Setting *setting, uint32_t *value)
+OSc_RichError *OSc_Setting_GetEnumValue(OSc_Setting *setting, uint32_t *value)
 {
 	OScDev_Error errCode = setting->impl->GetEnum(setting, value);
 	return OScInternal_Error_RetrieveRichErrors(errCode);
 }
 
 
-OSc_Error *OSc_Setting_SetEnumValue(OSc_Setting *setting, uint32_t value)
+OSc_RichError *OSc_Setting_SetEnumValue(OSc_Setting *setting, uint32_t value)
 {
 	// TODO Should we validate the value here?
 	OScDev_Error errCode = setting->impl->SetEnum(setting, value);
@@ -232,21 +232,21 @@ OSc_Error *OSc_Setting_SetEnumValue(OSc_Setting *setting, uint32_t value)
 }
 
 
-OSc_Error *OSc_Setting_GetEnumNumValues(OSc_Setting *setting, uint32_t *count)
+OSc_RichError *OSc_Setting_GetEnumNumValues(OSc_Setting *setting, uint32_t *count)
 {
 	OScDev_Error errCode = setting->impl->GetEnumNumValues(setting, count);
 	return OScInternal_Error_RetrieveRichErrors(errCode);
 }
 
 
-OSc_Error *OSc_Setting_GetEnumNameForValue(OSc_Setting *setting, uint32_t value, char *name)
+OSc_RichError *OSc_Setting_GetEnumNameForValue(OSc_Setting *setting, uint32_t value, char *name)
 {
 	OScDev_Error errCode = setting->impl->GetEnumNameForValue(setting, value, name);
 	return OScInternal_Error_RetrieveRichErrors(errCode);
 }
 
 
-OSc_Error *OSc_Setting_GetEnumValueForName(OSc_Setting *setting, uint32_t *value, const char *name)
+OSc_RichError *OSc_Setting_GetEnumValueForName(OSc_Setting *setting, uint32_t *value, const char *name)
 {
 	OScDev_Error errCode = setting->impl->GetEnumValueForName(setting, value, name);
 	return OScInternal_Error_RetrieveRichErrors(errCode);
@@ -605,14 +605,14 @@ void OScInternal_Setting_Destroy(OSc_Setting *setting)
 }
 
 
-OSc_Error *OSc_Setting_NumericConstraintRange(OSc_Setting *setting, OSc_ValueConstraint *constraintType)
+OSc_RichError *OSc_Setting_NumericConstraintRange(OSc_Setting *setting, OSc_ValueConstraint *constraintType)
 {
 	*constraintType = OSc_ValueConstraint_Continuous;
 	return OSc_Error_OK;
 }
 
 
-OSc_Error *OSc_Setting_NumericConstraintDiscreteValues(OSc_Setting *setting, OSc_ValueConstraint *constraintType)
+OSc_RichError *OSc_Setting_NumericConstraintDiscreteValues(OSc_Setting *setting, OSc_ValueConstraint *constraintType)
 {
 	*constraintType = OSc_ValueConstraint_Discrete;
 	return OSc_Error_OK;

@@ -20,7 +20,7 @@ void OScInternal_FileList_Free(char **files)
 
 // Finds all fils under 'path' that have 'suffix'.
 // Allocates array and element strings and places into 'files'.
-OSc_Error *OScInternal_FileList_Create(char ***files, const char *path, const char *suffix)
+OSc_RichError *OScInternal_FileList_Create(char ***files, const char *path, const char *suffix)
 {
 	// Windows implementation for now
 
@@ -82,7 +82,7 @@ error:
 }
 
 
-OSc_Error *OScInternal_Module_Load(OScInternal_Module *module, const char *path)
+OSc_RichError *OScInternal_Module_Load(OScInternal_Module *module, const char *path)
 {
 	*module = LoadLibraryA(path);
 	if (*module == NULL)
@@ -91,7 +91,7 @@ OSc_Error *OScInternal_Module_Load(OScInternal_Module *module, const char *path)
 }
 
 
-OSc_Error *OScInternal_Module_GetEntryPoint(OScInternal_Module module, const char *funcName, void **func)
+OSc_RichError *OScInternal_Module_GetEntryPoint(OScInternal_Module module, const char *funcName, void **func)
 {
 	*func = GetProcAddress(module, funcName);
 	if (!*func)
