@@ -46,7 +46,6 @@ char* OScInternal_Error_ABIDomain() {
 	return domainName;
 }
 
-// APIs for MM
 const char* OSc_Error_GetMessage(OSc_RichError *error) {
 	return RERR_Error_GetMessage(error);
 }
