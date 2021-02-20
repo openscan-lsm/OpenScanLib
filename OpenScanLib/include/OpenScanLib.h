@@ -118,7 +118,7 @@ enum
 };
 
 typedef struct RERR_Error OSc_RichError;
-#define OSc_Error_OK RERR_NO_ERROR
+#define OSc_Error_OK NULL
 #define OScDev_Error_OK (int32_t)0
 
 // APIs for MM
