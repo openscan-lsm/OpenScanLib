@@ -52,7 +52,7 @@ char *OScInternal_Error_LegacyCodeDomain()
 {
 	static char *domainName = NULL;
 	if (domainName == NULL) {
-		domainName = "LegacyDeviceErrorDomain";
+		domainName = "OpenScan legacy device module";
 		RERR_Domain_Register(domainName, RERR_CodeFormat_I32);
 	}
 	return domainName;
