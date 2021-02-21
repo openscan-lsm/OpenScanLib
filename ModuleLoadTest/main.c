@@ -6,7 +6,6 @@
 #include <Windows.h>
 #endif
 
-#include <RichErrors/Err2Code.h>
 
 /*
  * Hint: Set the Visual Studio project property Debugging > Working Directory
