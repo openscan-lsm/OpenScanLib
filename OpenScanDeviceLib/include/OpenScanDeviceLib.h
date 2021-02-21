@@ -334,7 +334,10 @@ struct OScDevInternal_Interface
 
 	OScDev_RichError *(*Error_RegisterCodeDomain)(OScDev_ModuleImpl *modImpl, const char *domainName, OScDev_ErrorCodeFormat codeFormat);
 	OScDev_Error (*Error_ReturnAsCode)(OScDev_ModuleImpl *modImpl, OScDev_RichError *error);
-	OScDev_RichError *(*Error_Create)(OScDev_ModuleImpl *modImpl, const char *domainName, OScDev_Error code, const char *message);
+	OScDev_RichError *(*Error_Create)(OScDev_ModuleImpl *modImpl, const char *message);
+	OScDev_RichError *(*Error_CreateWithCode)(OScDev_ModuleImpl *modImpl, const char *domainName, OScDev_Error code, const char *message);
+	OScDev_RichError *(*Error_Wrap)(OScDev_ModuleImpl *modImpl, OScDev_RichError *cause, const char *message);
+	OScDev_RichError *(*Error_WrapWithCode)(OScDev_ModuleImpl *modImpl, OScDev_RichError *cause, const char *domainName, int32_t code, const char *message);
 
 	OScDev_PtrArray *(*PtrArray_Create)(OScDev_ModuleImpl *modImpl);
 	OScDev_PtrArray *(*PtrArray_CreateFromNullTerminated)(OScDev_ModuleImpl *modImpl, void *const *nullTerminatedArray);

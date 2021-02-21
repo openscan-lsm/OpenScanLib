@@ -53,6 +53,9 @@
     <ClCompile Include="src\Error.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\InternalErrors.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\OpenScanLib.h">
@@ -65,6 +68,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Module.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\InternalErrors.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -86,14 +86,14 @@ OSc_RichError *OSc_LSM_SetClockDevice(OSc_LSM *lsm, OSc_Device *clockDevice)
 {
 	// TODO Should allow null device
 	if (!lsm || !clockDevice)
-		return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Illegal_Argument, "Illegal argument.");
+		return OScInternal_Error_CreateWithCode(OScInternal_Error_OScDomain(), OSc_Error_Illegal_Argument, "Illegal argument.");
 
 	OSc_RichError *err;
 	bool isAssociated = false;
 	if (OSc_CHECK_ERROR(err, OScInternal_LSM_Is_Device_Associated(lsm, clockDevice, &isAssociated)))
 		return err;
 	if (!isAssociated)
-		return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Device_Not_Opened_For_LSM, "Device not opened for LSM.");
+		return OScInternal_Error_CreateWithCode(OScInternal_Error_OScDomain(), OSc_Error_Device_Not_Opened_For_LSM, "Device not opened for LSM.");
 
 	lsm->clockDevice = clockDevice;
 	return OSc_Error_OK;
@@ -104,14 +104,14 @@ OSc_RichError *OSc_LSM_SetScannerDevice(OSc_LSM *lsm, OSc_Device *scannerDevice)
 {
 	// TODO Should allow null device
 	if (!lsm || !scannerDevice)
-		return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Illegal_Argument, "Illegal argument.");
+		return OScInternal_Error_CreateWithCode(OScInternal_Error_OScDomain(), OSc_Error_Illegal_Argument, "Illegal argument.");
 
 	OSc_RichError *err;
 	bool isAssociated = false;
 	if (OSc_CHECK_ERROR(err, OScInternal_LSM_Is_Device_Associated(lsm, scannerDevice, &isAssociated)))
 		return err;
 	if (!isAssociated)
-		return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Device_Not_Opened_For_LSM, "Device not opened for LSM.");
+		return OScInternal_Error_CreateWithCode(OScInternal_Error_OScDomain(), OSc_Error_Device_Not_Opened_For_LSM, "Device not opened for LSM.");
 
 	lsm->scannerDevice = scannerDevice;
 	return OSc_Error_OK;
@@ -122,14 +122,14 @@ OSc_RichError *OSc_LSM_SetDetectorDevice(OSc_LSM *lsm, OSc_Device *detectorDevic
 {
 	// TODO Should allow null device
 	if (!lsm || !detectorDevice)
-		return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Illegal_Argument, "Illegal argument.");
+		return OScInternal_Error_CreateWithCode(OScInternal_Error_OScDomain(), OSc_Error_Illegal_Argument, "Illegal argument.");
 
 	OSc_RichError *err;
 	bool isAssociated = false;
 	if (OSc_CHECK_ERROR(err, OScInternal_LSM_Is_Device_Associated(lsm, detectorDevice, &isAssociated)))
 		return err;
 	if (!isAssociated)
-		return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Device_Not_Opened_For_LSM, "Device not opened for LSM.");
+		return OScInternal_Error_CreateWithCode(OScInternal_Error_OScDomain(), OSc_Error_Device_Not_Opened_For_LSM, "Device not opened for LSM.");
 
 	lsm->detectorDevice = detectorDevice;
 	return OSc_Error_OK;
@@ -143,7 +143,7 @@ OSc_RichError *OScInternal_LSM_Associate_Device(OSc_LSM *lsm, OSc_Device *device
 	if (OSc_CHECK_ERROR(err, OScInternal_LSM_Is_Device_Associated(lsm, device, &isAssociated)))
 		return err;
 	if (isAssociated)
-		return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Device_Already_Open, "Device already open.");
+		return OScInternal_Error_CreateWithCode(OScInternal_Error_OScDomain(), OSc_Error_Device_Already_Open, "Device already open.");
 
 	if (!lsm->associatedDevices)
 	{
@@ -177,7 +177,7 @@ OSc_RichError *OScInternal_LSM_Dissociate_Device(OSc_LSM *lsm, OSc_Device *devic
 	if (!found)
 	{
 		free(newList);
-		return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Device_Not_Opened_For_LSM, "Device not opened for LSM.");
+		return OScInternal_Error_CreateWithCode(OScInternal_Error_OScDomain(), OSc_Error_Device_Not_Opened_For_LSM, "Device not opened for LSM.");
 	}
 
 	free(lsm->associatedDevices);

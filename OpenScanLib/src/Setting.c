@@ -132,7 +132,7 @@ OSc_RichError *OSc_Setting_GetInt32ContinuousRange(OSc_Setting *setting, int32_t
 OSc_RichError *OSc_Setting_GetInt32DiscreteValues(OSc_Setting *setting, int32_t **values, size_t *count)
 {
 	if (!setting || !count) {
-		return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Illegal_Argument, "Illegal argument.");
+		return OScInternal_Error_CreateWithCode(OScInternal_Error_OScDomain(), OSc_Error_Illegal_Argument, "Illegal argument.");
 	}
 
 	if (setting->i32DiscreteValues == NULL) {
@@ -143,7 +143,7 @@ OSc_RichError *OSc_Setting_GetInt32DiscreteValues(OSc_Setting *setting, int32_t 
 			return OScInternal_Error_RetrieveRichErrors(errCode);
 		}
 		else {
-			return OScInternal_Error_Create(OScInternal_Error_LegacyCodeDomain(), errCode, "Error from ABI.");
+			return OScInternal_Error_CreateWithCode(OScInternal_Error_LegacyCodeDomain(), errCode, "Error from ABI.");
 		}
 		if (values) {
 			size_t count = OScInternal_NumArray_Size(values);
@@ -187,7 +187,7 @@ OSc_RichError *OSc_Setting_GetFloat64ContinuousRange(OSc_Setting *setting, doubl
 OSc_RichError *OSc_Setting_GetFloat64DiscreteValues(OSc_Setting *setting, double **values, size_t *count)
 {
 	if (!setting || !count) {
-		return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Illegal_Argument, "Illegal argument.");
+		return OScInternal_Error_CreateWithCode(OScInternal_Error_OScDomain(), OSc_Error_Illegal_Argument, "Illegal argument.");
 	}
 
 	if (setting->f64DiscreteValues == NULL) {
@@ -198,7 +198,7 @@ OSc_RichError *OSc_Setting_GetFloat64DiscreteValues(OSc_Setting *setting, double
 			return OScInternal_Error_RetrieveRichErrors(errCode);
 		}
 		else {
-			return OScInternal_Error_Create(OScInternal_Error_LegacyCodeDomain(), errCode, "Error from ABI.");
+			return OScInternal_Error_CreateWithCode(OScInternal_Error_LegacyCodeDomain(), errCode, "Error from ABI.");
 		}
 		if (values) {
 			size_t count = OScInternal_NumArray_Size(values);
@@ -590,6 +590,7 @@ OSc_RichError *OScInternal_Setting_Create(OScDev_ModuleImpl *modImpl, OSc_Settin
 		impl->Release = DefaultRelease;
 
 	*setting = calloc(1, sizeof(OSc_Setting));
+	(*setting)->modImpl = modImpl;
 	(*setting)->impl = impl;
 	(*setting)->implData = data;
 	(*setting)->valueType = valueType;

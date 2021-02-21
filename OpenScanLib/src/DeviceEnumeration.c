@@ -70,7 +70,7 @@ static OSc_RichError *EnumerateDevices(void)
 
 	g_deviceInstances = OScInternal_PtrArray_Create();
 	if (!g_deviceInstances) {
-		return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Unknown, "Error unknown."); // Out of memory
+		return OScInternal_Error_CreateWithCode(OScInternal_Error_OScDomain(), OSc_Error_Unknown, "Error unknown."); // Out of memory
 	}
 
 	for (size_t i = 0; i < nModules; ++i)

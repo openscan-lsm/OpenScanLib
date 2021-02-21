@@ -27,9 +27,27 @@ static OScDev_Error Error_ReturnAsCode(OScDev_ModuleImpl *modImpl, OScDev_RichEr
 }
 
 
-static OScDev_RichError *Error_Create(OScDev_ModuleImpl *modImpl, const char *domainName, OScDev_Error code, const char *message) 
+static OScDev_RichError *Error_Create(OScDev_ModuleImpl *modImpl, const char *message) 
 {
-	return OScInternal_Error_Create(domainName, code, message);
+	return OScInternal_Error_Create(message);
+}
+
+
+static OScDev_RichError *Error_CreateWithCode(OScDev_ModuleImpl *modImpl, const char *domainName, OScDev_Error code, const char *message) 
+{
+	return OScInternal_Error_CreateWithCode(domainName, code, message);
+}
+
+
+static OScDev_RichError *Error_Wrap(OScDev_ModuleImpl *modImpl, OScDev_RichError*cause, const char *message)
+{
+	return OScInternal_Error_Wrap(cause, message);
+}
+
+
+static OScDev_RichError *Error_WrapWithCode(OScDev_ModuleImpl *modImpl, OSc_RichError *cause, const char *domainName, int32_t code, const char *message) 
+{
+	return OScInternal_Error_WrapWithCode(cause, domainName, code, message);
 }
 
 
@@ -279,6 +297,9 @@ struct OScDevInternal_Interface DeviceInterfaceFunctionTable = {
 	.Error_RegisterCodeDomain = Error_RegisterCodeDomain,
 	.Error_ReturnAsCode = Error_ReturnAsCode,
 	.Error_Create = Error_Create,
+	.Error_CreateWithCode = Error_CreateWithCode,
+	.Error_Wrap = Error_Wrap,
+	.Error_WrapWithCode = Error_WrapWithCode,
 	.PtrArray_Create = PtrArray_Create,
 	.PtrArray_CreateFromNullTerminated = PtrArray_CreateFromNullTerminated,
 	.PtrArray_Destroy = PtrArray_Destroy,

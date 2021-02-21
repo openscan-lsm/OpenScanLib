@@ -78,7 +78,7 @@ OSc_RichError *OScInternal_FileList_Create(char ***files, const char *path, cons
 error:
 	OScInternal_FileList_Free(*files);
 	*files = NULL;
-	return OScInternal_Error_Create(OScInternal_Error_OScDomain(), err, "Failed to list files.");
+	return OScInternal_Error_CreateWithCode(OScInternal_Error_OScDomain(), err, "Failed to list files.");
 }
 
 
@@ -86,7 +86,7 @@ OSc_RichError *OScInternal_Module_Load(OScInternal_Module *module, const char *p
 {
 	*module = LoadLibraryA(path);
 	if (*module == NULL)
-		return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Unknown, "Error unknown!");
+		return OScInternal_Error_CreateWithCode(OScInternal_Error_OScDomain(), OSc_Error_Unknown, "Error unknown!");
 	return OSc_Error_OK;
 }
 
@@ -95,6 +95,6 @@ OSc_RichError *OScInternal_Module_GetEntryPoint(OScInternal_Module module, const
 {
 	*func = GetProcAddress(module, funcName);
 	if (!*func)
-		return OScInternal_Error_Create(OScInternal_Error_OScDomain(), OSc_Error_Unknown, "Error unknown!");
+		return OScInternal_Error_CreateWithCode(OScInternal_Error_OScDomain(), OSc_Error_Unknown, "Error unknown!");
 	return OSc_Error_OK;
 }

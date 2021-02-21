@@ -25,15 +25,27 @@ OSc_RichError *OScInternal_Error_RetrieveRichErrors(int32_t code)
 }
 
 
-OSc_RichError *OScInternal_Error_Wrap(OSc_RichError *cause, const char *domainName, int32_t code, const char *message) 
+OSc_RichError* OScInternal_Error_Create(const char* message)
 {
-	return RERR_Error_WrapWithCode(cause, domainName, code, message);
+	return RERR_Error_Create(message);
 }
 
 
-OSc_RichError *OScInternal_Error_Create(const char *domainName, int32_t code, const char *message) 
+OSc_RichError* OScInternal_Error_CreateWithCode(const char* domainName, int32_t code, const char* message)
 {
 	return RERR_Error_CreateWithCode(domainName, code, message);
+}
+
+
+OSc_RichError *OScInternal_Error_Wrap(OSc_RichError *cause, const char *message) 
+{
+	return RERR_Error_Wrap(cause, message);
+}
+
+
+OSc_RichError *OScInternal_Error_WrapWithCode(OSc_RichError *cause, const char *domainName, int32_t code, const char *message) 
+{
+	return RERR_Error_WrapWithCode(cause, domainName, code, message);
 }
 
 
