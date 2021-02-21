@@ -109,7 +109,7 @@ OSc_RichError *OScInternal_LSM_Associate_Device(OSc_LSM *lsm, OSc_Device *device
 OSc_RichError *OScInternal_LSM_Dissociate_Device(OSc_LSM *lsm, OSc_Device *device);
 OSc_RichError *OScInternal_LSM_Is_Device_Associated(OSc_LSM *lsm, OSc_Device *device, bool *isAssociated);
 
-OScDev_Error OScInternal_Device_Create(OSc_Device **device, OScDev_DeviceImpl *impl, void *data);
+OScDev_Error OScInternal_Device_Create(OScDev_ModuleImpl *modImpl, OSc_Device **device, OScDev_DeviceImpl *impl, void *data);
 OSc_RichError *OScInternal_Device_Destroy(OSc_Device *device);
 bool OScInternal_Device_Log(OSc_Device *device, OSc_LogLevel level, const char *message);
 void *OScInternal_Device_GetImplData(OSc_Device *device);

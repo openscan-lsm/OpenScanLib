@@ -199,9 +199,10 @@ OSc_RichError *OSc_Device_GetSettings(OSc_Device *device, OSc_Setting ***setting
 }
 
 
-OScDev_Error OScInternal_Device_Create(OSc_Device **device, OScDev_DeviceImpl *impl, void *data)
+OScDev_Error OScInternal_Device_Create(OScDev_ModuleImpl *modImpl, OSc_Device **device, OScDev_DeviceImpl *impl, void *data)
 {
 	*device = calloc(1, sizeof(OSc_Device));
+	(*device)->impl = modImpl;
 	(*device)->impl = impl;
 	(*device)->implData = data;
 	return OScInternal_LegacyError_OK;

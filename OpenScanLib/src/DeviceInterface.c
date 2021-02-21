@@ -150,7 +150,7 @@ static void NumRange_AppendDiscrete(OScDev_ModuleImpl *modImpl, OScDev_NumRange 
 // TODO: Replace with direct provision of impl and data (once we have DeviceLoaders)
 static OScDev_Error Device_Create(OScDev_ModuleImpl *modImpl, OScDev_Device **device, OScDev_DeviceImpl *impl, void *data)
 {
-	return OScInternal_Device_Create(device, impl, data);
+	return OScInternal_Device_Create(modImpl, device, impl, data);
 }
 
 
