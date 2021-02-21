@@ -376,25 +376,25 @@ OSc_RichError *OSc_AcqTemplate_Create(OSc_AcqTemplate **tmpl, OSc_LSM *lsm)
 	OScDev_Error *err;
 	OSc_Setting *setting;
 
-	err = OScInternal_Setting_Create(&setting, "PixelRateHz",
+	err = OScInternal_Setting_Create(NULL, &setting, "PixelRateHz",
 		OSc_ValueType_Float64, &PixelRateSettingImpl, *tmpl);
 	if (err)
 		goto error;
 	(*tmpl)->pixelRateSetting = setting;
 
-	err = OScInternal_Setting_Create(&setting, "Resolution",
+	err = OScInternal_Setting_Create(NULL, &setting, "Resolution",
 		OSc_ValueType_Int32, &ResolutionSettingImpl, *tmpl);
 	if (err)
 		goto error;
 	(*tmpl)->resolutionSetting = setting;
 
-	err = OScInternal_Setting_Create(&setting, "ZoomFactor",
+	err = OScInternal_Setting_Create(NULL, &setting, "ZoomFactor",
 		OSc_ValueType_Float64, &ZoomSettingImpl, *tmpl);
 	if (err)
 		goto error;
 	(*tmpl)->zoomFactorSetting = setting;
 
-	err = OScInternal_Setting_Create(&setting, "Magnification",
+	err = OScInternal_Setting_Create(NULL, &setting, "Magnification",
 		OSc_ValueType_Float64, &MagnificationSettingImpl, *tmpl);
 	if (err)
 		goto error;

@@ -542,7 +542,7 @@ static void DefaultRelease(OSc_Setting *setting)
 }
 
 
-OSc_RichError *OScInternal_Setting_Create(OSc_Setting **setting, const char *name, OSc_ValueType valueType,
+OSc_RichError *OScInternal_Setting_Create(OScDev_ModuleImpl *modImpl, OSc_Setting **setting, const char *name, OSc_ValueType valueType,
 	OScDev_SettingImpl *impl, void *data)
 {
 	// TODO We should not modify 'impl' which belongs to the device module.

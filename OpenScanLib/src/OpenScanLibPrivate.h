@@ -127,7 +127,7 @@ void OScInternal_Device_Stop(OSc_Device *device);
 void OScInternal_Device_Wait(OSc_Device *device);
 OSc_RichError *OScInternal_Device_IsRunning(OSc_Device *device, bool *isRunning);
 
-OSc_RichError *OScInternal_Setting_Create(OSc_Setting **setting, const char *name, OSc_ValueType valueType, OScDev_SettingImpl *impl, void *data);
+OSc_RichError *OScInternal_Setting_Create(OScDev_ModuleImpl *modImpl, OSc_Setting **setting, const char *name, OSc_ValueType valueType, OScDev_SettingImpl *impl, void *data);
 void OScInternal_Setting_Destroy(OSc_Setting *setting);
 void *OScInternal_Setting_GetImplData(OSc_Setting *setting);
 void OScInternal_Setting_Invalidate(OSc_Setting *setting);
