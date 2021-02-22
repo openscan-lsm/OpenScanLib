@@ -70,8 +70,8 @@
     <ClInclude Include="src\Module.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\InternalErrors.h">
+<!--     <ClInclude Include="src\InternalErrors.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
+    </ClInclude> -->
   </ItemGroup>
 </Project>
