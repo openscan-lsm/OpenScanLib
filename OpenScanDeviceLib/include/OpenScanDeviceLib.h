@@ -938,12 +938,12 @@ OScDev_API OScDev_RichError *OScDev_Error_CreateWithCode(const char *domainName,
 	return OScDevInternal_FunctionTable->Error_CreateWithCode(&OScDevInternal_TheModuleImpl, domainName, code, message);
 }
 
-OScDev_API OScDev_RichError *OScDev_Error_Wrap(OScDev_RichError *cause, const char* message) {
+OScDev_API OScDev_RichError *OScDev_Error_Wrap(OScDev_RichError *cause, const char *message) {
 	return OScDevInternal_FunctionTable->Error_Wrap(&OScDevInternal_TheModuleImpl, message);
 }
 
 OScDev_API OScDev_RichError *OScDev_Error_WrapWithCode(OScDev_RichError *cause, const char *domainName, int32_t code, const char *message) {
-	return OScDevInternal_FunctionTable->Error_WrapWithCode(&OScDevInternal_TheModuleImpl, domainName, code, message);
+	return OScDevInternal_FunctionTable->Error_WrapWithCode(&OScDevInternal_TheModuleImpl, cause, domainName, code, message);
 }
 
 

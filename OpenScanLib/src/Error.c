@@ -36,7 +36,7 @@ OSc_RichError *OScInternal_Error_RetrieveFromDevice(OSc_Device *device, int32_t 
 }
 
 
-OSc_RichError* OScInternal_Error_RetrieveFromSetting(OSc_Setting* setting, int32_t code)
+OSc_RichError *OScInternal_Error_RetrieveFromSetting(OSc_Setting *setting, int32_t code)
 {
 	if (OScInternal_Setting_SupportsRichErrors(setting)) {
 		return OScInternal_Error_RetrieveRichErrors(code);
@@ -47,7 +47,7 @@ OSc_RichError* OScInternal_Error_RetrieveFromSetting(OSc_Setting* setting, int32
 }
 
 
-OSc_RichError* OScInternal_Error_RetrieveFromModule(OScDev_ModuleImpl *modImpl, int32_t code)
+OSc_RichError *OScInternal_Error_RetrieveFromModule(OScDev_ModuleImpl *modImpl, int32_t code)
 {
 	if (OScInternal_Module_SupportsRichErrors(modImpl)) {
 		return OScInternal_Error_RetrieveRichErrors(code);
@@ -58,13 +58,13 @@ OSc_RichError* OScInternal_Error_RetrieveFromModule(OScDev_ModuleImpl *modImpl, 
 }
 
 
-OSc_RichError* OScInternal_Error_Create(const char* message)
+OSc_RichError *OScInternal_Error_Create(const char *message)
 {
 	return RERR_Error_Create(message);
 }
 
 
-OSc_RichError* OScInternal_Error_CreateWithCode(const char* domainName, int32_t code, const char* message)
+OSc_RichError *OScInternal_Error_CreateWithCode(const char *domainName, int32_t code, const char *message)
 {
 	return RERR_Error_CreateWithCode(domainName, code, message);
 }
