@@ -174,7 +174,7 @@ void OSc_Acquisition_GetROI(OSc_Acquisition *acq, uint32_t *xOffset, uint32_t *y
 OSc_RichError *OSc_Acquisition_GetNumberOfChannels(OSc_Acquisition *acq, uint32_t *numberOfChannels)
 {
 	if (!acq || !numberOfChannels)
-		return OScInternal_Error_CreateWithCode(OScInternal_Error_OScDomain(), OSc_Error_Illegal_Argument, "Illegal argument.");
+		return OScInternal_Error_IllegalArgument();
 	*numberOfChannels = acq->numberOfChannels;
 	return OSc_Error_OK;
 }
@@ -183,7 +183,7 @@ OSc_RichError *OSc_Acquisition_GetNumberOfChannels(OSc_Acquisition *acq, uint32_
 OSc_RichError *OSc_Acquisition_GetBytesPerSample(OSc_Acquisition *acq, uint32_t *bytesPerSample)
 {
 	if (!acq || !bytesPerSample)
-		return OScInternal_Error_CreateWithCode(OScInternal_Error_OScDomain(), OSc_Error_Illegal_Argument, "Illegal argument.");
+		return OScInternal_Error_IllegalArgument();
 	*bytesPerSample = acq->bytesPerSample;
 	return OSc_Error_OK;
 }

@@ -49,17 +49,6 @@ OSc_RichError *OScInternal_Error_WrapWithCode(OSc_RichError *cause, const char *
 }
 
 
-char *OScInternal_Error_OScDomain() 
-{
-	static char *domainName = NULL;
-	if (domainName == NULL) {
-		domainName = "OpenScan";
-		RERR_Domain_Register(domainName, RERR_CodeFormat_I32);
-	}
-	return domainName;
-}
-
-
 char *OScInternal_Error_LegacyCodeDomain() 
 {
 	static char *domainName = NULL;

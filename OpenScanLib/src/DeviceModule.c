@@ -35,7 +35,7 @@ static OSc_RichError *LoadAdapter(const char *path, const char *name)
 	for (size_t i = 0; i < g_loadedAdapterCount; ++i)
 	{
 		if (strcmp(g_loadedAdapters[i].name, name) == 0)
-			return OScInternal_Error_CreateWithCode(OScInternal_Error_OScDomain(), OSc_Error_Device_Module_Already_Exists, "Device module already exists.");
+			return OScInternal_Error_DeviceModuleAlreadyExists();
 	}
 
 	OScInternal_Module module;
@@ -163,7 +163,7 @@ OSc_RichError *OScInternal_DeviceModule_GetDeviceImpls(const char *module, OScIn
 		}
 	}
 	if (!mod)
-		return OScInternal_Error_CreateWithCode(OScInternal_Error_OScDomain(), OSc_Error_No_Such_Device_Module, "No such device module.");
+		return OScInternal_Error_NoSuchDeviceModule();
 
 	OScDevInternal_EntryPointPtr entryPoint;
 	OSc_RichError *err;
@@ -177,7 +177,7 @@ OSc_RichError *OScInternal_DeviceModule_GetDeviceImpls(const char *module, OScIn
 	if (dpiVersion != OScDevInternal_ABI_VERSION)
 	{
 		// TODO We could support non-exact version matches.
-		return OScInternal_Error_CreateWithCode(OScInternal_Error_OScDomain(), OSc_Error_Unknown, "Error unknown.");
+		return OScInternal_Error_Unknown();
 	}
 
 	*funcTablePtr = &DeviceInterfaceFunctionTable;

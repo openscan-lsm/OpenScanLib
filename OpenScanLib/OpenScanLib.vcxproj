@@ -22,6 +22,7 @@
     <ClCompile Include="src\AcqTemplate.c" />
     <ClCompile Include="src\Array.c" />
     <ClCompile Include="src\DeviceInterface.c" />
+    <ClCompile Include="src\InternalErrors.c" />
     <ClCompile Include="src\Module.c" />
     <ClCompile Include="src\Acquisition.c" />
     <ClCompile Include="src\Device.c" />
@@ -32,14 +33,13 @@
     <ClCompile Include="src\Setting.c" />
     <ClCompile Include="src\Version.c" />
     <ClCompile Include="src\Error.c" />
-    <!-- <ClCompile Include="src\InternalErrors.c" /> -->
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\OpenScanLib.h" />
     <ClInclude Include="src\DeviceInterface.h" />
+    <ClInclude Include="src\InternalErrors.h" />
     <ClInclude Include="src\Module.h" />
     <ClInclude Include="src\OpenScanLibPrivate.h" />
-    <!-- <ClCompile Include="src\InternalErrors.h" /> -->
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{E10D1CA0-4F18-447B-8A08-966FA0887B36}</ProjectGuid>

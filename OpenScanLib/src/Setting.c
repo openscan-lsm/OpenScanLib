@@ -132,7 +132,7 @@ OSc_RichError *OSc_Setting_GetInt32ContinuousRange(OSc_Setting *setting, int32_t
 OSc_RichError *OSc_Setting_GetInt32DiscreteValues(OSc_Setting *setting, int32_t **values, size_t *count)
 {
 	if (!setting || !count) {
-		return OScInternal_Error_CreateWithCode(OScInternal_Error_OScDomain(), OSc_Error_Illegal_Argument, "Illegal argument.");
+		return OScInternal_Error_IllegalArgument();
 	}
 
 	if (setting->i32DiscreteValues == NULL) {
@@ -187,7 +187,7 @@ OSc_RichError *OSc_Setting_GetFloat64ContinuousRange(OSc_Setting *setting, doubl
 OSc_RichError *OSc_Setting_GetFloat64DiscreteValues(OSc_Setting *setting, double **values, size_t *count)
 {
 	if (!setting || !count) {
-		return OScInternal_Error_CreateWithCode(OScInternal_Error_OScDomain(), OSc_Error_Illegal_Argument, "Illegal argument.");
+		return OScInternal_Error_IllegalArgument();
 	}
 
 	if (setting->f64DiscreteValues == NULL) {
