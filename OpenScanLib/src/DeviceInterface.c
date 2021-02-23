@@ -181,7 +181,7 @@ static void *Device_GetImplData(OScDev_ModuleImpl *modImpl, OScDev_Device *devic
 // TODO: Replace with a SettingsCreateContext-based method
 static OScDev_Error Setting_Create(OScDev_ModuleImpl *modImpl, OScDev_Setting **setting, const char *name, OScDev_ValueType valueType, OScDev_SettingImpl *impl, void *data)
 {
-	return OScInternal_Setting_Create(modImpl, setting, name, valueType, impl, data);
+	return OScInternal_Error_ReturnAsCode(OScInternal_Setting_Create(modImpl, setting, name, valueType, impl, data));
 }
 
 

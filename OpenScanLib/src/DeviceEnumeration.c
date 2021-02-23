@@ -1,4 +1,5 @@
 #include "OpenScanLibPrivate.h"
+#include "InternalErrors.h"
 
 #include <stdio.h>
 #include <stdlib.h>

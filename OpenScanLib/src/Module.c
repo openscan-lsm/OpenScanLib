@@ -1,4 +1,5 @@
 #include "Module.h"
+#include "InternalErrors.h"
 
 #include <string.h>
 

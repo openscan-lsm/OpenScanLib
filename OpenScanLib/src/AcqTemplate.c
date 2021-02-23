@@ -1,4 +1,5 @@
 #include "OpenScanLibPrivate.h"
+#include "InternalErrors.h"
 
 #include <math.h>
 
@@ -363,7 +364,7 @@ OSc_RichError *OSc_AcqTemplate_Create(OSc_AcqTemplate **tmpl, OSc_LSM *lsm)
 	(*tmpl)->lsm = lsm;
 	(*tmpl)->numberOfFrames = UINT32_MAX; // Infinite
 
-	OScDev_Error *err;
+	OSc_RichError *err;
 	OSc_Setting *setting;
 
 	err = OScInternal_Setting_Create(NULL, &setting, "PixelRateHz",

@@ -1,5 +1,6 @@
 #include "DeviceInterface.h"
 #include "Module.h"
+#include "InternalErrors.h"
 
 #define OScDevInternal_BUILDING_OPENSCANLIB 1
 #include "OpenScanDeviceLibPrivate.h"
@@ -185,21 +186,13 @@ OSc_RichError *OScInternal_DeviceModule_GetDeviceImpls(const char *module, OScIn
 	if (modImpl->Open)
 	{
 		errCode = modImpl->Open();
-		if (modImpl->supportsRichErrors) {
-			return OScInternal_Error_RetrieveRichErrors(errCode);
-		}
-		else {
-			return OScInternal_Error_CreateWithCode(OScInternal_Error_LegacyCodeDomain(), errCode, "Error from ABI.");
-		}
+		if (errCode)
+			return OScInternal_Error_RetrieveFromModule(modImpl, errCode);
 	}
 	// TODO We need to also call Close() when shutting down
 
 	errCode = modImpl->GetDeviceImpls(deviceImpls);
-	if (modImpl->supportsRichErrors) {
-		return OScInternal_Error_RetrieveRichErrors(errCode);
-	}
-	else {
-		return OScInternal_Error_CreateWithCode(OScInternal_Error_LegacyCodeDomain(), errCode, "Error from ABI.");
-	}
+	if (errCode)
+		return OScInternal_Error_RetrieveFromModule(modImpl, errCode);
 	return OSc_Error_OK;
 }
