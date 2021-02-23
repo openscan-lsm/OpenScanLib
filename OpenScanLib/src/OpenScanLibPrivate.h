@@ -11,25 +11,23 @@ typedef struct RERR_Error OScInternal_RichError;
 #define OScInternal_LegacyError_OK (OScDev_Error)0
 
 // APIs for OpenScanLib
-OSc_RichError* OScInternal_Error_RetrieveFromDevice(OSc_Device* device, int32_t code);
+OSc_RichError *OScInternal_Error_RetrieveFromDevice(OSc_Device *device, int32_t code);
 
-OSc_RichError* OScInternal_Error_RetrieveFromSetting(OSc_Setting* setting, int32_t code);
+OSc_RichError *OScInternal_Error_RetrieveFromSetting(OSc_Setting *setting, int32_t code);
 
-OSc_RichError* OScInternal_Error_RetrieveFromModule(OScDev_ModuleImpl *modImpl, int32_t code);
+OSc_RichError *OScInternal_Error_RetrieveFromModule(OScDev_ModuleImpl *modImpl, int32_t code);
 
 OSc_RichError *OScInternal_Error_Create(const char *message);
 
 OSc_RichError *OScInternal_Error_CreateWithCode(const char *domainName, int32_t code, const char *message);
 
-OSc_RichError* OScInternal_Error_Wrap(OSc_RichError* cause, const char* message);
+OSc_RichError *OScInternal_Error_Wrap(OSc_RichError *cause, const char *message);
 
-OSc_RichError* OScInternal_Error_WrapWithCode(OSc_RichError* cause, const char* domainName, int32_t code, const char* message);
+OSc_RichError *OScInternal_Error_WrapWithCode(OSc_RichError *cause, const char *domainName, int32_t code, const char *message);
 
 OScDev_Error OScInternal_Error_ReturnAsCode(OScDev_RichError *error);
 
 OScDev_RichError *OScInternal_Error_RegisterCodeDomain(const char *domainName, RERR_CodeFormat codeFormat);
-
-char *OScInternal_Error_OScDomain();
 
 char *OScInternal_Error_LegacyCodeDomain();
 
