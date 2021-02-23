@@ -289,7 +289,7 @@ static OScDev_Error DefaultGetNumericConstraint(OSc_Setting *setting, OScDev_Val
 	case OSc_ValueType_Float64:
 		return OScInternal_LegacyError_OK;
 	}
-	return OSc_Error_Wrong_Value_Type;
+	return OScDev_Error_Wrong_Value_Type;
 }
 
 
@@ -297,7 +297,7 @@ static OScDev_Error DefaultGetString(OSc_Setting *setting, char *value)
 {
 	strcpy(value, "");
 	if (setting->valueType != OSc_ValueType_String)
-		return OSc_Error_Wrong_Value_Type;
+		return OScDev_Error_Wrong_Value_Type;
 	return OScInternal_LegacyError_OK;
 }
 
@@ -305,7 +305,7 @@ static OScDev_Error DefaultGetString(OSc_Setting *setting, char *value)
 static OScDev_Error DefaultSetString(OSc_Setting *setting, const char *value)
 {
 	if (setting->valueType != OSc_ValueType_String)
-		return OSc_Error_Wrong_Value_Type;
+		return OScDev_Error_Wrong_Value_Type;
 
 	bool writable;
 	OScDev_Error errCode;
@@ -313,7 +313,7 @@ static OScDev_Error DefaultSetString(OSc_Setting *setting, const char *value)
 	if (errCode)
 		return errCode;
 	if (!writable)
-		return OSc_Error_Setting_Not_Writable;
+		return OScDev_Error_Setting_Not_Writable;
 
 	return OScInternal_LegacyError_OK;
 }
@@ -323,7 +323,7 @@ static OScDev_Error DefaultGetBool(OSc_Setting *setting, bool *value)
 {
 	*value = false;
 	if (setting->valueType != OSc_ValueType_Bool)
-		return OSc_Error_Wrong_Value_Type;
+		return OScDev_Error_Wrong_Value_Type;
 	return OScInternal_LegacyError_OK;
 }
 
@@ -331,7 +331,7 @@ static OScDev_Error DefaultGetBool(OSc_Setting *setting, bool *value)
 static OScDev_Error DefaultSetBool(OSc_Setting *setting, bool value)
 {
 	if (setting->valueType != OSc_ValueType_Bool)
-		return OSc_Error_Wrong_Value_Type;
+		return OScDev_Error_Wrong_Value_Type;
 
 	bool writable;
 	OScDev_Error errCode;
@@ -339,7 +339,7 @@ static OScDev_Error DefaultSetBool(OSc_Setting *setting, bool value)
 	if (errCode)
 		return errCode;
 	if (!writable)
-		return OSc_Error_Setting_Not_Writable;
+		return OScDev_Error_Setting_Not_Writable;
 
 	return OScInternal_LegacyError_OK;
 }
@@ -349,7 +349,7 @@ static OScDev_Error DefaultGetInt32(OSc_Setting *setting, int32_t *value)
 {
 	*value = 0;
 	if (setting->valueType != OSc_ValueType_Int32)
-		return OSc_Error_Wrong_Value_Type;
+		return OScDev_Error_Wrong_Value_Type;
 	return OScInternal_LegacyError_OK;
 }
 
@@ -357,7 +357,7 @@ static OScDev_Error DefaultGetInt32(OSc_Setting *setting, int32_t *value)
 static OScDev_Error DefaultSetInt32(OSc_Setting *setting, int32_t value)
 {
 	if (setting->valueType != OSc_ValueType_Int32)
-		return OSc_Error_Wrong_Value_Type;
+		return OScDev_Error_Wrong_Value_Type;
 
 	bool writable;
 	OScDev_Error errCode;
@@ -365,7 +365,7 @@ static OScDev_Error DefaultSetInt32(OSc_Setting *setting, int32_t value)
 	if (errCode)
 		return errCode;
 	if (!writable)
-		return OSc_Error_Setting_Not_Writable;
+		return OScDev_Error_Setting_Not_Writable;
 
 	// TODO Check constraint
 
@@ -377,14 +377,14 @@ static OScDev_Error DefaultGetInt32Range(OSc_Setting *setting, int32_t *min, int
 {
 	*min = *max = 0;
 	if (setting->valueType != OSc_ValueType_Int32)
-		return OSc_Error_Wrong_Value_Type;
+		return OScDev_Error_Wrong_Value_Type;
 	OSc_ValueConstraint constraint;
 	OScDev_Error errCode;
 	errCode = OSc_Setting_GetNumericConstraintType(setting, &constraint);
 	if (errCode)
 		return errCode;
 	if (constraint != OSc_ValueConstraint_Continuous)
-		return OSc_Error_Wrong_Constraint_Type;
+		return OScDev_Error_Wrong_Constraint_Type;
 	return OScInternal_LegacyError_OK;
 }
 
@@ -393,14 +393,14 @@ static OScDev_Error DefaultGetInt32DiscreteValues(OSc_Setting *setting, OScDev_N
 {
 	*values = NULL;
 	if (setting->valueType != OSc_ValueType_Int32)
-		return OSc_Error_Wrong_Value_Type;
+		return OScDev_Error_Wrong_Value_Type;
 	OSc_ValueConstraint constraint;
 	OScDev_Error errCode;
 	errCode = OSc_Setting_GetNumericConstraintType(setting, &constraint);
 	if (errCode)
 		return errCode;
 	if (constraint != OSc_ValueConstraint_Discrete)
-		return OSc_Error_Wrong_Constraint_Type;
+		return OScDev_Error_Wrong_Constraint_Type;
 		
 	*values = OScInternal_NumArray_Create();
 	return OScInternal_LegacyError_OK;
@@ -411,7 +411,7 @@ static OScDev_Error DefaultGetFloat64(OSc_Setting *setting, double *value)
 {
 	*value = 0.0;
 	if (setting->valueType != OSc_ValueType_Float64)
-		return OSc_Error_Wrong_Value_Type;
+		return OScDev_Error_Wrong_Value_Type;
 	return OScInternal_LegacyError_OK;
 }
 
@@ -419,7 +419,7 @@ static OScDev_Error DefaultGetFloat64(OSc_Setting *setting, double *value)
 static OScDev_Error DefaultSetFloat64(OSc_Setting *setting, double value)
 {
 	if (setting->valueType != OSc_ValueType_Float64)
-		return OSc_Error_Wrong_Value_Type;
+		return OScDev_Error_Wrong_Value_Type;
 
 	bool writable;
 	OScDev_Error errCode;
@@ -427,7 +427,7 @@ static OScDev_Error DefaultSetFloat64(OSc_Setting *setting, double value)
 	if (errCode)
 		return errCode;
 	if (!writable)
-		return OSc_Error_Setting_Not_Writable;
+		return OScDev_Error_Setting_Not_Writable;
 
 	// TODO Check constraint
 
@@ -439,14 +439,14 @@ static OScDev_Error DefaultGetFloat64Range(OSc_Setting *setting, double *min, do
 {
 	*min = *max = 0.0;
 	if (setting->valueType != OSc_ValueType_Float64)
-		return OSc_Error_Wrong_Value_Type;
+		return OScDev_Error_Wrong_Value_Type;
 	OSc_ValueConstraint constraint;
 	OScDev_Error errCode;
 	errCode = OSc_Setting_GetNumericConstraintType(setting, &constraint);
 	if (errCode)
 		return errCode;
 	if (constraint != OSc_ValueConstraint_Continuous)
-		return OSc_Error_Wrong_Constraint_Type;
+		return OScDev_Error_Wrong_Constraint_Type;
 	return OScInternal_LegacyError_OK;
 }
 
@@ -455,14 +455,14 @@ static OScDev_Error DefaultGetFloat64DiscreteValues(OSc_Setting *setting, OScDev
 {
 	*values = NULL;
 	if (setting->valueType != OSc_ValueType_Float64)
-		return OSc_Error_Wrong_Value_Type;
+		return OScDev_Error_Wrong_Value_Type;
 	OSc_ValueConstraint constraint;
 	OScDev_Error errCode;
 	errCode = OSc_Setting_GetNumericConstraintType(setting, &constraint);
 	if (errCode)
 		return errCode;
 	if (constraint != OSc_ValueConstraint_Discrete)
-		return OSc_Error_Wrong_Constraint_Type;
+		return OScDev_Error_Wrong_Constraint_Type;
 	*values = OScInternal_NumArray_Create();
 	return OScInternal_LegacyError_OK;
 }
@@ -472,7 +472,7 @@ static OScDev_Error DefaultGetEnum(OSc_Setting *setting, uint32_t *value)
 {
 	*value = 0;
 	if (setting->valueType != OSc_ValueType_Enum)
-		return OSc_Error_Wrong_Value_Type;
+		return OScDev_Error_Wrong_Value_Type;
 	return OScInternal_LegacyError_OK;
 }
 
@@ -480,7 +480,7 @@ static OScDev_Error DefaultGetEnum(OSc_Setting *setting, uint32_t *value)
 static OScDev_Error DefaultSetEnum(OSc_Setting *setting, uint32_t value)
 {
 	if (setting->valueType != OSc_ValueType_Int32)
-		return OSc_Error_Wrong_Value_Type;
+		return OScDev_Error_Wrong_Value_Type;
 
 	bool writable;
 	OScDev_Error errCode;
@@ -488,7 +488,7 @@ static OScDev_Error DefaultSetEnum(OSc_Setting *setting, uint32_t value)
 	if (errCode)
 		return errCode;
 	if (!writable)
-		return OSc_Error_Setting_Not_Writable;
+		return OScDev_Error_Setting_Not_Writable;
 
 	// TODO Range Check
 
@@ -500,7 +500,7 @@ static OScDev_Error DefaultGetEnumNumValues(OSc_Setting *setting, uint32_t *coun
 {
 	*count = 1;
 	if (setting->valueType != OSc_ValueType_Enum)
-		return OSc_Error_Wrong_Value_Type;
+		return OScDev_Error_Wrong_Value_Type;
 	return OScInternal_LegacyError_OK;
 }
 
@@ -510,7 +510,7 @@ static OScDev_Error DefaultGetEnumNameForValue(OSc_Setting *setting, uint32_t va
 	strcpy(name, "");
 
 	if (setting->valueType != OSc_ValueType_Enum)
-		return OSc_Error_Wrong_Value_Type;
+		return OScDev_Error_Wrong_Value_Type;
 
 	// TODO Check range
 
@@ -524,10 +524,10 @@ static OScDev_Error DefaultGetEnumValueForName(OSc_Setting *setting, uint32_t *v
 	value = 0;
 
 	if (setting->valueType != OSc_ValueType_Enum)
-		return OSc_Error_Wrong_Value_Type;
+		return OScDev_Error_Wrong_Value_Type;
 
 	if (strstr(name, "Value-") != 0)
-		return OSc_Error_Unknown_Enum_Value_Name;
+		return OScDev_Error_Unknown_Enum_Value_Name;
 	long parsedNum = atol(name + strlen("Value-"));
 
 	// TODO Check range

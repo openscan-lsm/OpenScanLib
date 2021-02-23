@@ -196,7 +196,7 @@ static OScDev_Error GetResolutionRange(OScDev_Setting *setting, int32_t *min, in
 	OSc_AcqTemplate *tmpl = OScInternal_Setting_GetImplData(setting);
 	OScDev_NumRange *range = GetResolutions(tmpl);
 	if (OScInternal_NumRange_IsDiscrete(range)) {
-		return OSc_Error_Wrong_Constraint_Type;
+		return OScDev_Error_Wrong_Constraint_Type;
 	}
 	// Use ceil()/floor() only for safety; values are supposed to be integers
 	*min = (int32_t)ceil(OScInternal_NumRange_Min(range));
