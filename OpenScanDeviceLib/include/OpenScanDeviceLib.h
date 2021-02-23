@@ -135,7 +135,15 @@ enum
 typedef int32_t OScDev_ErrorCodeFormat;
 enum
 {
+	OScDev_ErrorCodeFormat_I32 = 1, ///< 32-bit signed integer, decimal
+    OScDev_ErrorCodeFormat_U32 = 2, ///< 32-bit unsigned integer, decimal
+    OScDev_ErrorCodeFormat_Hex32 = 4, ///< 32-bit unsigned integer, hexadecimal
+    OScDev_ErrorCodeFormat_I16 = 8, ///< 16-bit signed integer, decimal
+    OScDev_ErrorCodeFormat_U16 = 16, ///< 16-bit unsigned integer, decimal
+    OScDev_ErrorCodeFormat_Hex16 = 32, ///< 16-bit unsigned integer, hexadecimal
 
+    /// Modifier to remove leading zeros from hex formats
+    OScDev_ErrorCodeFormat_HexNoPad = 1 << 31,
 };
 
 

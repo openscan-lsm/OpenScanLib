@@ -15,7 +15,7 @@ static void Log(OScDev_ModuleImpl *modImpl, OScDev_Device *device, OScDev_LogLev
 }
 
 
-static OScDev_RichError *Error_RegisterCodeDomain(OScDev_ModuleImpl *modImpl, const char *domainName, RERR_CodeFormat codeFormat) 
+static OScDev_RichError *Error_RegisterCodeDomain(OScDev_ModuleImpl *modImpl, const char *domainName, OScDev_ErrorCodeFormat codeFormat)
 {
 	return OScInternal_Error_RegisterCodeDomain(domainName, codeFormat);
 }
@@ -39,7 +39,7 @@ static OScDev_RichError *Error_CreateWithCode(OScDev_ModuleImpl *modImpl, const 
 }
 
 
-static OScDev_RichError *Error_Wrap(OScDev_ModuleImpl *modImpl, OScDev_RichError*cause, const char *message)
+static OScDev_RichError *Error_Wrap(OScDev_ModuleImpl *modImpl, OScDev_RichError *cause, const char *message)
 {
 	return OScInternal_Error_Wrap(cause, message);
 }
