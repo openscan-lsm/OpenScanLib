@@ -939,7 +939,7 @@ OScDev_API OScDev_RichError *OScDev_Error_CreateWithCode(const char *domainName,
 }
 
 OScDev_API OScDev_RichError *OScDev_Error_Wrap(OScDev_RichError *cause, const char *message) {
-	return OScDevInternal_FunctionTable->Error_Wrap(&OScDevInternal_TheModuleImpl, message);
+	return OScDevInternal_FunctionTable->Error_Wrap(&OScDevInternal_TheModuleImpl, cause, message);
 }
 
 OScDev_API OScDev_RichError *OScDev_Error_WrapWithCode(OScDev_RichError *cause, const char *domainName, int32_t code, const char *message) {
