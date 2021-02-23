@@ -13,6 +13,12 @@ typedef struct RERR_Error OScInternal_RichError;
 // APIs for OpenScanLib
 OSc_RichError *OScInternal_Error_RetrieveRichErrors(int32_t code);
 
+OSc_RichError* OScInternal_Error_RetrieveFromDevice(OSc_Device* device, int32_t code);
+
+OSc_RichError* OScInternal_Error_RetrieveFromSetting(OSc_Setting* setting, int32_t code);
+
+OSc_RichError* OScInternal_Error_RetrieveFromModule(OScDev_ModuleImpl *modImpl, int32_t code);
+
 OSc_RichError *OScInternal_Error_Create(const char *message);
 
 OSc_RichError *OScInternal_Error_CreateWithCode(const char *domainName, int32_t code, const char *message);
@@ -130,11 +136,15 @@ OSc_RichError *OScInternal_Device_Start(OSc_Device *device);
 void OScInternal_Device_Stop(OSc_Device *device);
 void OScInternal_Device_Wait(OSc_Device *device);
 OSc_RichError *OScInternal_Device_IsRunning(OSc_Device *device, bool *isRunning);
+bool OScInternal_Device_SupportsRichErrors(OSc_Device *device);
 
 OSc_RichError *OScInternal_Setting_Create(OScDev_ModuleImpl *modImpl, OSc_Setting **setting, const char *name, OSc_ValueType valueType, OScDev_SettingImpl *impl, void *data);
 void OScInternal_Setting_Destroy(OSc_Setting *setting);
 void *OScInternal_Setting_GetImplData(OSc_Setting *setting);
 void OScInternal_Setting_Invalidate(OSc_Setting *setting);
+bool OScInternal_Setting_SupportsRichErrors(OSc_Setting *setting);
+
+bool OScInternal_Module_SupportsRichErrors(OScDev_ModuleImpl *modImpl);
 
 OSc_Device *OScInternal_AcquisitionForDevice_GetDevice(OScDev_Acquisition *devAcq);
 OSc_Acquisition *OScInternal_AcquisitionForDevice_GetAcquisition(OScDev_Acquisition *devAcq);

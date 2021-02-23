@@ -624,3 +624,9 @@ void *OSc_Setting_GetImplData(OSc_Setting *setting)
 {
 	return setting->implData;
 }
+
+
+bool OScInternal_Setting_SupportsRichErrors(OSc_Setting *setting)
+{
+	return setting->modImpl->supportsRichErrors;
+}

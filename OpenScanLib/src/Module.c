@@ -98,3 +98,9 @@ OSc_RichError *OScInternal_Module_GetEntryPoint(OScInternal_Module module, const
 		return OScInternal_Error_Unknown();
 	return OSc_Error_OK;
 }
+
+
+bool OScInternal_Module_SupportsRichErrors(OScDev_ModuleImpl* modImpl)
+{
+	return modImpl->supportsRichErrors;
+}

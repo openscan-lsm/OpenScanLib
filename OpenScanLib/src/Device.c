@@ -41,12 +41,7 @@ OSc_RichError *OSc_Device_GetName(OSc_Device *device, const char **name)
 	if (!strlen(device->name))
 	{
 		errCode = device->impl->GetName(device, device->name);
-		if (device->modImpl->supportsRichErrors) {
-			return OScInternal_Error_RetrieveRichErrors(errCode);
-		}
-		else {
-			return OScInternal_Error_CreateWithCode(OScInternal_Error_LegacyCodeDomain(), errCode, "Error from ABI.");
-		}
+		return OScInternal_Error_RetrieveFromDevice(device, errCode);
 	}
 
 	*name = device->name;
@@ -422,4 +417,10 @@ OSc_RichError *OScInternal_Device_IsRunning(OSc_Device *device, bool *isRunning)
 
 	OScDev_Error errCode = device->impl->IsRunning(device, isRunning);
 	return OScInternal_Error_RetrieveRichErrors(errCode);
+}
+
+
+bool OScInternal_Device_SupportsRichErrors(OSc_Device *device)
+{
+	return device->modImpl->supportsRichErrors;
 }
