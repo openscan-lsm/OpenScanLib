@@ -42,7 +42,8 @@ OSc_RichError *OSc_Device_GetName(OSc_Device *device, const char **name)
 	if (!strlen(device->name))
 	{
 		errCode = device->impl->GetName(device, device->name);
-		return OScInternal_Error_RetrieveFromDevice(device, errCode);
+		if (errCode)
+			return OScInternal_Error_RetrieveFromDevice(device, errCode);
 	}
 
 	*name = device->name;
