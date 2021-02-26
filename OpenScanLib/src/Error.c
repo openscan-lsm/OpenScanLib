@@ -3,8 +3,21 @@
 #include "OpenScanLibPrivate.h"
 #include <RichErrors/Err2Code.h>
 
-static RERR_ErrorMapPtr map;
-
+RERR_ErrorMapPtr OScInternal_Error_Map()
+{
+	static RERR_ErrorMapPtr map = NULL;
+	if (map == NULL) {
+		RERR_ErrorMapConfig config = {
+			.mapFailureCode = -2,
+			.maxMappedCode = 40000,
+			.minMappedCode = 20000,
+			.noErrorCode = 0,
+			.outOfMemoryCode = -1,
+		};
+		RERR_ErrorMap_Create(&map, &config);
+	}
+	return map;
+}
 
 // APIs for device modules
 OSc_RichError *OScInternal_Error_RegisterCodeDomain(const char *domainName, RERR_CodeFormat codeFormat) 
@@ -14,14 +27,14 @@ OSc_RichError *OScInternal_Error_RegisterCodeDomain(const char *domainName, RERR
 
 OScDev_Error OScInternal_Error_ReturnAsCode(OScDev_RichError *error) 
 {
-	return RERR_ErrorMap_RegisterThreadLocal(map, error);
+	return RERR_ErrorMap_RegisterThreadLocal(OScInternal_Error_Map(), error);
 }
 
 
 // APIs for OpenScanLib
 OSc_RichError *OScInternal_Error_RetrieveRichErrors(int32_t code) 
 {
-	return RERR_ErrorMap_RetrieveThreadLocal(map, code);
+	return RERR_ErrorMap_RetrieveThreadLocal(OScInternal_Error_Map(), code);
 }
 
 
