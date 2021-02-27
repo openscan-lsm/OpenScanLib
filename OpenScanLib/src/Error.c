@@ -1,5 +1,3 @@
-#pragma once
-
 #include "OpenScanLibPrivate.h"
 #include <RichErrors/Err2Code.h>
 
@@ -110,6 +108,7 @@ char *OScInternal_Error_LegacyCodeDomain()
 	}
 	return domainName;
 }
+
 
 
 const char *OSc_Error_GetMessage(OSc_RichError *error) 
