@@ -8,7 +8,7 @@
 
 
 typedef struct RERR_Error OScInternal_RichError;
-#define OScInternal_LegacyError_OK (OScDev_Error)0
+#define OScDev_OK (OScDev_Error)0
 
 // APIs for OpenScanLib
 OSc_RichError *OScInternal_Error_RetrieveFromDevice(OSc_Device *device, int32_t code);

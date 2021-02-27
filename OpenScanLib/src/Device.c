@@ -176,7 +176,7 @@ OScDev_Error OScInternal_Device_Create(OScDev_ModuleImpl *modImpl, OSc_Device **
 	(*device)->modImpl = modImpl;
 	(*device)->impl = impl;
 	(*device)->implData = data;
-	return OScInternal_LegacyError_OK;
+	return OScDev_OK;
 }
 
 

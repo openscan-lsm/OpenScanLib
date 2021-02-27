@@ -68,7 +68,7 @@ static OScDev_Error GetPixelRateConstraintType(OScDev_Setting *setting, OScDev_V
 		*constraint = OScDev_ValueConstraint_Range;
 	}
 	OScInternal_NumRange_Destroy(range);
-	return OScInternal_LegacyError_OK;
+	return OScDev_OK;
 }
 
 
@@ -81,7 +81,7 @@ static OScDev_Error GetPixelRateDiscreteValues(OScDev_Setting *setting, OScDev_N
 	}
 	*values = OScInternal_NumRange_DiscreteValues(range);
 	OScInternal_NumRange_Destroy(range);
-	return OScInternal_LegacyError_OK;
+	return OScDev_OK;
 }
 
 
@@ -95,7 +95,7 @@ static OScDev_Error GetPixelRateRange(OScDev_Setting *setting, double *min, doub
 	*min = OScInternal_NumRange_Min(range);
 	*max = OScInternal_NumRange_Max(range);
 	OScInternal_NumRange_Destroy(range);
-	return OScInternal_LegacyError_OK;
+	return OScDev_OK;
 }
 
 
@@ -103,7 +103,7 @@ static OScDev_Error GetPixelRate(OScDev_Setting *setting, double *value)
 {
 	OSc_AcqTemplate *tmpl = OScInternal_Setting_GetImplData(setting);
 	*value = tmpl->pixelRateHz;
-	return OScInternal_LegacyError_OK;
+	return OScDev_OK;
 }
 
 
@@ -111,7 +111,7 @@ static OScDev_Error SetPixelRate(OScDev_Setting *setting, double value)
 {
 	OSc_AcqTemplate *tmpl = OScInternal_Setting_GetImplData(setting);
 	tmpl->pixelRateHz = value;
-	return OScInternal_LegacyError_OK;
+	return OScDev_OK;
 }
 
 
@@ -175,7 +175,7 @@ static OScDev_Error GetResolutionConstraintType(OScDev_Setting *setting, OScDev_
 		*constraint = OScDev_ValueConstraint_Range;
 	}
 	OScInternal_NumRange_Destroy(range);
-	return OScInternal_LegacyError_OK;
+	return OScDev_OK;
 }
 
 
@@ -188,7 +188,7 @@ static OScDev_Error GetResolutionDiscreteValues(OScDev_Setting *setting, OScDev_
 	}
 	*values = OScInternal_NumRange_DiscreteValues(range);
 	OScInternal_NumRange_Destroy(range);
-	return OScInternal_LegacyError_OK;
+	return OScDev_OK;
 }
 
 
@@ -203,7 +203,7 @@ static OScDev_Error GetResolutionRange(OScDev_Setting *setting, int32_t *min, in
 	*min = (int32_t)ceil(OScInternal_NumRange_Min(range));
 	*max = (int32_t)floor(OScInternal_NumRange_Max(range));
 	OScInternal_NumRange_Destroy(range);
-	return OScInternal_LegacyError_OK;
+	return OScDev_OK;
 }
 
 
@@ -211,7 +211,7 @@ static OScDev_Error GetResolution(OScDev_Setting *setting, int32_t *value)
 {
 	OSc_AcqTemplate *tmpl = OScInternal_Setting_GetImplData(setting);
 	*value = tmpl->resolution;
-	return OScInternal_LegacyError_OK;
+	return OScDev_OK;
 }
 
 
@@ -223,7 +223,7 @@ static OScDev_Error SetResolution(OScDev_Setting *setting, int32_t value)
 		OSc_AcqTemplate_ResetROI(tmpl);
 		OScInternal_Setting_Invalidate(tmpl->magnificationSetting);
 	}
-	return OScInternal_LegacyError_OK;
+	return OScDev_OK;
 }
 
 
@@ -272,7 +272,7 @@ static OScDev_Error GetZoomConstraintType(OScDev_Setting *setting, OScDev_ValueC
 		*constraint = OScDev_ValueConstraint_Range;
 	}
 	OScInternal_NumRange_Destroy(range);
-	return OScInternal_LegacyError_OK;
+	return OScDev_OK;
 }
 
 
@@ -285,7 +285,7 @@ static OScDev_Error GetZoomDiscreteValues(OScDev_Setting *setting, OScDev_NumArr
 	}
 	*values = OScInternal_NumRange_DiscreteValues(range);
 	OScInternal_NumRange_Destroy(range);
-	return OScInternal_LegacyError_OK;
+	return OScDev_OK;
 }
 
 
@@ -299,14 +299,14 @@ static OScDev_Error GetZoomRange(OScDev_Setting *setting, double *min, double *m
 	*min = OScInternal_NumRange_Min(range);
 	*max = OScInternal_NumRange_Max(range);
 	OScInternal_NumRange_Destroy(range);
-	return OScInternal_LegacyError_OK;
+	return OScDev_OK;
 }
 
 
 static OScDev_Error GetZoom(OScDev_Setting *setting, double *value){
 	OSc_AcqTemplate *tmpl = OScInternal_Setting_GetImplData(setting);
 	*value = tmpl->zoomFactor;
-	return OScInternal_LegacyError_OK;
+	return OScDev_OK;
 }
 
 
@@ -317,7 +317,7 @@ static OScDev_Error SetZoom(OScDev_Setting *setting, double value)
 		tmpl->zoomFactor = value;
 		OScInternal_Setting_Invalidate(tmpl->magnificationSetting);
 	}
-	return OScInternal_LegacyError_OK;
+	return OScDev_OK;
 }
 
 
@@ -333,7 +333,7 @@ static OScDev_SettingImpl ZoomSettingImpl = {
 static OScDev_Error IsMagnificationWritable(OScDev_Setting *setting, bool *writable)
 {
 	*writable = false;
-	return OScInternal_LegacyError_OK;
+	return OScDev_OK;
 }
 
 
@@ -342,7 +342,7 @@ static OScDev_Error GetMagnification(OScDev_Setting *setting, double *value)
 	OSc_AcqTemplate *tmpl = OScInternal_Setting_GetImplData(setting);
 	int32_t defaultResolution = GetDefaultResolution(tmpl);
 	*value = tmpl->zoomFactor * tmpl->resolution / defaultResolution;
-	return OScInternal_LegacyError_OK;
+	return OScDev_OK;
 }
 
 
