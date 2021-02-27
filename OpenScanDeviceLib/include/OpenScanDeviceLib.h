@@ -118,6 +118,7 @@ typedef struct OScInternal_Device OScDev_Device;
 typedef struct OScInternal_Setting OScDev_Setting;
 typedef struct OScInternal_AcquisitionForDevice OScDev_Acquisition;
 typedef struct RERR_Error OScDev_RichError;
+#define OScDev_RichError_OK ((OScDev_RichError *)NULL)
 
 
 /// Log level.
