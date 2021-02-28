@@ -132,43 +132,12 @@ OSc_API OSc_RichError *OSc_Error_GetCause(OSc_RichError *error);
 OSc_API void OSc_Error_Destroy(OSc_RichError *error);
 
 
-// enum
-// {
-// 	//OSc_Error_OK,
-
-// 	// WARNING: These must match exactly the definitions of OScDev_Error_* in
-// 	// OpenScanDeviceLib.h (normaly we would ensure that a common definition is
-// 	// used, but these codes are temporary and will be replaced soon by a new
-// 	// error handling mechanism).
-// 	OSc_Error_Unknown = 10000,
-// 	OSc_Error_Unsupported_Operation,
-// 	OSc_Error_Illegal_Argument,
-// 	OSc_Error_Device_Module_Already_Exists,
-// 	OSc_Error_No_Such_Device_Module,
-// 	OSc_Error_Driver_Not_Available,
-// 	OSc_Error_Device_Already_Open,
-// 	OSc_Error_Device_Not_Opened_For_LSM,
-// 	OSc_Error_Device_Does_Not_Support_Clock,
-// 	OSc_Error_Device_Does_Not_Support_Scanner,
-// 	OSc_Error_Device_Does_Not_Support_Detector,
-// 	OSc_Error_Wrong_Value_Type,
-// 	OSc_Error_Setting_Not_Writable,
-// 	OSc_Error_Wrong_Constraint_Type,
-// 	OSc_Error_Unknown_Enum_Value_Name,
-// 	OSc_Error_Acquisition_Running,
-// 	OSc_Error_Not_Armed,
-// 	OSc_Error_Waveform_Out_Of_Range,
-// 	OSc_Error_Waveform_Memory_Size_Mismatch,
-// 	OSc_Error_Data_Left_In_Fifo_After_Reading_Image,
-// };
-
-
 /**
  * \brief Convenience macro for if-statement checking error.
  *
  * For example,
  *
- *     OSc_Error err;
+ *     OSc_RichError *err;
  *     if (OSc_CHECK_ERROR(err, OSc_Foo(...))) {
  *         // Clean up resources
  *         return err;
