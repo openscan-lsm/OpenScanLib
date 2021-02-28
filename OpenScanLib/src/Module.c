@@ -79,7 +79,7 @@ OSc_RichError *OScInternal_FileList_Create(char ***files, const char *path, cons
 error:
 	OScInternal_FileList_Free(*files);
 	*files = NULL;
-	return OScInternal_Error_Create("Failed to list files.");
+	return OScInternal_Error_Create("Failed to list files");
 }
 
 

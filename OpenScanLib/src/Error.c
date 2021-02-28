@@ -44,7 +44,7 @@ OSc_RichError *OScInternal_Error_RetrieveFromDevice(OSc_Device *device, int32_t 
 		return OScInternal_Error_RetrieveRichErrors(code);
 	}
 	else {
-		return OScInternal_Error_CreateWithCode(OScInternal_Error_LegacyCodeDomain(), code, "Device error from legacy code domain.");
+		return OScInternal_Error_CreateWithCode(OScInternal_Error_LegacyCodeDomain(), code, "Device error from legacy code domain");
 	}
 }
 
@@ -57,7 +57,7 @@ OSc_RichError *OScInternal_Error_RetrieveFromSetting(OSc_Setting *setting, int32
 		return OScInternal_Error_RetrieveRichErrors(code);
 	}
 	else {
-		return OScInternal_Error_CreateWithCode(OScInternal_Error_LegacyCodeDomain(), code, "Setting error from legacy code domain.");
+		return OScInternal_Error_CreateWithCode(OScInternal_Error_LegacyCodeDomain(), code, "Setting error from legacy code domain");
 	}
 }
 
@@ -70,7 +70,7 @@ OSc_RichError *OScInternal_Error_RetrieveFromModule(OScDev_ModuleImpl *modImpl, 
 		return OScInternal_Error_RetrieveRichErrors(code);
 	}
 	else {
-		return OScInternal_Error_CreateWithCode(OScInternal_Error_LegacyCodeDomain(), code, "Module error from legacy code domain.");
+		return OScInternal_Error_CreateWithCode(OScInternal_Error_LegacyCodeDomain(), code, "Module error from legacy code domain");
 	}
 }
 
