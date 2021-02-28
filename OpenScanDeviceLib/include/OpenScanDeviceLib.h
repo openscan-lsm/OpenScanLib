@@ -922,7 +922,6 @@ OScDev_API void OScDev_Log_Error(OScDev_Device *device, const char *message)
 	OScDev_Log(device, OScDev_LogLevel_Error, message);
 }
 
-// APIs for device modules
 OScDev_API OScDev_RichError *OScDev_Error_RegisterCodeDomain(const char *domainName, OScDev_ErrorCodeFormat codeFormat) {
 	return OScDevInternal_FunctionTable->Error_RegisterCodeDomain(&OScDevInternal_TheModuleImpl, domainName, codeFormat);
 }
