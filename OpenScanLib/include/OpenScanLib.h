@@ -88,7 +88,7 @@ extern "C" {
  *
  * The above list is not comprehensive.
  */
-#define OScInternal_ABI_VERSION OScInternal_MAKE_VERSION(3, 2)
+#define OScInternal_ABI_VERSION OScInternal_MAKE_VERSION(4, 0)
 
 /**
  * \addtogroup api

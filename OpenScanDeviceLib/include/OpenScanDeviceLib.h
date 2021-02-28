@@ -92,7 +92,7 @@ extern "C" {
  * set of changes is to be made over multiple commits, the version number
  * can be set to `(-1, 0)` in intermediate commits to indicate "experimental".
  */
-#define OScDevInternal_ABI_VERSION OScDevInternal_MAKE_VERSION(12, 0)
+#define OScDevInternal_ABI_VERSION OScDevInternal_MAKE_VERSION(13, 0)
 
 
 /** \addtogroup dpi
@@ -158,13 +158,8 @@ typedef int32_t OScDev_Error;
 enum {
 	OScDev_OK = 0,
 
-	// For now, we define a number of standard error codes here. Error handling
-	// will be upgraded soon to use rich error reporting.
-
 	// WARNING: Do not edit these without correctly incrementing the device
 	// interface version.
-	// WARNING 2: These must exactly match the OSc_Error_* constants defined
-	// in OpenScanLib.h.
 	OScDev_Error_Unknown = 10000,
 	OScDev_Error_Unsupported_Operation,
 	OScDev_Error_Illegal_Argument,
