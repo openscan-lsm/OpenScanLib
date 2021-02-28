@@ -119,7 +119,6 @@ enum
 
 typedef struct RERR_Error OSc_RichError;
 #define OSc_OK NULL
-#define OScDev_Error_OK (int32_t)0
 
 OSc_API const char *OSc_Error_GetMessage(OSc_RichError *error);
 
