@@ -6,6 +6,7 @@
 #include <Windows.h>
 #endif
 
+
 /*
  * Hint: Set the Visual Studio project property Debugging > Working Directory
  * to $(OutDir), so that TestDeviceModule.osdev can be found.
@@ -39,7 +40,7 @@ int main()
 	OSc_SetDeviceModuleSearchPaths(paths);
 
 	size_t count;
-	OSc_Error err;
+	OSc_RichError *err;
 	if (OSc_CHECK_ERROR(err, OSc_GetNumberOfAvailableDevices(&count)))
 	{
 		fprintf(stderr, "Could not get count of devices\n");

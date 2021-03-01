@@ -15,6 +15,42 @@ static void Log(OScDev_ModuleImpl *modImpl, OScDev_Device *device, OScDev_LogLev
 }
 
 
+static OScDev_RichError *Error_RegisterCodeDomain(OScDev_ModuleImpl *modImpl, const char *domainName, OScDev_ErrorCodeFormat codeFormat)
+{
+	return OScInternal_Error_RegisterCodeDomain(domainName, codeFormat);
+}
+
+
+static OScDev_Error Error_ReturnAsCode(OScDev_ModuleImpl *modImpl, OScDev_RichError *error) 
+{
+	return OScInternal_Error_ReturnAsCode(error);
+}
+
+
+static OScDev_RichError *Error_Create(OScDev_ModuleImpl *modImpl, const char *message) 
+{
+	return OScInternal_Error_Create(message);
+}
+
+
+static OScDev_RichError *Error_CreateWithCode(OScDev_ModuleImpl *modImpl, const char *domainName, OScDev_Error code, const char *message) 
+{
+	return OScInternal_Error_CreateWithCode(domainName, code, message);
+}
+
+
+static OScDev_RichError *Error_Wrap(OScDev_ModuleImpl *modImpl, OScDev_RichError *cause, const char *message)
+{
+	return OScInternal_Error_Wrap(cause, message);
+}
+
+
+static OScDev_RichError *Error_WrapWithCode(OScDev_ModuleImpl *modImpl, OSc_RichError *cause, const char *domainName, int32_t code, const char *message) 
+{
+	return OScInternal_Error_WrapWithCode(cause, domainName, code, message);
+}
+
+
 static OScInternal_PtrArray *PtrArray_Create(OScDev_ModuleImpl *modImpl)
 {
 	return OScInternal_PtrArray_Create();
@@ -132,7 +168,7 @@ static void NumRange_AppendDiscrete(OScDev_ModuleImpl *modImpl, OScDev_NumRange 
 // TODO: Replace with direct provision of impl and data (once we have DeviceLoaders)
 static OScDev_Error Device_Create(OScDev_ModuleImpl *modImpl, OScDev_Device **device, OScDev_DeviceImpl *impl, void *data)
 {
-	return OScInternal_Device_Create(device, impl, data);
+	return OScInternal_Device_Create(modImpl, device, impl, data);
 }
 
 
@@ -145,7 +181,7 @@ static void *Device_GetImplData(OScDev_ModuleImpl *modImpl, OScDev_Device *devic
 // TODO: Replace with a SettingsCreateContext-based method
 static OScDev_Error Setting_Create(OScDev_ModuleImpl *modImpl, OScDev_Setting **setting, const char *name, OScDev_ValueType valueType, OScDev_SettingImpl *impl, void *data)
 {
-	return OScInternal_Setting_Create(setting, name, valueType, impl, data);
+	return OScInternal_Error_ReturnAsCode(OScInternal_Setting_Create(modImpl, setting, name, valueType, impl, data));
 }
 
 
@@ -258,6 +294,12 @@ static bool Acquisition_CallFrameCallback(OScDev_ModuleImpl *modImpl, OScDev_Acq
 
 struct OScDevInternal_Interface DeviceInterfaceFunctionTable = {
 	.Log = Log,
+	.Error_RegisterCodeDomain = Error_RegisterCodeDomain,
+	.Error_ReturnAsCode = Error_ReturnAsCode,
+	.Error_Create = Error_Create,
+	.Error_CreateWithCode = Error_CreateWithCode,
+	.Error_Wrap = Error_Wrap,
+	.Error_WrapWithCode = Error_WrapWithCode,
 	.PtrArray_Create = PtrArray_Create,
 	.PtrArray_CreateFromNullTerminated = PtrArray_CreateFromNullTerminated,
 	.PtrArray_Destroy = PtrArray_Destroy,

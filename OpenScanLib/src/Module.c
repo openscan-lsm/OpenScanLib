@@ -1,4 +1,5 @@
 #include "Module.h"
+#include "InternalErrors.h"
 
 #include <string.h>
 
@@ -20,7 +21,7 @@ void OScInternal_FileList_Free(char **files)
 
 // Finds all fils under 'path' that have 'suffix'.
 // Allocates array and element strings and places into 'files'.
-OSc_Error OScInternal_FileList_Create(char ***files, const char *path, const char *suffix)
+OSc_RichError *OScInternal_FileList_Create(char ***files, const char *path, const char *suffix)
 {
 	// Windows implementation for now
 
@@ -42,7 +43,7 @@ OSc_Error OScInternal_FileList_Create(char ***files, const char *path, const cha
 	{
 		err = GetLastError();
 		if (err == ERROR_FILE_NOT_FOUND)
-			return OSc_Error_OK;
+			return OSc_OK;
 		goto error;
 	}
 	for (;;)
@@ -68,33 +69,39 @@ OSc_Error OScInternal_FileList_Create(char ***files, const char *path, const cha
 			if (err == ERROR_NO_MORE_FILES)
 			{
 				(*files)[fileCount] = NULL;
-				return OSc_Error_OK;
+				return OSc_OK;
 			}
 			goto error;
 		}
 	}
-	return OSc_Error_OK;
+	return OSc_OK;
 
 error:
 	OScInternal_FileList_Free(*files);
 	*files = NULL;
-	return err;
+	return OScInternal_Error_Create("Failed to list files");
 }
 
 
-OSc_Error OScInternal_Module_Load(OScInternal_Module *module, const char *path)
+OSc_RichError *OScInternal_Module_Load(OScInternal_Module *module, const char *path)
 {
 	*module = LoadLibraryA(path);
 	if (*module == NULL)
-		return OSc_Error_Unknown; // TODO
-	return OSc_Error_OK;
+		return OScInternal_Error_Unknown();
+	return OSc_OK;
 }
 
 
-OSc_Error OScInternal_Module_GetEntryPoint(OScInternal_Module module, const char *funcName, void **func)
+OSc_RichError *OScInternal_Module_GetEntryPoint(OScInternal_Module module, const char *funcName, void **func)
 {
 	*func = GetProcAddress(module, funcName);
 	if (!*func)
-		return OSc_Error_Unknown;
-	return OSc_Error_OK;
+		return OScInternal_Error_Unknown();
+	return OSc_OK;
+}
+
+
+bool OScInternal_Module_SupportsRichErrors(OScDev_ModuleImpl* modImpl)
+{
+	return modImpl->supportsRichErrors;
 }

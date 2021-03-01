@@ -1,4 +1,5 @@
 #include "OpenScanLibPrivate.h"
+#include "InternalErrors.h"
 
 #include <math.h>
 #include <stdlib.h>
@@ -51,7 +52,7 @@ OSc_Acquisition *OScInternal_AcquisitionForDevice_GetAcquisition(OScDev_Acquisit
 }
 
 
-OSc_Error OSc_Acquisition_Create(OSc_Acquisition **acq, OSc_AcqTemplate *tmpl)
+OSc_RichError *OSc_Acquisition_Create(OSc_Acquisition **acq, OSc_AcqTemplate *tmpl)
 {
 	*acq = calloc(1, sizeof(OSc_Acquisition));
 
@@ -82,42 +83,42 @@ OSc_Error OSc_Acquisition_Create(OSc_Acquisition **acq, OSc_AcqTemplate *tmpl)
 	(*acq)->acqForDetectorDevice.device = (*acq)->detectorDevice;
 	(*acq)->acqForDetectorDevice.acq = *acq;
 
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
-OSc_Error OSc_Acquisition_Destroy(OSc_Acquisition *acq)
+OSc_RichError *OSc_Acquisition_Destroy(OSc_Acquisition *acq)
 {
 	free(acq);
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
-OSc_Error OSc_Acquisition_SetNumberOfFrames(OSc_Acquisition *acq, uint32_t numberOfFrames)
+OSc_RichError *OSc_Acquisition_SetNumberOfFrames(OSc_Acquisition *acq, uint32_t numberOfFrames)
 {
 	acq->numberOfFrames = numberOfFrames;
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
-OSc_Error OSc_Acquisition_SetFrameCallback(OSc_Acquisition *acq, OSc_FrameCallback callback)
+OSc_RichError *OSc_Acquisition_SetFrameCallback(OSc_Acquisition *acq, OSc_FrameCallback callback)
 {
 	acq->frameCallback = callback;
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
-OSc_Error OSc_Acquisition_GetData(OSc_Acquisition *acq, void **data)
+OSc_RichError *OSc_Acquisition_GetData(OSc_Acquisition *acq, void **data)
 {
 	*data = acq->data;
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
-OSc_Error OSc_Acquisition_SetData(OSc_Acquisition *acq, void *data)
+OSc_RichError *OSc_Acquisition_SetData(OSc_Acquisition *acq, void *data)
 {
 	acq->data = data;
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
@@ -171,29 +172,29 @@ void OSc_Acquisition_GetROI(OSc_Acquisition *acq, uint32_t *xOffset, uint32_t *y
 }
 
 
-OSc_Error OSc_Acquisition_GetNumberOfChannels(OSc_Acquisition *acq, uint32_t *numberOfChannels)
+OSc_RichError *OSc_Acquisition_GetNumberOfChannels(OSc_Acquisition *acq, uint32_t *numberOfChannels)
 {
 	if (!acq || !numberOfChannels)
-		return OSc_Error_Illegal_Argument;
+		return OScInternal_Error_IllegalArgument();
 	*numberOfChannels = acq->numberOfChannels;
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
-OSc_Error OSc_Acquisition_GetBytesPerSample(OSc_Acquisition *acq, uint32_t *bytesPerSample)
+OSc_RichError *OSc_Acquisition_GetBytesPerSample(OSc_Acquisition *acq, uint32_t *bytesPerSample)
 {
 	if (!acq || !bytesPerSample)
-		return OSc_Error_Illegal_Argument;
+		return OScInternal_Error_IllegalArgument();
 	*bytesPerSample = acq->bytesPerSample;
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
-OSc_Error OSc_Acquisition_Arm(OSc_Acquisition *acq)
+OSc_RichError *OSc_Acquisition_Arm(OSc_Acquisition *acq)
 {
 	// Arm each device participating in the acquisition exactly once each
 
-	OSc_Error err;
+	OSc_RichError *err;
 
 	// Clock
 	if (OSc_CHECK_ERROR(err, OScInternal_Device_Arm(acq->clockDevice, acq)))
@@ -222,34 +223,34 @@ OSc_Error OSc_Acquisition_Arm(OSc_Acquisition *acq)
 		}
 	}
 
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
-OSc_Error OSc_Acquisition_Start(OSc_Acquisition *acq)
+OSc_RichError *OSc_Acquisition_Start(OSc_Acquisition *acq)
 {
 	// TODO Error if not armed
 	return OScInternal_Device_Start(acq->clockDevice);
 }
 
 
-OSc_Error OSc_Acquisition_Stop(OSc_Acquisition *acq)
+OSc_RichError *OSc_Acquisition_Stop(OSc_Acquisition *acq)
 {
 	// Stop() is idempotent, so we don't bother to determine the unique devices
 	OScInternal_Device_Stop(acq->clockDevice);
 	OScInternal_Device_Stop(acq->scannerDevice);
 	OScInternal_Device_Stop(acq->detectorDevice);
 
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
-OSc_Error OSc_Acquisition_Wait(OSc_Acquisition *acq)
+OSc_RichError *OSc_Acquisition_Wait(OSc_Acquisition *acq)
 {
 	OScInternal_Device_Wait(acq->clockDevice);
 	OScInternal_Device_Wait(acq->scannerDevice);
 	OScInternal_Device_Wait(acq->detectorDevice);
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 

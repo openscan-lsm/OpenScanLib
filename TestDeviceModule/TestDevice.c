@@ -18,12 +18,13 @@ static OScDev_Error TestEnumerateInstances(OScDev_PtrArray **devices)
 {
 	*devices = OScDev_PtrArray_Create();
 
-	OScDev_Error err;
+	OScDev_Error errCode;
 	OScDev_Device *device0 = NULL;
-	if (OScDev_CHECK(err, OScDev_Device_Create(&device0, &g_TestDeviceImpl, NULL))) {
+	errCode = OScDev_Device_Create(&device0, &g_TestDeviceImpl, NULL);
+	if (errCode) {
 		OScDev_PtrArray_Destroy(*devices);
 		*devices = NULL;
-		return err;
+		return errCode;
 	}
 	OScDev_PtrArray_Append(*devices, device0);
 

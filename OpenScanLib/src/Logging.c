@@ -22,7 +22,7 @@ void OScInternal_Log(OSc_Device *device, OSc_LogLevel level, const char *message
 		g_logFunc(message, level, g_logData);
 	}
 	else {
-		const char* lev;
+		const char *lev;
 		switch (level) {
 		case OSc_LogLevel_Debug:
 			lev = "DBG";
