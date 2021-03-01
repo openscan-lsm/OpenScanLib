@@ -19,14 +19,14 @@ struct OScInternal_LSM
 OSc_RichError *OSc_LSM_Create(OSc_LSM **lsm)
 {
 	*lsm = calloc(1, sizeof(OSc_LSM));
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
 OSc_RichError *OSc_LSM_Destroy(OSc_LSM *lsm)
 {
 	if (!lsm)
-		return OSc_Error_OK;
+		return OSc_OK;
 
 	OSc_RichError *err;
 
@@ -55,7 +55,7 @@ OSc_RichError *OSc_LSM_Destroy(OSc_LSM *lsm)
 
 	free(devicesToClose);
 	free(lsm);
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
@@ -97,7 +97,7 @@ OSc_RichError *OSc_LSM_SetClockDevice(OSc_LSM *lsm, OSc_Device *clockDevice)
 		return OScInternal_Error_DeviceNotOpenedForLSM();
 
 	lsm->clockDevice = clockDevice;
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
@@ -115,7 +115,7 @@ OSc_RichError *OSc_LSM_SetScannerDevice(OSc_LSM *lsm, OSc_Device *scannerDevice)
 		return OScInternal_Error_DeviceNotOpenedForLSM();
 
 	lsm->scannerDevice = scannerDevice;
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
@@ -133,7 +133,7 @@ OSc_RichError *OSc_LSM_SetDetectorDevice(OSc_LSM *lsm, OSc_Device *detectorDevic
 		return OScInternal_Error_DeviceNotOpenedForLSM();
 
 	lsm->detectorDevice = detectorDevice;
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
@@ -157,7 +157,7 @@ OSc_RichError *OScInternal_LSM_Associate_Device(OSc_LSM *lsm, OSc_Device *device
 	}
 	lsm->associatedDevices[lsm->associatedDeviceCount - 1] = device;
 
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
@@ -184,7 +184,7 @@ OSc_RichError *OScInternal_LSM_Dissociate_Device(OSc_LSM *lsm, OSc_Device *devic
 	free(lsm->associatedDevices);
 	lsm->associatedDevices = newList;
 	--lsm->associatedDeviceCount;
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
@@ -200,7 +200,7 @@ OSc_RichError *OScInternal_LSM_Is_Device_Associated(OSc_LSM *lsm, OSc_Device *de
 		}
 	}
 
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
@@ -214,7 +214,7 @@ OSc_RichError *OSc_LSM_IsRunningAcquisition(OSc_LSM *lsm, bool *isRunning)
 		if (OSc_CHECK_ERROR(err, OScInternal_Device_IsRunning(device, isRunning)))
 			return err;
 		if (*isRunning)
-			return OSc_Error_OK;
+			return OSc_OK;
 	}
-	return OSc_Error_OK;
+	return OSc_OK;
 }

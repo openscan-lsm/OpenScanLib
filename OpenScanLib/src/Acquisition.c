@@ -83,42 +83,42 @@ OSc_RichError *OSc_Acquisition_Create(OSc_Acquisition **acq, OSc_AcqTemplate *tm
 	(*acq)->acqForDetectorDevice.device = (*acq)->detectorDevice;
 	(*acq)->acqForDetectorDevice.acq = *acq;
 
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
 OSc_RichError *OSc_Acquisition_Destroy(OSc_Acquisition *acq)
 {
 	free(acq);
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
 OSc_RichError *OSc_Acquisition_SetNumberOfFrames(OSc_Acquisition *acq, uint32_t numberOfFrames)
 {
 	acq->numberOfFrames = numberOfFrames;
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
 OSc_RichError *OSc_Acquisition_SetFrameCallback(OSc_Acquisition *acq, OSc_FrameCallback callback)
 {
 	acq->frameCallback = callback;
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
 OSc_RichError *OSc_Acquisition_GetData(OSc_Acquisition *acq, void **data)
 {
 	*data = acq->data;
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
 OSc_RichError *OSc_Acquisition_SetData(OSc_Acquisition *acq, void *data)
 {
 	acq->data = data;
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
@@ -177,7 +177,7 @@ OSc_RichError *OSc_Acquisition_GetNumberOfChannels(OSc_Acquisition *acq, uint32_
 	if (!acq || !numberOfChannels)
 		return OScInternal_Error_IllegalArgument();
 	*numberOfChannels = acq->numberOfChannels;
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
@@ -186,7 +186,7 @@ OSc_RichError *OSc_Acquisition_GetBytesPerSample(OSc_Acquisition *acq, uint32_t 
 	if (!acq || !bytesPerSample)
 		return OScInternal_Error_IllegalArgument();
 	*bytesPerSample = acq->bytesPerSample;
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
@@ -223,7 +223,7 @@ OSc_RichError *OSc_Acquisition_Arm(OSc_Acquisition *acq)
 		}
 	}
 
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
@@ -241,7 +241,7 @@ OSc_RichError *OSc_Acquisition_Stop(OSc_Acquisition *acq)
 	OScInternal_Device_Stop(acq->scannerDevice);
 	OScInternal_Device_Stop(acq->detectorDevice);
 
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
@@ -250,7 +250,7 @@ OSc_RichError *OSc_Acquisition_Wait(OSc_Acquisition *acq)
 	OScInternal_Device_Wait(acq->clockDevice);
 	OScInternal_Device_Wait(acq->scannerDevice);
 	OScInternal_Device_Wait(acq->detectorDevice);
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 

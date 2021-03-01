@@ -43,7 +43,7 @@ OSc_RichError *OScInternal_FileList_Create(char ***files, const char *path, cons
 	{
 		err = GetLastError();
 		if (err == ERROR_FILE_NOT_FOUND)
-			return OSc_Error_OK;
+			return OSc_OK;
 		goto error;
 	}
 	for (;;)
@@ -69,12 +69,12 @@ OSc_RichError *OScInternal_FileList_Create(char ***files, const char *path, cons
 			if (err == ERROR_NO_MORE_FILES)
 			{
 				(*files)[fileCount] = NULL;
-				return OSc_Error_OK;
+				return OSc_OK;
 			}
 			goto error;
 		}
 	}
-	return OSc_Error_OK;
+	return OSc_OK;
 
 error:
 	OScInternal_FileList_Free(*files);
@@ -88,7 +88,7 @@ OSc_RichError *OScInternal_Module_Load(OScInternal_Module *module, const char *p
 	*module = LoadLibraryA(path);
 	if (*module == NULL)
 		return OScInternal_Error_Unknown();
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
@@ -97,7 +97,7 @@ OSc_RichError *OScInternal_Module_GetEntryPoint(OScInternal_Module module, const
 	*func = GetProcAddress(module, funcName);
 	if (!*func)
 		return OScInternal_Error_Unknown();
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 

@@ -118,19 +118,18 @@ enum
 };
 
 typedef struct RERR_Error OSc_RichError;
-#define OSc_Error_OK NULL
+#define OSc_OK NULL
 #define OScDev_Error_OK (int32_t)0
 
-// APIs for MM
-const char *OSc_Error_GetMessage(OSc_RichError *error);
+OSc_API const char *OSc_Error_GetMessage(OSc_RichError *error);
 
-const char *OSc_Error_GetDomain(OSc_RichError *error);
+OSc_API const char *OSc_Error_GetDomain(OSc_RichError *error);
 
-int32_t OSc_Error_GetCode(OSc_RichError *error);
+OSc_API int32_t OSc_Error_GetCode(OSc_RichError *error);
 
-OSc_RichError *OSc_Error_GetCause(OSc_RichError *error);
+OSc_API OSc_RichError *OSc_Error_GetCause(OSc_RichError *error);
 
-void OSc_Error_Destroy(OSc_RichError *error);
+OSc_API void OSc_Error_Destroy(OSc_RichError *error);
 
 
 // enum
@@ -176,7 +175,7 @@ void OSc_Error_Destroy(OSc_RichError *error);
  *     }
  */
 #define OSc_CHECK_ERROR(err, call) \
-	((err = (call)) != OSc_Error_OK)
+	((err = (call)) != OSc_OK)
 
 typedef int32_t OSc_ValueType;
 enum

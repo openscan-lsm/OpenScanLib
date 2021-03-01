@@ -56,7 +56,7 @@ static OSc_RichError *EnumerateDevices(void)
 {
 	// For now, enumerate once and for all
 	if (g_deviceInstances)
-		return OSc_Error_OK;
+		return OSc_OK;
 
 	size_t nModules;
 	OSc_RichError *err;
@@ -97,7 +97,7 @@ static OSc_RichError *EnumerateDevices(void)
 	}
 
 	free(moduleNames);
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
@@ -109,7 +109,7 @@ OSc_RichError *OSc_GetAllDevices(OSc_Device ***devices, size_t *count)
 
 	*devices = (struct OScInternal_Device **)OScInternal_PtrArray_Data(g_deviceInstances);
 	*count = OScInternal_PtrArray_Size(g_deviceInstances);
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
@@ -118,5 +118,5 @@ OSc_RichError *OSc_GetNumberOfAvailableDevices(size_t *count)
 	EnumerateDevices();
 	*count = OScInternal_PtrArray_Size(g_deviceInstances);
 
-	return OSc_Error_OK;
+	return OSc_OK;
 }

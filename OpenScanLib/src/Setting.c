@@ -34,14 +34,14 @@ struct OScInternal_Setting
 OSc_RichError *OSc_Setting_GetName(OSc_Setting *setting, char *name)
 {
 	strncpy(name, setting->name, OSc_MAX_STR_LEN);
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
 OSc_RichError *OSc_Setting_GetValueType(OSc_Setting *setting, OSc_ValueType *valueType)
 {
 	*valueType = setting->valueType;
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
@@ -69,7 +69,7 @@ OSc_RichError *OSc_Setting_GetNumericConstraintType(OSc_Setting *setting, OSc_Va
 		return OScInternal_Error_RetrieveFromSetting(setting, errCode);
 	}
 	*constraintType = (OSc_ValueConstraint)dConstraintType;
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
@@ -158,7 +158,7 @@ OSc_RichError *OSc_Setting_GetInt32DiscreteValues(OSc_Setting *setting, int32_t 
 
 	*values = setting->i32DiscreteValues;
 	*count = setting->i32DiscreteValueCount;
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
@@ -210,7 +210,7 @@ OSc_RichError *OSc_Setting_GetFloat64DiscreteValues(OSc_Setting *setting, double
 
 	*values = setting->f64DiscreteValues;
 	*count = setting->f64DiscreteValueCount;
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
@@ -596,7 +596,7 @@ OSc_RichError *OScInternal_Setting_Create(OScDev_ModuleImpl *modImpl, OSc_Settin
 	(*setting)->implData = data;
 	(*setting)->valueType = valueType;
 	strncpy((*setting)->name, name, OSc_MAX_STR_LEN);
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
@@ -610,14 +610,14 @@ void OScInternal_Setting_Destroy(OSc_Setting *setting)
 OSc_RichError *OSc_Setting_NumericConstraintRange(OSc_Setting *setting, OSc_ValueConstraint *constraintType)
 {
 	*constraintType = OSc_ValueConstraint_Continuous;
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
 OSc_RichError *OSc_Setting_NumericConstraintDiscreteValues(OSc_Setting *setting, OSc_ValueConstraint *constraintType)
 {
 	*constraintType = OSc_ValueConstraint_Discrete;
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 

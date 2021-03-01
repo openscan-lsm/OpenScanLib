@@ -39,7 +39,7 @@ OSc_RichError *OScInternal_Error_RetrieveRichErrors(int32_t code)
 OSc_RichError *OScInternal_Error_RetrieveFromDevice(OSc_Device *device, int32_t code) 
 {	
 	if (!code)
-		return OSc_Error_OK;
+		return OSc_OK;
 	if (OScInternal_Device_SupportsRichErrors(device)) {
 		return OScInternal_Error_RetrieveRichErrors(code);
 	}
@@ -52,7 +52,7 @@ OSc_RichError *OScInternal_Error_RetrieveFromDevice(OSc_Device *device, int32_t 
 OSc_RichError *OScInternal_Error_RetrieveFromSetting(OSc_Setting *setting, int32_t code)
 {
 	if (!code)
-		return OSc_Error_OK;
+		return OSc_OK;
 	if (OScInternal_Setting_SupportsRichErrors(setting)) {
 		return OScInternal_Error_RetrieveRichErrors(code);
 	}
@@ -65,7 +65,7 @@ OSc_RichError *OScInternal_Error_RetrieveFromSetting(OSc_Setting *setting, int32
 OSc_RichError *OScInternal_Error_RetrieveFromModule(OScDev_ModuleImpl *modImpl, int32_t code)
 {
 	if (!code)
-		return OSc_Error_OK;
+		return OSc_OK;
 	if (OScInternal_Module_SupportsRichErrors(modImpl)) {
 		return OScInternal_Error_RetrieveRichErrors(code);
 	}

@@ -54,7 +54,7 @@ static OSc_RichError *LoadAdapter(const char *path, const char *name)
 	desc->name = malloc(strlen(name) + 1);
 	strcpy(desc->name, name);
 
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
@@ -135,7 +135,7 @@ OSc_RichError *OScInternal_DeviceModule_GetCount(size_t *count)
 		LoadAdapters();
 
 	*count = g_loadedAdapterCount;
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
@@ -148,7 +148,7 @@ OSc_RichError *OScInternal_DeviceModule_GetNames(const char **modules, size_t *c
 	for (i = 0; i < *count && i < g_loadedAdapterCount; ++i)
 		modules[i] = g_loadedAdapters[i].name;
 	*count = i;
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
@@ -194,5 +194,5 @@ OSc_RichError *OScInternal_DeviceModule_GetDeviceImpls(const char *module, OScIn
 	errCode = modImpl->GetDeviceImpls(deviceImpls);
 	if (errCode)
 		return OScInternal_Error_RetrieveFromModule(modImpl, errCode);
-	return OSc_Error_OK;
+	return OSc_OK;
 }

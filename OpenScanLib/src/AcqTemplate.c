@@ -396,7 +396,7 @@ OSc_RichError *OSc_AcqTemplate_Create(OSc_AcqTemplate **tmpl, OSc_LSM *lsm)
 	(*tmpl)->zoomFactor = GetDefaultZoom(*tmpl);
 	OSc_AcqTemplate_ResetROI(*tmpl);
 
-	return OSc_Error_OK;
+	return OSc_OK;
 
 error:
 	OSc_AcqTemplate_Destroy(*tmpl);
@@ -430,7 +430,7 @@ OSc_RichError *OSc_AcqTemplate_SetNumberOfFrames(OSc_AcqTemplate *tmpl, uint32_t
 		return OScInternal_Error_IllegalArgument();
 
 	tmpl->numberOfFrames = numberOfFrames;
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
@@ -447,7 +447,7 @@ OSc_RichError *OSc_AcqTemplate_GetPixelRateSetting(OSc_AcqTemplate *tmpl, OSc_Se
 	if (!tmpl)
 		return OScInternal_Error_IllegalArgument();
 	*setting = tmpl->pixelRateSetting;
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
@@ -456,7 +456,7 @@ OSc_RichError *OSc_AcqTemplate_GetResolutionSetting(OSc_AcqTemplate *tmpl, OSc_S
 	if (!tmpl)
 		return OScInternal_Error_IllegalArgument();
 	*setting = tmpl->resolutionSetting;
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
@@ -465,7 +465,7 @@ OSc_RichError *OSc_AcqTemplate_GetZoomFactorSetting(OSc_AcqTemplate *tmpl, OSc_S
 	if (!tmpl)
 		return OScInternal_Error_IllegalArgument();
 	*setting = tmpl->zoomFactorSetting;
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
@@ -474,7 +474,7 @@ OSc_RichError *OSc_AcqTemplate_GetMagnificationSetting(OSc_AcqTemplate *tmpl, OS
 	if (!tmpl)
 		return OScInternal_Error_IllegalArgument();
 	*setting = tmpl->magnificationSetting;
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
@@ -532,7 +532,7 @@ OSc_RichError *OSc_AcqTemplate_SetROI(OSc_AcqTemplate *tmpl, uint32_t xOffset, u
 	tmpl->yOffset = yOffset;
 	tmpl->width = width;
 	tmpl->height = height;
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
@@ -553,7 +553,7 @@ OSc_RichError *OSc_AcqTemplate_GetROI(OSc_AcqTemplate *tmpl, uint32_t *xOffset, 
 	*yOffset = tmpl->yOffset;
 	*width = tmpl->width;
 	*height = tmpl->height;
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 

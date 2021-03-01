@@ -47,7 +47,7 @@ OSc_RichError *OSc_Device_GetName(OSc_Device *device, const char **name)
 	}
 
 	*name = device->name;
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
@@ -70,7 +70,7 @@ OSc_RichError *OSc_Device_GetDisplayName(OSc_Device *device, const char **name)
 	}
 
 	*name = device->displayName;
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 OSc_RichError *OSc_Device_Open(OSc_Device *device, OSc_LSM *lsm)
@@ -78,7 +78,7 @@ OSc_RichError *OSc_Device_Open(OSc_Device *device, OSc_LSM *lsm)
 	if (device->isOpen)
 	{
 		if (device->associatedLSM == lsm)
-			return OSc_Error_OK;
+			return OSc_OK;
 		return OScInternal_Error_DeviceAlreadyOpen();
 	}
 
@@ -94,7 +94,7 @@ OSc_RichError *OSc_Device_Open(OSc_Device *device, OSc_LSM *lsm)
 		goto Error;
 	device->associatedLSM = lsm;
 
-	return OSc_Error_OK;
+	return OSc_OK;
 
 Error:
 	OSc_Device_Close(device);
@@ -105,7 +105,7 @@ Error:
 OSc_RichError *OSc_Device_Close(OSc_Device *device)
 {
 	if (!device || !device->isOpen)
-		return OSc_Error_OK;
+		return OSc_OK;
 
 	OSc_RichError *err;
 	OScDev_Error errCode;
@@ -121,7 +121,7 @@ OSc_RichError *OSc_Device_Close(OSc_Device *device)
 
 	device->isOpen = false;
 
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
@@ -166,7 +166,7 @@ OSc_RichError *OSc_Device_GetSettings(OSc_Device *device, OSc_Setting ***setting
 
 	*settings = (OScDev_Setting**)OScInternal_PtrArray_Data(device->settings);
 	*count = OScInternal_PtrArray_Size(device->settings);
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
@@ -183,7 +183,7 @@ OScDev_Error OScInternal_Device_Create(OScDev_ModuleImpl *modImpl, OSc_Device **
 OSc_RichError *OScInternal_Device_Destroy(OSc_Device *device)
 {
 	if (!device) {
-		return OSc_Error_OK;
+		return OSc_OK;
 	}
 
 	device->impl->ReleaseInstance(device);
@@ -198,7 +198,7 @@ OSc_RichError *OScInternal_Device_Destroy(OSc_Device *device)
 	}
 
 	free(device);
-	return OSc_Error_OK;
+	return OSc_OK;
 }
 
 
