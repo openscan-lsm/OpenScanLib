@@ -6,6 +6,7 @@
 #define MAX_NUM_PORTS 256
 
 
+
 OScDev_Error NIDAQEnumerateInstances(OScDev_PtrArray **devices);
 OScDev_Error ParseDeviceNameList(char *names,
 	char(*deviceNames)[OScDev_MAX_STR_LEN + 1], size_t *deviceCount);

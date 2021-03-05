@@ -11,6 +11,8 @@
 #define OSc_DEFAULT_ZOOM 1.0
 #define OSc_Total_Channel_Num 3
 
+#define ERROR_DOMAIN "SimulatedDeviceModule"
+
 
 // DAQmx tasks and flags to track invalidated configurations for clock
 // See Clock.c
@@ -139,7 +141,7 @@ int32 SetUpClock(OScDev_Device *device, struct ClockConfig *config, OScDev_Acqui
 int32 ShutdownClock(OScDev_Device *device, struct ClockConfig *config);
 int32 StartClock(OScDev_Device *device, struct ClockConfig *config);
 int32 StopClock(OScDev_Device *device, struct ClockConfig *config);
-int32 SetUpScanner(OScDev_Device *device, struct ScannerConfig *config, OScDev_Acquisition *acq);
+OScDev_RichError *SetUpScanner(OScDev_Device *device, struct ScannerConfig *config, OScDev_Acquisition *acq);
 int32 ShutdownScanner(OScDev_Device *device, struct ScannerConfig *config);
 int32 StartScanner(OScDev_Device *device, struct ScannerConfig *config);
 int32 StopScanner(OScDev_Device *device, struct ScannerConfig *config);

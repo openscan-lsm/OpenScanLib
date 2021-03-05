@@ -2,7 +2,6 @@
 #include "Waveform.h"
 
 #include <OpenScanDeviceLib.h>
-#include <NIDAQmx.h>
 #include <stdbool.h>
 #include <string.h>
 
@@ -12,18 +11,20 @@ static int32 WriteScannerOutput(OScDev_Device *device, struct ScannerConfig *con
 
 
 // Initialize, configure, and arm the scanner, whatever its current state
-int32 SetUpScanner(OScDev_Device *device, struct ScannerConfig *config, OScDev_Acquisition *acq)
+OScDev_RichError *SetUpScanner(OScDev_Device *device, struct ScannerConfig *config, OScDev_Acquisition *acq)
 {
 	bool mustCommit = false;
 
 	int32 nierr;
+	OScDev_RichError *err;
 	if (!config->aoTask)
 	{
 		nierr = DAQmxCreateTask("Scanner", &config->aoTask);
 		if (nierr)
 		{
+			err = OScDev_Error_CreateWithCode(ERROR_DOMAIN, nierr, "creating scanner task");
 			LogNiError(device, nierr, "creating scanner task");
-			return nierr;
+			return err;
 		}
 
 		char aoTerminals[256];
@@ -34,6 +35,7 @@ int32 SetUpScanner(OScDev_Device *device, struct ScannerConfig *config, OScDev_A
 			"Galvos", -10.0, 10.0, DAQmx_Val_Volts, NULL);
 		if (nierr)
 		{
+			err = OScDev_Error_CreateWithCode(ERROR_DOMAIN, nierr, "creating ao channels for scanner");
 			LogNiError(device, nierr, "creating ao channels for scanner");
 			goto error;
 		}
@@ -47,7 +49,11 @@ int32 SetUpScanner(OScDev_Device *device, struct ScannerConfig *config, OScDev_A
 	{
 		nierr = ConfigureScannerTiming(device, config, acq);
 		if (nierr)
+		{
+			err = OScDev_Error_CreateWithCode(ERROR_DOMAIN, nierr, "configure scanner timing");
 			goto error;
+		}
+			
 		config->mustReconfigureTiming = false;
 		mustCommit = true;
 	}
@@ -56,7 +62,10 @@ int32 SetUpScanner(OScDev_Device *device, struct ScannerConfig *config, OScDev_A
 	{
 		nierr = WriteScannerOutput(device, config, acq);
 		if (nierr)
+		{
+			err = OScDev_Error_CreateWithCode(ERROR_DOMAIN, nierr, "write scanner output");
 			goto error;
+		}
 		config->mustRewriteOutput = false;
 		mustCommit = true;
 	}
@@ -66,17 +75,18 @@ int32 SetUpScanner(OScDev_Device *device, struct ScannerConfig *config, OScDev_A
 		nierr = DAQmxTaskControl(config->aoTask, DAQmx_Val_Task_Commit);
 		if (nierr)
 		{
+			err = OScDev_Error_CreateWithCode(ERROR_DOMAIN, nierr, "creating ao channels for scanner");
 			LogNiError(device, nierr, "committing task for scanner");
 			goto error;
 		}
 	}
 
-	return 0;
+	return OScDev_RichError_OK;
 
 error:
 	if (ShutdownScanner(device, config))
 		OScDev_Log_Error(device, "Failed to clean up scanner task after error");
-	return nierr;
+	return err;
 }
 
 
