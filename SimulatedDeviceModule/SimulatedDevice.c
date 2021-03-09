@@ -3,9 +3,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <Windows.h>
+#include <stdio.h>
 
 // macro from NIDAQmx.h
 #include <NIDAQmx.h>
+#include "strmap.h"
 
 static const uint32_t X_RETRACE_LEN = 128;
 static const uint32_t Y_RETRACE_LEN = 12;
@@ -13,28 +15,6 @@ static const uint32_t Y_RETRACE_LEN = 12;
 #define OSc_DEFAULT_RESOLUTION 512
 #define OSc_DEFAULT_ZOOM 1.0
 #define OSc_Total_Channel_Num 3
-
-// strmap.h
-typedef struct Pair Pair;
-
-typedef struct Bucket Bucket;
-
-struct Pair {
-	char* key;
-	char* value;
-};
-
-struct Bucket {
-	unsigned int count;
-	Pair* pairs;
-};
-
-struct StrMap {
-	unsigned int count;
-	Bucket* buckets;
-};
-
-typedef StrMap StrMap;
 
 
 // DAQmx tasks and flags to track invalidated configurations for clock
@@ -152,136 +132,233 @@ static inline struct OScNIDAQPrivateData* GetData(OScDev_Device* device)
 	return (struct OScNIDAQPrivateData*)OScDev_Device_GetImplData(device);
 }
 
-// // DAQ version; acquire from multiple channels
-// static OScDev_Error ReadImage(OScDev_Device* device, OScDev_Acquisition* acq)
-// {
-// 	double pixelRateHz = OScDev_Acquisition_GetPixelRate(acq);
-// 	uint32_t xOffset, yOffset, width, height;
-// 	OScDev_Acquisition_GetROI(acq, &xOffset, &yOffset, &width, &height);
+static void PopulateDefaultParameters(struct OScNIDAQPrivateData *data)
+{
+	data->detectorOnly = false;
+	data->scannerOnly = false;
+	data->channelMap_ = sm_new(32);
+	//Assume portList[256][32];
+	data->aiPorts_ = malloc(256 * (sizeof(char)*32));
+	for (int i = 0; i < 256; i++) {
+		data->aiPorts_[i] = malloc(32 * sizeof(char));
+	}
+	data->enabledAIPorts_ = malloc(sizeof(char) * 2048);
+	
+	// Assume 3 chanel at maximum, each 16 chars at most
+	data->selectedDispChan_ = malloc(3 * sizeof(char*));
+	for (int i = 0; i < 3; i++) {
+		data->selectedDispChan_[i] = malloc(sizeof(char) * 16);
+	}
+	data->selectedDispChan_[0] = "Channel1";
+	data->channelCount = 1;
 
-// 	uint32_t elementsPerLine = GetData(device)->lineDelay + width + X_RETRACE_LEN;
-// 	uint32_t scanLines = height;
-// 	int32 elementsPerFramePerChan = elementsPerLine * scanLines;
-// 	size_t nPixels = width * height;
+	memset(&data->clockConfig, 0, sizeof(struct ClockConfig));
+	memset(&data->scannerConfig, 0, sizeof(struct ScannerConfig));
+	memset(&data->detectorConfig, 0, sizeof(struct DetectorConfig));
 
-// 	GetData(device)->oneFrameScanDone = false;
-// 	GetData(device)->framePixelsFilled = 0;
+	data->oneFrameScanDone = false;
+	data->framePixelsFilled = 0;
 
-// 	uint32_t yLen = height + Y_RETRACE_LEN;
-// 	uint32_t estFrameTimeMs = (uint32_t)(1e3 * elementsPerLine * yLen * GetData(device)->binFactor / pixelRateHz);
-// 	uint32_t totalWaitTimeMs = 0;
+	data->lineDelay = 50;
+	data->binFactor = 2;
+	data->numLinesToBuffer = 8;
+	data->inputVoltageRange = 10.0;
+	data->channels = CHANNEL1;
+	data->numAIChannels = 1;
+	data->numDOChannels = 1;
+	data->offsetXY[0] = 0.0;
+	data->offsetXY[1] = 0.0;
+	data->minVolts_ = -10.0;
+	data->maxVolts_ = 10.0;
+	
+	InitializeCriticalSection(&(data->acquisition.mutex));
+	data->acquisition.thread = NULL;
+	InitializeConditionVariable(&(data->acquisition.acquisitionFinishCondition));
+	data->acquisition.running = false;
+	data->acquisition.armed = false;
+	data->acquisition.started = false;
+	data->acquisition.stopRequested = false;
+	data->acquisition.acquisition = NULL;
+}
 
-// 	OScDev_Error err;
-// 	if (OScDev_CHECK(err, StartScan(device)))
-// 		return err;
+// DAQ version; acquire from multiple channels
+static OScDev_RichError *ReadImage(OScDev_Device* device, OScDev_Acquisition* acq)
+{
+	// double pixelRateHz = OScDev_Acquisition_GetPixelRate(acq);
+	// uint32_t xOffset, yOffset, width, height;
+	// OScDev_Acquisition_GetROI(acq, &xOffset, &yOffset, &width, &height);
 
-// 	// Wait for scan to complete
-// 	int32 nierr = DAQmxWaitUntilTaskDone(GetData(device)->scannerConfig.aoTask,
-// 		2 * estFrameTimeMs * 1e-3);
-// 	if (nierr)
-// 		LogNiError(device, nierr, "waiting for scanner task to finish");
+	// uint32_t elementsPerLine = GetData(device)->lineDelay + width + X_RETRACE_LEN;
+	// uint32_t scanLines = height;
+	// int32 elementsPerFramePerChan = elementsPerLine * scanLines;
+	// size_t nPixels = width * height;
 
-// 	// Wait for data
-// 	if (!GetData(device)->scannerOnly)
-// 	{
-// 		while (!GetData(device)->oneFrameScanDone) {
-// 			Sleep(1);
-// 			totalWaitTimeMs += 1;
-// 			if (totalWaitTimeMs > 2 * estFrameTimeMs)
-// 			{
-// 				OScDev_Log_Error(device, "Error: Acquisition timeout!");
-// 				break;
-// 			}
-// 		}
-// 		char msg[OScDev_MAX_STR_LEN + 1];
-// 		snprintf(msg, OScDev_MAX_STR_LEN, "Total wait time is %d ", totalWaitTimeMs);
-// 		OScDev_Log_Debug(device, msg);
-// 	}
+	// GetData(device)->oneFrameScanDone = false;
+	// GetData(device)->framePixelsFilled = 0;
 
-// 	if (OScDev_CHECK(err, StopScan(device, acq)))
-// 		return err;
+	// uint32_t yLen = height + Y_RETRACE_LEN;
+	// uint32_t estFrameTimeMs = (uint32_t)(1e3 * elementsPerLine * yLen * GetData(device)->binFactor / pixelRateHz);
+	// uint32_t totalWaitTimeMs = 0;
 
-// 	// SplitChannels
-// 	// skik if set to scanner only mode
-// 	if (!GetData(device)->scannerOnly)
-// 	{
-// 		bool shouldContinue;
-// 		for (uint32_t ch = 0; ch < GetData(device)->numAIChannels; ++ch)
-// 		{
-// 			shouldContinue = OScDev_Acquisition_CallFrameCallback(acq,
-// 				ch, GetData(device)->frameBuffers[ch]);
-// 			if (!shouldContinue)
-// 			{
-// 				// TODO Stop acquisition
-// 			}
-// 		}
-// 	}
+	// OScDev_Error err;
+	// if (OScDev_CHECK(err, StartScan(device)))
+	// 	return err;
 
-// 	return OScDev_OK;
-// }
+	// // Wait for scan to complete
+	// int32 nierr = DAQmxWaitUntilTaskDone(GetData(device)->scannerConfig.aoTask,
+	// 	2 * estFrameTimeMs * 1e-3);
+	// if (nierr)
+	// 	LogNiError(device, nierr, "waiting for scanner task to finish");
 
+	// // Wait for data
+	// if (!GetData(device)->scannerOnly)
+	// {
+	// 	while (!GetData(device)->oneFrameScanDone) {
+	// 		Sleep(1);
+	// 		totalWaitTimeMs += 1;
+	// 		if (totalWaitTimeMs > 2 * estFrameTimeMs)
+	// 		{
+	// 			OScDev_Log_Error(device, "Error: Acquisition timeout!");
+	// 			break;
+	// 		}
+	// 	}
+	// 	char msg[OScDev_MAX_STR_LEN + 1];
+	// 	snprintf(msg, OScDev_MAX_STR_LEN, "Total wait time is %d ", totalWaitTimeMs);
+	// 	OScDev_Log_Debug(device, msg);
+	// }
 
-// static OScDev_Error AcquireFrame(OScDev_Device* device, OScDev_Acquisition* acq)
-// {
-// 	OScDev_Error err;
-// 	OScDev_Log_Debug(device, "Reading image...");
-// 	if (OScDev_CHECK(err, ReadImage(device, acq)))
-// 		return err;
-// 	OScDev_Log_Debug(device, "Finished reading image");
+	// if (OScDev_CHECK(err, StopScan(device, acq)))
+	// 	return err;
 
-// 	return OScDev_OK;
-// }
+	// // SplitChannels
+	// // skik if set to scanner only mode
+	// if (!GetData(device)->scannerOnly)
+	// {
+	// 	bool shouldContinue;
+	// 	for (uint32_t ch = 0; ch < GetData(device)->numAIChannels; ++ch)
+	// 	{
+	// 		shouldContinue = OScDev_Acquisition_CallFrameCallback(acq,
+	// 			ch, GetData(device)->frameBuffers[ch]);
+	// 		if (!shouldContinue)
+	// 		{
+	// 			// TODO Stop acquisition
+	// 		}
+	// 	}
+	// }
 
-
-// static DWORD WINAPI AcquisitionLoop(void* param)
-// {
-// 	OScDev_Device* device = (OScDev_Device*)param;
-// 	OScDev_Acquisition* acq = GetData(device)->acquisition.acquisition;
-
-// 	uint32_t totalFrames = OScDev_Acquisition_GetNumberOfFrames(acq);
-
-// 	for (uint32_t frame = 0; frame < totalFrames; ++frame)
-// 	{
-// 		bool stopRequested;
-// 		EnterCriticalSection(&(GetData(device)->acquisition.mutex));
-// 		stopRequested = GetData(device)->acquisition.stopRequested;
-// 		LeaveCriticalSection(&(GetData(device)->acquisition.mutex));
-// 		if (stopRequested)
-// 			break;
-
-// 		char msg[OScDev_MAX_STR_LEN + 1];
-// 		snprintf(msg, OScDev_MAX_STR_LEN, "Sequence acquiring frame # %d", frame);
-// 		OScDev_Log_Debug(device, msg);
-
-// 		OScDev_Error err;
-// 		if (OScDev_CHECK(err, AcquireFrame(device, acq)))
-// 		{
-// 			char msg[OScDev_MAX_STR_LEN + 1];
-// 			snprintf(msg, OScDev_MAX_STR_LEN, "Error during sequence acquisition: %d", (int)err);
-// 			OScDev_Log_Error(device, msg);
-// 			break;
-// 		}
-// 	}
-
-// 	EnterCriticalSection(&(GetData(device)->acquisition.mutex));
-// 	GetData(device)->acquisition.running = false;
-// 	LeaveCriticalSection(&(GetData(device)->acquisition.mutex));
-// 	CONDITION_VARIABLE* cv = &(GetData(device)->acquisition.acquisitionFinishCondition);
-// 	WakeAllConditionVariable(cv);
-
-// 	return 0;
-// }
+	return OScDev_RichError_OK;
+}
 
 
-// OScDev_Error RunAcquisitionLoop(OScDev_Device* device)
-// {
-// 	DWORD id;
-// 	GetData(device)->acquisition.thread =
-// 		CreateThread(NULL, 0, AcquisitionLoop, device, 0, &id);
-// 	return OScDev_OK;
-// }
+static OScDev_RichError *AcquireFrame(OScDev_Device* device, OScDev_Acquisition* acq)
+{
+	OScDev_RichError *err;
+	OScDev_Log_Debug(device, "Reading image...");
+	if (OScDev_CHECK(err, ReadImage(device, acq)))
+		return err;
+	OScDev_Log_Debug(device, "Finished reading image");
 
-// static OScDev_DeviceImpl g_SimulatedDeviceImpl;
+	return OScDev_RichError_OK;;
+}
+
+
+static DWORD WINAPI AcquisitionLoop(void *param)
+{
+	OScDev_Device *device = (OScDev_Device *)param;
+	OScDev_Acquisition *acq = GetData(device)->acquisition.acquisition;
+
+	uint32_t totalFrames = OScDev_Acquisition_GetNumberOfFrames(acq);
+
+	for (uint32_t frame = 0; frame < totalFrames; ++frame)
+	{
+		bool stopRequested;
+		EnterCriticalSection(&(GetData(device)->acquisition.mutex));
+		stopRequested = GetData(device)->acquisition.stopRequested;
+		LeaveCriticalSection(&(GetData(device)->acquisition.mutex));
+		if (stopRequested)
+			break;
+
+		char msg[OScDev_MAX_STR_LEN + 1];
+		snprintf(msg, OScDev_MAX_STR_LEN, "Sequence acquiring frame # %d", frame);
+		OScDev_Log_Debug(device, msg);
+
+		OScDev_Error err;
+		if (OScDev_CHECK(err, AcquireFrame(device, acq)))
+		{
+			char msg[OScDev_MAX_STR_LEN + 1];
+			snprintf(msg, OScDev_MAX_STR_LEN, "Error during sequence acquisition: %d", (int)err);
+			OScDev_Log_Error(device, msg);
+			break;
+		}
+	}
+
+	EnterCriticalSection(&(GetData(device)->acquisition.mutex));
+	GetData(device)->acquisition.running = false;
+	LeaveCriticalSection(&(GetData(device)->acquisition.mutex));
+	CONDITION_VARIABLE *cv = &(GetData(device)->acquisition.acquisitionFinishCondition);
+	WakeAllConditionVariable(cv);
+
+	return 0;
+}
+
+
+OScDev_RichError *RunAcquisitionLoop(OScDev_Device* device)
+{
+	DWORD id;
+	GetData(device)->acquisition.thread =
+		CreateThread(NULL, 0, AcquisitionLoop, device, 0, &id);
+	return OScDev_RichError_OK;
+}
+
+OScDev_RichError *WaitForAcquisitionToFinish(OScDev_Device *device)
+{
+	CRITICAL_SECTION *mutex = &GetData(device)->acquisition.mutex;
+	CONDITION_VARIABLE *cv = &(GetData(device)->acquisition.acquisitionFinishCondition);
+
+	EnterCriticalSection(mutex);
+	while (GetData(device)->acquisition.running)
+	{
+		SleepConditionVariableCS(cv, mutex, INFINITE);
+	}
+	LeaveCriticalSection(mutex);
+
+	return OScDev_RichError_OK;
+}
+
+
+OScDev_RichError *IsAcquisitionRunning(OScDev_Device *device, bool *isRunning)
+{
+	EnterCriticalSection(&(GetData(device)->acquisition.mutex));
+	*isRunning = GetData(device)->acquisition.running;
+	LeaveCriticalSection(&(GetData(device)->acquisition.mutex));
+	return OScDev_RichError_OK;
+}
+
+OScDev_RichError *StopAcquisitionAndWait(OScDev_Device *device)
+{
+	CRITICAL_SECTION *mutex = &GetData(device)->acquisition.mutex;
+	CONDITION_VARIABLE *cv = &(GetData(device)->acquisition.acquisitionFinishCondition);
+
+	EnterCriticalSection(mutex);
+	if (GetData(device)->acquisition.started) {
+		GetData(device)->acquisition.stopRequested = true;
+	}
+	else { // Armed but not started
+		GetData(device)->acquisition.running = false;
+	}
+
+	while (GetData(device)->acquisition.running)
+	{
+		SleepConditionVariableCS(cv, mutex, INFINITE);
+	}
+	LeaveCriticalSection(mutex);
+
+	return OScDev_RichError_OK;
+}
+
+
+
+static OScDev_DeviceImpl g_SimulatedDeviceImpl;
 
 
 static OScDev_Error GetModelName(const char **name)
@@ -295,22 +372,27 @@ static OScDev_Error EnumerateInstances(OScDev_PtrArray **devices)
 {
 	*devices = OScDev_PtrArray_Create();
 
+	struct OScNIDAQPrivateData *data = calloc(1, sizeof(struct OScNIDAQPrivateData));
+	strncpy(data->deviceName, "simulated device", OScDev_MAX_STR_LEN);
+
 	OScDev_Error errCode;
 	OScDev_Device *device0 = NULL;
-	errCode = OScDev_Device_Create(&device0, &g_SimulatedDeviceImpl, NULL);
+	errCode = OScDev_Device_Create(&device0, &g_SimulatedDeviceImpl, data);
 	if (errCode) {
 		OScDev_PtrArray_Destroy(*devices);
 		*devices = NULL;
 		return errCode;
 	}
+	PopulateDefaultParameters(GetData(device0));
 	OScDev_PtrArray_Append(*devices, device0);
 
 	return OScDev_OK;
 }
 
-// todo
+
 static OScDev_Error ReleaseInstance(OScDev_Device *device)
 {
+	free(GetData(device));
 	return OScDev_OK;
 }
 
@@ -321,15 +403,16 @@ static OScDev_Error GetName(OScDev_Device *device, char *name)
 	return OScDev_OK;
 }
 
-// todo
+// leave?
 static OScDev_Error Open(OScDev_Device* device)
 {
 	return OScDev_OK;
 }
 
-
+// leave?
 static OScDev_Error Close(OScDev_Device* device)
 {
+	StopAcquisitionAndWait(device);
 	return OScDev_OK;
 }
 
@@ -389,52 +472,56 @@ static OScDev_Error MakeSettings(OScDev_Device* device, OScDev_PtrArray** settin
 
 static OScDev_Error Arm(OScDev_Device* device, OScDev_Acquisition* acq)
 {
+	GetData(device)->acquisition.armed = true;
 	return OScDev_OK;
 }
 
+// todo
 static OScDev_Error Start(OScDev_Device* device)
 {
-	OScDev_RichError* err;
 	EnterCriticalSection(&(GetData(device)->acquisition.mutex));
 	{
+		// bool running = GetData(device)->acquisition.running;
+		// bool armed = GetData(device)->acquisition.armed;
 		if (!GetData(device)->acquisition.running ||
 			!GetData(device)->acquisition.armed)
 		{
 			LeaveCriticalSection(&(GetData(device)->acquisition.mutex));
-			err = OScDev_Error_Create("not armed");
-			//return OScDev_Error_Not_Armed;
-			return OScDev_Error_ReturnAsCode(err);
+			return OScDev_Error_ReturnAsCode(OScDev_Error_Create("not armed"));
 		}
 		if (GetData(device)->acquisition.started)
 		{
 			LeaveCriticalSection(&(GetData(device)->acquisition.mutex));
-			err = OScDev_Error_Create("acquisition running");
-			//return OScDev_Error_Acquisition_Running;
-			return OScDev_Error_ReturnAsCode(err);
+			return OScDev_Error_ReturnAsCode(OScDev_Error_Create("acquisition running"));
 		}
 
 		GetData(device)->acquisition.started = true;
 	}
 	LeaveCriticalSection(&(GetData(device)->acquisition.mutex));
 
-	err = OScDev_Error_Create("fail to run acquisition loop");
-	return OScDev_Error_ReturnAsCode(err);
+	return OScDev_Error_ReturnAsCode(RunAcquisitionLoop(device));
 }
+
 
 static OScDev_Error Stop(OScDev_Device* device)
 {
-	return OScDev_OK;
+	// return OScDev_OK;
+	return StopAcquisitionAndWait(device);
 }
+
 
 static OScDev_Error IsRunning(OScDev_Device* device, bool* isRunning)
 {
-	*isRunning = false;
-	return OScDev_OK;
+	// *isRunning = false;
+	// return OScDev_OK;
+	return IsAcquisitionRunning(device, isRunning);
 }
+
 
 static OScDev_Error Wait(OScDev_Device* device)
 {
-	return OScDev_OK;
+	// return OScDev_OK;
+	return WaitForAcquisitionToFinish(device);
 }
 
 
