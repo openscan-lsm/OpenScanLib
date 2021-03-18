@@ -5,7 +5,7 @@
 #include <Windows.h>
 #include <stdio.h>
 #include <time.h>
-#include <NIDAQmx.h>
+
 
 uint16_t* buf_frame;
 static OScDev_DeviceImpl g_SimulatedDeviceImpl;
@@ -18,7 +18,6 @@ struct OScNIDAQPrivateData
 
 	// simulated error property, if true, the device adaptor will receive a rich error.
 	bool errorOnStart;
-	uInt32 numAIChannels;
 
 	struct
 	{
@@ -71,7 +70,6 @@ static void PopulateDefaultParameters(struct OScNIDAQPrivateData *data)
 {
 
 	data->errorOnStart = false;
-	data->numAIChannels = 1;
 	
 	InitializeCriticalSection(&(data->acquisition.mutex));
 	data->acquisition.thread = NULL;
@@ -89,20 +87,13 @@ static OScDev_Error SimulateImage(OScDev_Device* device, OScDev_Acquisition* acq
 	uint32_t xOffset, yOffset, width, height;
 	OScDev_Acquisition_GetROI(acq, &xOffset, &yOffset, &width, &height);
 
-	uint32_t scanLines = height;
-	size_t nPixels = width * height;
-
-
 	bool shouldContinue;
 	srand((unsigned)time(NULL));
 	for (int i = 0; i < width * height; ++i)
 	{
 		buf_frame[i] = rand() % 256;
 	}
-	for (uint32_t ch = 0; ch < GetData(device)->numAIChannels; ++ch)
-	{
-		shouldContinue = OScDev_Acquisition_CallFrameCallback(acq, ch, buf_frame);
-	}
+	shouldContinue = OScDev_Acquisition_CallFrameCallback(acq, 0, buf_frame);
 	Sleep(100);
 
 	return OScDev_OK;
@@ -265,8 +256,7 @@ static OScDev_Error Open(OScDev_Device* device)
 
 static OScDev_Error Close(OScDev_Device* device)
 {
-	StopAcquisitionAndWait(device);
-	return OScDev_OK;
+	return StopAcquisitionAndWait(device);
 }
 
 
@@ -377,7 +367,7 @@ static OScDev_Error Start(OScDev_Device* device)
 
 		if(GetData(device)->errorOnStart) {
 			LeaveCriticalSection(&(GetData(device)->acquisition.mutex));
-			return OScDev_Error_ReturnAsCode(OScDev_Error_Create("Simulated error"));
+			return OScDev_Error_ReturnAsCode(OScDev_Error_Create("simulated error"));
 		}
 		GetData(device)->acquisition.started = true;
 	}
