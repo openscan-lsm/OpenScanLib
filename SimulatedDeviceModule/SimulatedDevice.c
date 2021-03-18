@@ -16,58 +16,9 @@ struct OScNIDAQPrivateData
 	// The DAQmx name for the DAQ card
 	char deviceName[OScDev_MAX_STR_LEN + 1];
 
-
-
-	// Flags for scanner and detector
-	bool detectorOnly;
-	bool scannerOnly;
-
-	// counted as number of pixels. 
-	// to adjust for the lag between the mirror control signal and the actual position of the mirror
-	// scan phase (uSec) = line delay * bin factor / scan rate
+	// simulated error property, if true, the device adaptor will receive a rich error.
 	bool errorOnStart;
-	//uint32_t lineDelay;
-	uint32_t binFactor;
-	uint32_t numLinesToBuffer;
-	double inputVoltageRange;
 	uInt32 numAIChannels;
-	uInt32 numDOChannels; // reserved for multiple line and frame clocks
-	double offsetXY[2];
-	double minVolts_; // min possible for device
-	double maxVolts_; // max possible for device
-	uint32_t channelCount;
-
-	char** aiPorts_;
-	char* aoChanList_;
-	char* doChanList_;
-	char* coChanList_;
-	char* acqTrigPort_;
-	const char** selectedDispChan_;
-	char* enabledAIPorts_;
-	//StrMap* channelMap_;
-
-	enum {
-		CHANNEL1,
-		CHANNEL2,
-		CHANNEL3,
-		CHANNELS_1_AND_2,
-		CHANNELS_1_AND_3,
-		CHANNELS1_2_3,
-		CHANNELS_NUM_VALUES
-	} channels;
-
-	// Read, but unprocessed, raw samples; channels interleaved
-	// Leftover data from the previous read, if any, is at the start of the
-	// buffer and consists of rawDataSize samples.
-	float64* rawDataBuffer;
-	size_t rawDataSize; // Current data size
-	size_t rawDataCapacity; // Buffer size
-
-	// Per-channel frame buffers that we fill in and pass to OpenScanLib
-	// Index is order among currently enabled channels.
-	// Buffers for unused channels may not be allocated.
-
-	size_t framePixelsFilled;
 
 	struct
 	{
@@ -118,38 +69,9 @@ static inline struct OScNIDAQPrivateData* GetData(OScDev_Device* device)
 
 static void PopulateDefaultParameters(struct OScNIDAQPrivateData *data)
 {
-	data->detectorOnly = false;
-	data->scannerOnly = false;
-	//data->channelMap_ = sm_new(32);
-	//Assume portList[256][32];
-	data->aiPorts_ = malloc(256 * (sizeof(char)*32));
-	for (int i = 0; i < 256; i++) {
-		data->aiPorts_[i] = malloc(32 * sizeof(char));
-	}
-	data->enabledAIPorts_ = malloc(sizeof(char) * 2048);
-	
-	// Assume 3 chanel at maximum, each 16 chars at most
-	data->selectedDispChan_ = malloc(3 * sizeof(char*));
-	for (int i = 0; i < 3; i++) {
-		data->selectedDispChan_[i] = malloc(sizeof(char) * 16);
-	}
-	data->selectedDispChan_[0] = "Channel1";
-	data->channelCount = 1;
-
-
-	data->framePixelsFilled = 0;
 
 	data->errorOnStart = false;
-	data->binFactor = 2;
-	data->numLinesToBuffer = 8;
-	data->inputVoltageRange = 10.0;
-	data->channels = CHANNEL1;
 	data->numAIChannels = 1;
-	data->numDOChannels = 1;
-	data->offsetXY[0] = 0.0;
-	data->offsetXY[1] = 0.0;
-	data->minVolts_ = -10.0;
-	data->maxVolts_ = 10.0;
 	
 	InitializeCriticalSection(&(data->acquisition.mutex));
 	data->acquisition.thread = NULL;
@@ -170,8 +92,6 @@ static OScDev_Error SimulateImage(OScDev_Device* device, OScDev_Acquisition* acq
 	uint32_t scanLines = height;
 	size_t nPixels = width * height;
 
-
-	GetData(device)->framePixelsFilled = 0;
 
 	bool shouldContinue;
 	srand((unsigned)time(NULL));
