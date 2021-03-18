@@ -202,9 +202,6 @@ OScDev_Error StopAcquisitionAndWait(OScDev_Device *device)
 }
 
 
-
-
-
 static OScDev_Error GetModelName(const char **name)
 {
 	*name = "SimulatedDevice";
@@ -333,6 +330,7 @@ error:
 	return err;
 }
 
+
 static OScDev_Error Arm(OScDev_Device* device, OScDev_Acquisition* acq)
 {
 	EnterCriticalSection(&(GetData(device)->acquisition.mutex));
@@ -366,6 +364,7 @@ static OScDev_Error Start(OScDev_Device* device)
 		}
 
 		if(GetData(device)->errorOnStart) {
+			GetData(device)->acquisition.running = false;
 			LeaveCriticalSection(&(GetData(device)->acquisition.mutex));
 			return OScDev_Error_ReturnAsCode(OScDev_Error_Create("simulated error"));
 		}
