@@ -7,41 +7,8 @@
 #include <time.h>
 #include <NIDAQmx.h>
 
-static const uint32_t X_RETRACE_LEN = 128;
-
-#define OSc_Total_Channel_Num 3
-
-// DAQmx tasks and flags to track invalidated configurations for clock
-// See Clock.c
-struct ClockConfig
-{
-	TaskHandle doTask;
-	TaskHandle lineCtrTask;
-	bool mustReconfigureTiming;
-	bool mustReconfigureTriggers;
-	bool mustRewriteOutput;
-};
-
-
-// DAQmx task and flags to track invalidated configurations for scanner
-// See Scanner.c
-struct ScannerConfig
-{
-	TaskHandle aoTask;
-	bool mustReconfigureTiming;
-	bool mustRewriteOutput;
-};
-
-
-// DAQmx task and flags to track invalidated configurations for detector
-// See Detector.c
-struct DetectorConfig
-{
-	TaskHandle aiTask;
-	bool mustReconfigureTiming;
-	bool mustReconfigureTrigger;
-	bool mustReconfigureCallback;
-};
+uint16_t* buf_frame;
+static OScDev_DeviceImpl g_SimulatedDeviceImpl;
 
 
 struct OScNIDAQPrivateData
@@ -49,11 +16,8 @@ struct OScNIDAQPrivateData
 	// The DAQmx name for the DAQ card
 	char deviceName[OScDev_MAX_STR_LEN + 1];
 
-	struct ClockConfig clockConfig;
-	struct ScannerConfig scannerConfig;
-	struct DetectorConfig detectorConfig;
 
-	bool oneFrameScanDone;
+
 	// Flags for scanner and detector
 	bool detectorOnly;
 	bool scannerOnly;
@@ -61,7 +25,8 @@ struct OScNIDAQPrivateData
 	// counted as number of pixels. 
 	// to adjust for the lag between the mirror control signal and the actual position of the mirror
 	// scan phase (uSec) = line delay * bin factor / scan rate
-	uint32_t lineDelay;
+	bool errorOnStart;
+	//uint32_t lineDelay;
 	uint32_t binFactor;
 	uint32_t numLinesToBuffer;
 	double inputVoltageRange;
@@ -101,7 +66,7 @@ struct OScNIDAQPrivateData
 	// Per-channel frame buffers that we fill in and pass to OpenScanLib
 	// Index is order among currently enabled channels.
 	// Buffers for unused channels may not be allocated.
-	uint16_t* frameBuffers[OSc_Total_Channel_Num];
+
 	size_t framePixelsFilled;
 
 	struct
@@ -115,6 +80,33 @@ struct OScNIDAQPrivateData
 		bool stopRequested; // Valid when running == true
 		OScDev_Acquisition* acquisition;
 	} acquisition;
+};
+
+
+static inline struct OScNIDAQPrivateData *GetSettingDeviceData(OScDev_Setting *setting)
+{
+	return (struct OScNIDAQPrivateData *)OScDev_Device_GetImplData((OScDev_Device *)OScDev_Setting_GetImplData(setting));
+}
+
+
+static OScDev_Error GetErrorOnStart(OScDev_Setting *setting, bool *value)
+{
+	*value = GetSettingDeviceData(setting)->errorOnStart;
+
+	return OScDev_OK;
+}
+
+
+static OScDev_Error SetErrorOnStart(OScDev_Setting *setting, bool value)
+{
+	GetSettingDeviceData(setting)->errorOnStart = value;
+	return OScDev_OK;
+}
+
+
+OScDev_SettingImpl SettingImpl_ErrorOnStart = {
+	.GetBool = GetErrorOnStart,
+	.SetBool = SetErrorOnStart,
 };
 
 
@@ -144,14 +136,10 @@ static void PopulateDefaultParameters(struct OScNIDAQPrivateData *data)
 	data->selectedDispChan_[0] = "Channel1";
 	data->channelCount = 1;
 
-	memset(&data->clockConfig, 0, sizeof(struct ClockConfig));
-	memset(&data->scannerConfig, 0, sizeof(struct ScannerConfig));
-	memset(&data->detectorConfig, 0, sizeof(struct DetectorConfig));
 
-	data->oneFrameScanDone = false;
 	data->framePixelsFilled = 0;
 
-	data->lineDelay = 50;
+	data->errorOnStart = false;
 	data->binFactor = 2;
 	data->numLinesToBuffer = 8;
 	data->inputVoltageRange = 10.0;
@@ -174,33 +162,30 @@ static void PopulateDefaultParameters(struct OScNIDAQPrivateData *data)
 }
 
 
-static OScDev_RichError *SimulateImage(OScDev_Device* device, OScDev_Acquisition* acq)
+static OScDev_Error SimulateImage(OScDev_Device* device, OScDev_Acquisition* acq)
 {
 	uint32_t xOffset, yOffset, width, height;
 	OScDev_Acquisition_GetROI(acq, &xOffset, &yOffset, &width, &height);
 
-	uint32_t elementsPerLine = GetData(device)->lineDelay + width + X_RETRACE_LEN;
 	uint32_t scanLines = height;
-	int32 elementsPerFramePerChan = elementsPerLine * scanLines;
 	size_t nPixels = width * height;
 
-	GetData(device)->oneFrameScanDone = false;
+
 	GetData(device)->framePixelsFilled = 0;
 
 	bool shouldContinue;
 	srand((unsigned)time(NULL));
-	uint16_t* buf = (uint16_t*)malloc(width * height * sizeof(uint16_t));
 	for (int i = 0; i < width * height; ++i)
 	{
-		buf[i] = rand() % 256;
+		buf_frame[i] = rand() % 256;
 	}
 	for (uint32_t ch = 0; ch < GetData(device)->numAIChannels; ++ch)
 	{
-		shouldContinue = OScDev_Acquisition_CallFrameCallback(acq, ch, buf);
+		shouldContinue = OScDev_Acquisition_CallFrameCallback(acq, ch, buf_frame);
 	}
 	Sleep(100);
 
-	return OScDev_RichError_OK;
+	return OScDev_OK;
 }
 
 
@@ -211,6 +196,10 @@ static DWORD WINAPI AcquisitionLoop(void *param)
 
 	uint32_t totalFrames = OScDev_Acquisition_GetNumberOfFrames(acq);
 
+	uint32_t xOffset, yOffset, width, height;
+	OScDev_Acquisition_GetROI(acq, &xOffset, &yOffset, &width, &height);
+
+	buf_frame = (uint16_t*)malloc(width * height * sizeof(uint16_t));
 	for (uint32_t frame = 0; frame < totalFrames; ++frame)
 	{
 		bool stopRequested;
@@ -233,6 +222,7 @@ static DWORD WINAPI AcquisitionLoop(void *param)
 			break;
 		}
 	}
+	free(buf_frame);
 
 	EnterCriticalSection(&(GetData(device)->acquisition.mutex));
 	GetData(device)->acquisition.running = false;
@@ -244,16 +234,16 @@ static DWORD WINAPI AcquisitionLoop(void *param)
 }
 
 
-OScDev_RichError *RunAcquisitionLoop(OScDev_Device* device)
+OScDev_Error RunAcquisitionLoop(OScDev_Device* device)
 {
 	DWORD id;
 	GetData(device)->acquisition.thread =
 		CreateThread(NULL, 0, AcquisitionLoop, device, 0, &id);
-	return OScDev_RichError_OK;
+	return OScDev_OK;
 }
 
 
-OScDev_RichError *WaitForAcquisitionToFinish(OScDev_Device *device)
+OScDev_Error WaitForAcquisitionToFinish(OScDev_Device *device)
 {
 	CRITICAL_SECTION *mutex = &GetData(device)->acquisition.mutex;
 	CONDITION_VARIABLE *cv = &(GetData(device)->acquisition.acquisitionFinishCondition);
@@ -265,20 +255,20 @@ OScDev_RichError *WaitForAcquisitionToFinish(OScDev_Device *device)
 	}
 	LeaveCriticalSection(mutex);
 
-	return OScDev_RichError_OK;
+	return OScDev_OK;
 }
 
 
-OScDev_RichError *IsAcquisitionRunning(OScDev_Device *device, bool *isRunning)
+OScDev_Error IsAcquisitionRunning(OScDev_Device *device, bool *isRunning)
 {
 	EnterCriticalSection(&(GetData(device)->acquisition.mutex));
 	*isRunning = GetData(device)->acquisition.running;
 	LeaveCriticalSection(&(GetData(device)->acquisition.mutex));
-	return OScDev_RichError_OK;
+	return OScDev_OK;
 }
 
 
-OScDev_RichError *StopAcquisitionAndWait(OScDev_Device *device)
+OScDev_Error StopAcquisitionAndWait(OScDev_Device *device)
 {
 	CRITICAL_SECTION *mutex = &GetData(device)->acquisition.mutex;
 	CONDITION_VARIABLE *cv = &(GetData(device)->acquisition.acquisitionFinishCondition);
@@ -297,11 +287,11 @@ OScDev_RichError *StopAcquisitionAndWait(OScDev_Device *device)
 	}
 	LeaveCriticalSection(mutex);
 
-	return OScDev_RichError_OK;
+	return OScDev_OK;
 }
 
 
-static OScDev_DeviceImpl g_SimulatedDeviceImpl;
+
 
 
 static OScDev_Error GetModelName(const char **name)
@@ -311,7 +301,6 @@ static OScDev_Error GetModelName(const char **name)
 }
 
 
-// todo
 static OScDev_Error EnumerateInstances(OScDev_PtrArray **devices)
 {
 	*devices = OScDev_PtrArray_Create();
@@ -347,13 +336,13 @@ static OScDev_Error GetName(OScDev_Device *device, char *name)
 	return OScDev_OK;
 }
 
-// leave?
+
 static OScDev_Error Open(OScDev_Device* device)
 {
 	return OScDev_OK;
 }
 
-// leave?
+
 static OScDev_Error Close(OScDev_Device* device)
 {
 	StopAcquisitionAndWait(device);
@@ -381,7 +370,7 @@ static OScDev_Error HasDetector(OScDev_Device* device, bool* hasDetector)
 	return OScDev_OK;
 }
 
-// todo
+
 static OScDev_Error GetPixelRates(OScDev_Device* device, OScDev_NumRange** pixelRatesHz)
 {
 	*pixelRatesHz = OScDev_NumRange_CreateDiscrete();
@@ -389,7 +378,7 @@ static OScDev_Error GetPixelRates(OScDev_Device* device, OScDev_NumRange** pixel
 	return OScDev_OK;
 }
 
-// todo
+
 static OScDev_Error GetResolutions(OScDev_Device* device, OScDev_NumRange** resolutions)
 {
 	*resolutions = OScDev_NumRange_CreateDiscrete();
@@ -398,12 +387,13 @@ static OScDev_Error GetResolutions(OScDev_Device* device, OScDev_NumRange** reso
 	return OScDev_OK;
 }
 
-// todo
+
 static OScDev_Error GetNumberOfChannels(OScDev_Device* device, uint32_t* nChannels)
 {
 	*nChannels = 1;
 	return OScDev_OK;
 }
+
 
 static OScDev_Error GetBytesPerSample(OScDev_Device* device, uint32_t* bytesPerSample)
 {
@@ -411,11 +401,26 @@ static OScDev_Error GetBytesPerSample(OScDev_Device* device, uint32_t* bytesPerS
 	return OScDev_OK;
 }
 
-// todo
+
 static OScDev_Error MakeSettings(OScDev_Device* device, OScDev_PtrArray** settings)
 {
+	OScDev_Error err = OScDev_OK;
 	*settings = OScDev_PtrArray_Create();
+
+	OScDev_Setting* lineDelay;
+	if (OScDev_CHECK(err, OScDev_Setting_Create(&lineDelay, "Error on start", OScDev_ValueType_Bool,
+		&SettingImpl_ErrorOnStart, device)))
+		goto error;
+	OScDev_PtrArray_Append(*settings, lineDelay);
 	return OScDev_OK;
+
+error:
+	for (size_t i = 0; i < OScDev_PtrArray_Size(*settings); ++i) {
+		OScDev_Setting_Destroy(OScDev_PtrArray_At(*settings, i));
+	}
+	OScDev_PtrArray_Destroy(*settings);
+	*settings = NULL;
+	return err;
 }
 
 static OScDev_Error Arm(OScDev_Device* device, OScDev_Acquisition* acq)
@@ -423,7 +428,6 @@ static OScDev_Error Arm(OScDev_Device* device, OScDev_Acquisition* acq)
 	EnterCriticalSection(&(GetData(device)->acquisition.mutex));
 	{
 		GetData(device)->acquisition.acquisition = acq;
-
 		GetData(device)->acquisition.stopRequested = false;
 		GetData(device)->acquisition.running = true;
 		GetData(device)->acquisition.armed = true;
@@ -433,54 +437,51 @@ static OScDev_Error Arm(OScDev_Device* device, OScDev_Acquisition* acq)
 	return OScDev_OK;
 }
 
-// todo
+
 static OScDev_Error Start(OScDev_Device* device)
 {
 	EnterCriticalSection(&(GetData(device)->acquisition.mutex));
 	{
-		// bool running = GetData(device)->acquisition.running;
-		// bool armed = GetData(device)->acquisition.armed;
 		if (!GetData(device)->acquisition.running ||
 			!GetData(device)->acquisition.armed)
 		{
 			LeaveCriticalSection(&(GetData(device)->acquisition.mutex));
 			return OScDev_Error_ReturnAsCode(OScDev_Error_Create("not armed"));
 		}
+
 		if (GetData(device)->acquisition.started)
 		{
 			LeaveCriticalSection(&(GetData(device)->acquisition.mutex));
 			return OScDev_Error_ReturnAsCode(OScDev_Error_Create("acquisition running"));
 		}
 
+		if(GetData(device)->errorOnStart) {
+			LeaveCriticalSection(&(GetData(device)->acquisition.mutex));
+			return OScDev_Error_ReturnAsCode(OScDev_Error_Create("Simulated error"));
+		}
 		GetData(device)->acquisition.started = true;
 	}
 	LeaveCriticalSection(&(GetData(device)->acquisition.mutex));
-
 	return OScDev_Error_ReturnAsCode(RunAcquisitionLoop(device));
 }
 
 
 static OScDev_Error Stop(OScDev_Device* device)
 {
-	// return OScDev_OK;
 	return StopAcquisitionAndWait(device);
 }
 
 
 static OScDev_Error IsRunning(OScDev_Device* device, bool* isRunning)
 {
-	// *isRunning = false;
-	// return OScDev_OK;
 	return IsAcquisitionRunning(device, isRunning);
 }
 
 
 static OScDev_Error Wait(OScDev_Device* device)
 {
-	// return OScDev_OK;
 	return WaitForAcquisitionToFinish(device);
 }
-
 
 
 static OScDev_DeviceImpl g_SimulatedDeviceImpl = {
@@ -521,4 +522,3 @@ OScDev_MODULE_IMPL =
 	.GetDeviceImpls = GetDeviceImpls,
 	.supportsRichErrors = true,
 };
-
