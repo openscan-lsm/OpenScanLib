@@ -204,7 +204,7 @@ OScDev_Error StopAcquisitionAndWait(OScDev_Device *device)
 
 static OScDev_Error GetModelName(const char **name)
 {
-	*name = "SimulatedDevice_int_error";
+	*name = "SimulatedDevice_legacy_errors";
 	return OScDev_OK;
 }
 
@@ -240,7 +240,7 @@ static OScDev_Error ReleaseInstance(OScDev_Device *device)
 
 static OScDev_Error GetName(OScDev_Device *device, char *name)
 {
-	strncpy(name, "SimulatedDevice", OScDev_MAX_STR_LEN);
+	strncpy(name, "SimulatedDevice_legacy_errors", OScDev_MAX_STR_LEN);
 	return OScDev_OK;
 }
 
@@ -315,7 +315,7 @@ static OScDev_Error MakeSettings(OScDev_Device* device, OScDev_PtrArray** settin
 	*settings = OScDev_PtrArray_Create();
 
 	OScDev_Setting* lineDelay;
-	if (OScDev_CHECK(err, OScDev_Setting_Create(&lineDelay, "Error on start", OScDev_ValueType_Bool,
+	if (OScDev_CHECK(err, OScDev_Setting_Create(&lineDelay, "Error on start2", OScDev_ValueType_Bool,
 		&SettingImpl_ErrorOnStart, device)))
 		goto error;
 	OScDev_PtrArray_Append(*settings, lineDelay);

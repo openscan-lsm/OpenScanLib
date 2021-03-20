@@ -11,13 +11,9 @@ uint16_t* buf_frame;
 static OScDev_DeviceImpl g_SimulatedDeviceImpl;
 
 
-struct OScNIDAQPrivateData
+struct DevicePrivateData
 {
-	// The DAQmx name for the DAQ card
-	char deviceName[OScDev_MAX_STR_LEN + 1];
-
-	// simulated error property, if true, the device adaptor will receive a rich error.
-	bool errorOnStart;
+	bool simulatedErrorOnStart;
 
 	struct
 	{
@@ -33,7 +29,7 @@ struct OScNIDAQPrivateData
 };
 
 
-static inline struct OScNIDAQPrivateData *GetSettingDeviceData(OScDev_Setting *setting)
+static inline struct DevicePrivateData *GetSettingDeviceData(OScDev_Setting *setting)
 {
 	return (struct OScNIDAQPrivateData *)OScDev_Device_GetImplData((OScDev_Device *)OScDev_Setting_GetImplData(setting));
 }
@@ -41,7 +37,7 @@ static inline struct OScNIDAQPrivateData *GetSettingDeviceData(OScDev_Setting *s
 
 static OScDev_Error GetErrorOnStart(OScDev_Setting *setting, bool *value)
 {
-	*value = GetSettingDeviceData(setting)->errorOnStart;
+	*value = GetSettingDeviceData(setting)->simulatedErrorOnStart;
 
 	return OScDev_OK;
 }
@@ -49,7 +45,7 @@ static OScDev_Error GetErrorOnStart(OScDev_Setting *setting, bool *value)
 
 static OScDev_Error SetErrorOnStart(OScDev_Setting *setting, bool value)
 {
-	GetSettingDeviceData(setting)->errorOnStart = value;
+	GetSettingDeviceData(setting)->simulatedErrorOnStart = value;
 	return OScDev_OK;
 }
 
@@ -60,16 +56,16 @@ OScDev_SettingImpl SettingImpl_ErrorOnStart = {
 };
 
 
-static inline struct OScNIDAQPrivateData* GetData(OScDev_Device* device)
+static inline struct DevicePrivateData* GetData(OScDev_Device* device)
 {
-	return (struct OScNIDAQPrivateData*)OScDev_Device_GetImplData(device);
+	return (struct DevicePrivateData*)OScDev_Device_GetImplData(device);
 }
 
 
-static void PopulateDefaultParameters(struct OScNIDAQPrivateData *data)
+static void InitializeDevicePrivateData(struct DevicePrivateData *data)
 {
 
-	data->errorOnStart = false;
+	data->simulatedErrorOnStart = false;
 	
 	InitializeCriticalSection(&(data->acquisition.mutex));
 	data->acquisition.thread = NULL;
@@ -126,12 +122,7 @@ static DWORD WINAPI AcquisitionLoop(void *param)
 
 		OScDev_RichError *err;
 		if (OScDev_CHECK(err, SimulateImage(device, acq)))
-		{
-			char msg[OScDev_MAX_STR_LEN + 1];
-			snprintf(msg, OScDev_MAX_STR_LEN, "Error during sequence acquisition: %d", (int)err);
-			OScDev_Log_Error(device, msg);
 			break;
-		}
 	}
 	free(buf_frame);
 
@@ -204,7 +195,7 @@ OScDev_Error StopAcquisitionAndWait(OScDev_Device *device)
 
 static OScDev_Error GetModelName(const char **name)
 {
-	*name = "SimulatedDevice";
+	*name = "SimulatedDevice_rich_errors";
 	return OScDev_OK;
 }
 
@@ -213,8 +204,7 @@ static OScDev_Error EnumerateInstances(OScDev_PtrArray **devices)
 {
 	*devices = OScDev_PtrArray_Create();
 
-	struct OScNIDAQPrivateData *data = calloc(1, sizeof(struct OScNIDAQPrivateData));
-	strncpy(data->deviceName, "simulated device", OScDev_MAX_STR_LEN);
+	struct DevicePrivateData *data = calloc(1, sizeof(struct DevicePrivateData));
 
 	OScDev_Error errCode;
 	OScDev_Device *device0 = NULL;
@@ -222,9 +212,10 @@ static OScDev_Error EnumerateInstances(OScDev_PtrArray **devices)
 	if (errCode) {
 		OScDev_PtrArray_Destroy(*devices);
 		*devices = NULL;
+		free(data);
 		return errCode;
 	}
-	PopulateDefaultParameters(GetData(device0));
+	InitializeDevicePrivateData(GetData(device0));
 	OScDev_PtrArray_Append(*devices, device0);
 
 	return OScDev_OK;
@@ -240,7 +231,7 @@ static OScDev_Error ReleaseInstance(OScDev_Device *device)
 
 static OScDev_Error GetName(OScDev_Device *device, char *name)
 {
-	strncpy(name, "SimulatedDevice", OScDev_MAX_STR_LEN);
+	strncpy(name, "SimulatedDevice_rich_errors", OScDev_MAX_STR_LEN);
 	return OScDev_OK;
 }
 
@@ -363,7 +354,7 @@ static OScDev_Error Start(OScDev_Device* device)
 			return OScDev_Error_ReturnAsCode(OScDev_Error_Create("acquisition running"));
 		}
 
-		if(GetData(device)->errorOnStart) {
+		if(GetData(device)->simulatedErrorOnStart) {
 			GetData(device)->acquisition.running = false;
 			LeaveCriticalSection(&(GetData(device)->acquisition.mutex));
 			return OScDev_Error_ReturnAsCode(OScDev_Error_Create("simulated error"));
@@ -413,7 +404,6 @@ static OScDev_DeviceImpl g_SimulatedDeviceImpl = {
 	.Stop = Stop,
 	.IsRunning = IsRunning,
 	.Wait = Wait,
-	// Other required methods omitted.
 };
 
 
@@ -427,7 +417,7 @@ OScDev_Error GetDeviceImpls(OScDev_PtrArray **deviceImpls)
 
 OScDev_MODULE_IMPL =
 {
-	.displayName = "Simulated Device Module for OpenScan",
+	.displayName = "Simulated Device (rich errors)",
 	.GetDeviceImpls = GetDeviceImpls,
 	.supportsRichErrors = true,
 };
