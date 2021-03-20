@@ -306,7 +306,7 @@ static OScDev_Error MakeSettings(OScDev_Device* device, OScDev_PtrArray** settin
 	*settings = OScDev_PtrArray_Create();
 
 	OScDev_Setting* lineDelay;
-	if (OScDev_CHECK(err, OScDev_Setting_Create(&lineDelay, "Error on start", OScDev_ValueType_Bool,
+	if (OScDev_CHECK(err, OScDev_Setting_Create(&lineDelay, "Error on start (rich)", OScDev_ValueType_Bool,
 		&SettingImpl_ErrorOnStart, device)))
 		goto error;
 	OScDev_PtrArray_Append(*settings, lineDelay);

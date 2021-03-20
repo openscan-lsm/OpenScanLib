@@ -89,8 +89,8 @@ static OScDev_Error SimulateImage(OScDev_Device* device, OScDev_Acquisition* acq
 	{
 		buf_frame[i] = rand() % 256;
 	}
-	shouldContinue = OScDev_Acquisition_CallFrameCallback(acq, 0, buf_frame);
-	Sleep(100);
+	//shouldContinue = OScDev_Acquisition_CallFrameCallback(acq, 0, buf_frame);
+	//Sleep(100);
 
 	return OScDev_OK;
 }
@@ -306,7 +306,7 @@ static OScDev_Error MakeSettings(OScDev_Device* device, OScDev_PtrArray** settin
 	*settings = OScDev_PtrArray_Create();
 
 	OScDev_Setting* lineDelay;
-	if (OScDev_CHECK(err, OScDev_Setting_Create(&lineDelay, "Error on start", OScDev_ValueType_Bool,
+	if (OScDev_CHECK(err, OScDev_Setting_Create(&lineDelay, "Error on start (legacy)", OScDev_ValueType_Bool,
 		&SettingImpl_ErrorOnStart, device)))
 		goto error;
 	OScDev_PtrArray_Append(*settings, lineDelay);
