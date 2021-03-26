@@ -143,17 +143,14 @@ static OScDev_Error SimulateImage(OScDev_Device* device, OScDev_Acquisition* acq
 	uint32_t xOffset, yOffset, width, height;
 	OScDev_Acquisition_GetROI(acq, &xOffset, &yOffset, &width, &height);
 
-	if (GetData(device)->produceImages)
+	bool shouldContinue;
+	srand((unsigned)time(NULL));
+	for (int i = 0; i < width * height; ++i)
 	{
-		bool shouldContinue;
-		srand((unsigned)time(NULL));
-		for (int i = 0; i < width * height; ++i)
-		{
-			buf_frame[i] = rand() % 256;
-		}
-		shouldContinue = OScDev_Acquisition_CallFrameCallback(acq, 0, buf_frame);
-		Sleep(100);
+		buf_frame[i] = rand() % 256;
 	}
+	shouldContinue = OScDev_Acquisition_CallFrameCallback(acq, 0, buf_frame);
+	Sleep(100);
 
 	return OScDev_OK;
 }
@@ -161,43 +158,47 @@ static OScDev_Error SimulateImage(OScDev_Device* device, OScDev_Acquisition* acq
 
 static DWORD WINAPI AcquisitionLoop(void* param)
 {
-	// wait for signal before callback
-	WaitForSignal();
-
 	OScDev_Device* device = (OScDev_Device*)param;
-	OScDev_Acquisition* acq = GetData(device)->acquisition.acquisition;
 
-	uint32_t totalFrames = OScDev_Acquisition_GetNumberOfFrames(acq);
+	if (GetData(device)->produceImages) {
+		// wait for signal before callback
+		WaitForSignal();
 
-	uint32_t xOffset, yOffset, width, height;
-	OScDev_Acquisition_GetROI(acq, &xOffset, &yOffset, &width, &height);
+		OScDev_Acquisition* acq = GetData(device)->acquisition.acquisition;
 
-	buf_frame = (uint16_t*)malloc(width * height * sizeof(uint16_t));
-	for (uint32_t frame = 0; frame < totalFrames; ++frame)
-	{
-		bool stopRequested;
+		uint32_t totalFrames = OScDev_Acquisition_GetNumberOfFrames(acq);
+
+		uint32_t xOffset, yOffset, width, height;
+		OScDev_Acquisition_GetROI(acq, &xOffset, &yOffset, &width, &height);
+
+		buf_frame = (uint16_t*)malloc(width * height * sizeof(uint16_t));
+		for (uint32_t frame = 0; frame < totalFrames; ++frame)
+		{
+			bool stopRequested;
+			EnterCriticalSection(&(GetData(device)->acquisition.mutex));
+			stopRequested = GetData(device)->acquisition.stopRequested;
+			LeaveCriticalSection(&(GetData(device)->acquisition.mutex));
+			if (stopRequested)
+				break;
+
+			char msg[OScDev_MAX_STR_LEN + 1];
+			snprintf(msg, OScDev_MAX_STR_LEN, "Sequence acquiring frame # %d", frame);
+			OScDev_Log_Debug(device, msg);
+
+			OScDev_Error errCode;
+			if (OScDev_CHECK(errCode, SimulateImage(device, acq)))
+				break;
+		}
+		free(buf_frame);
+
+		// reply to that signal
+		SendResponse();
+
 		EnterCriticalSection(&(GetData(device)->acquisition.mutex));
-		stopRequested = GetData(device)->acquisition.stopRequested;
+		GetData(device)->acquisition.running = false;
 		LeaveCriticalSection(&(GetData(device)->acquisition.mutex));
-		if (stopRequested)
-			break;
-
-		char msg[OScDev_MAX_STR_LEN + 1];
-		snprintf(msg, OScDev_MAX_STR_LEN, "Sequence acquiring frame # %d", frame);
-		OScDev_Log_Debug(device, msg);
-
-		OScDev_Error errCode;
-		if (OScDev_CHECK(errCode, SimulateImage(device, acq)))
-			break;
 	}
-	free(buf_frame);
 
-	// reply to that signal
-	SendResponse();
-
-	EnterCriticalSection(&(GetData(device)->acquisition.mutex));
-	GetData(device)->acquisition.running = false;
-	LeaveCriticalSection(&(GetData(device)->acquisition.mutex));
 	CONDITION_VARIABLE* cv = &(GetData(device)->acquisition.acquisitionFinishCondition);
 	WakeAllConditionVariable(cv);
 
@@ -223,10 +224,6 @@ OScDev_Error WaitForAcquisitionToFinish(OScDev_Device* device)
 	while (GetData(device)->acquisition.running)
 	{
 		SleepConditionVariableCS(cv, mutex, INFINITE);
-
-		if (WaitForResponse()) {
-			GetData(device)->acquisition.running = false;
-		}
 	}
 	LeaveCriticalSection(mutex);
 
@@ -408,13 +405,7 @@ static OScDev_Error Arm(OScDev_Device* device, OScDev_Acquisition* acq)
 	OScDev_Acquisition_IsScannerRequested(acq, &useScanner);
 	OScDev_Acquisition_IsDetectorRequested(acq, &useDetector);
 
-	if (useClock) {
-		SendSignal();
-	}
-
 	GetData(device)->produceImages = useDetector;
-
-
 
 	EnterCriticalSection(&(GetData(device)->acquisition.mutex));
 	{
@@ -453,6 +444,8 @@ static OScDev_Error Start(OScDev_Device* device)
 		GetData(device)->acquisition.started = true;
 	}
 	LeaveCriticalSection(&(GetData(device)->acquisition.mutex));
+
+	SendSignal();
 
 	return OScDev_OK;;
 }
