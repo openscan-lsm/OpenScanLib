@@ -192,14 +192,14 @@ static DWORD WINAPI AcquisitionLoop(void* param)
 	}
 	free(buf_frame);
 
+	// reply to that signal
+	SendResponse();
+
 	EnterCriticalSection(&(GetData(device)->acquisition.mutex));
 	GetData(device)->acquisition.running = false;
 	LeaveCriticalSection(&(GetData(device)->acquisition.mutex));
 	CONDITION_VARIABLE* cv = &(GetData(device)->acquisition.acquisitionFinishCondition);
 	WakeAllConditionVariable(cv);
-
-	// reply to that signal
-	SendResponse();
 
 	return 0;
 }
@@ -418,6 +418,10 @@ static OScDev_Error Arm(OScDev_Device* device, OScDev_Acquisition* acq)
 
 	EnterCriticalSection(&(GetData(device)->acquisition.mutex));
 	{
+		if (GetData(device)->simulatedErrorOnStart) {
+			LeaveCriticalSection(&(GetData(device)->acquisition.mutex));
+			return OScDev_Error_Unknown;
+		}
 		GetData(device)->acquisition.acquisition = acq;
 		GetData(device)->acquisition.stopRequested = false;
 		GetData(device)->acquisition.running = true;
@@ -437,20 +441,15 @@ static OScDev_Error Start(OScDev_Device* device)
 			!GetData(device)->acquisition.armed)
 		{
 			LeaveCriticalSection(&(GetData(device)->acquisition.mutex));
-			return OScDev_Error_Create("not armed");
+			return OScDev_Error_Not_Armed;
 		}
 
 		if (GetData(device)->acquisition.started)
 		{
 			LeaveCriticalSection(&(GetData(device)->acquisition.mutex));
-			return OScDev_Error_Create("acquisition running");
+			return OScDev_Error_Acquisition_Running;
 		}
 
-		if (GetData(device)->simulatedErrorOnStart) {
-			GetData(device)->acquisition.running = false;
-			LeaveCriticalSection(&(GetData(device)->acquisition.mutex));
-			return OScDev_Error_Create("simulated error");
-		}
 		GetData(device)->acquisition.started = true;
 	}
 	LeaveCriticalSection(&(GetData(device)->acquisition.mutex));
