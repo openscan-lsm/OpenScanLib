@@ -96,6 +96,27 @@ static void InitializeDevicePrivateData(struct DevicePrivateData *data)
 }
 
 
+static void SendSignal() {
+	// send signal
+	FILE* file;
+	file = fopen("signal", "w");
+	fclose(file);
+}
+
+
+static bool WaitForResponse() {
+	FILE* file;
+	file = fopen("signal", "r");
+	if (file) {
+		fclose(file);
+		return false;
+	}
+	else {
+		return true;
+	}
+}
+
+
 static OScDev_Error SimulateImage(OScDev_Device* device, OScDev_Acquisition* acq)
 {
 	uint32_t xOffset, yOffset, width, height;
@@ -175,12 +196,8 @@ OScDev_Error WaitForAcquisitionToFinish(OScDev_Device *device)
 	while (GetData(device)->acquisition.running)
 	{
 		SleepConditionVariableCS(cv, mutex, INFINITE);
-		FILE* file;
-		file = fopen("signal", "r");
-		if (file) {
-			fclose(file);
-		}
-		else {
+
+		if (WaitForResponse()) {
 			GetData(device)->acquisition.running = false;
 		}
 	}
@@ -418,10 +435,7 @@ static OScDev_Error Start(OScDev_Device* device)
 	}
 	LeaveCriticalSection(&(GetData(device)->acquisition.mutex));
 
-	// send signal
-	FILE* file;
-	file = fopen("signal", "w");
-	fclose(file);
+	SendSignal();
 
 	return OScDev_Error_ReturnAsCode(RunAcquisitionLoop(device));
 }

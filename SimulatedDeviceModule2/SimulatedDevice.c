@@ -95,6 +95,24 @@ static void InitializeDevicePrivateData(struct DevicePrivateData* data)
 	data->acquisition.acquisition = NULL;
 }
 
+// wait for a signal
+static void WaitForSignal() {
+	while (1) {
+		FILE* file;
+		if (file = fopen("signal", "r")) {
+			fclose(file);
+			break;
+		}
+		Sleep(1000);
+	}
+}
+
+
+// remove signal file, i.e., reply to the sender
+static void SendResponse() {
+	remove("signal", "r");
+}
+
 
 static OScDev_Error SimulateImage(OScDev_Device* device, OScDev_Acquisition* acq)
 {
@@ -119,15 +137,8 @@ static OScDev_Error SimulateImage(OScDev_Device* device, OScDev_Acquisition* acq
 
 static DWORD WINAPI AcquisitionLoop(void* param)
 {
-	// wait for a signal
-	while (1) {
-		FILE* file;
-		if (file = fopen("signal", "r")) {
-			fclose(file);
-			break;
-		}
-		Sleep(1000);
-	}
+	// wait for signal before callback
+	WaitForSignal();
 
 
 	OScDev_Device* device = (OScDev_Device*)param;
@@ -164,8 +175,8 @@ static DWORD WINAPI AcquisitionLoop(void* param)
 	CONDITION_VARIABLE* cv = &(GetData(device)->acquisition.acquisitionFinishCondition);
 	WakeAllConditionVariable(cv);
 
-	// remove the signal file, that means send the singal back to clock
-	remove("signal", "r");
+	// reply to that signal
+	SendResponse();
 
 	return 0;
 }
