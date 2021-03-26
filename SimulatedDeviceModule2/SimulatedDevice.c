@@ -14,6 +14,7 @@ static OScDev_DeviceImpl g_SimulatedDeviceImpl;
 struct DevicePrivateData
 {
 	bool simulatedErrorOnStart;
+	bool produceImages;
 
 	struct
 	{
@@ -55,6 +56,23 @@ OScDev_SettingImpl SettingImpl_ErrorOnStart = {
 	.SetBool = SetErrorOnStart,
 };
 
+static OScDev_Error GetProduceImages(OScDev_Setting* setting, bool* value)
+{
+	*value = GetSettingDeviceData(setting)->produceImages;
+	return OScDev_OK;
+}
+
+static OScDev_Error SetProduceImages(OScDev_Setting* setting, bool value)
+{
+	GetSettingDeviceData(setting)->produceImages = value;
+	return OScDev_OK;
+}
+
+static OScDev_SettingImpl SettingImpl_ProduceImages = {
+	.GetBool = GetProduceImages,
+	.SetBool = SetProduceImages,
+};
+
 
 static inline struct DevicePrivateData* GetData(OScDev_Device* device)
 {
@@ -64,7 +82,7 @@ static inline struct DevicePrivateData* GetData(OScDev_Device* device)
 
 static void InitializeDevicePrivateData(struct DevicePrivateData* data)
 {
-
+	data->produceImages = true;
 	data->simulatedErrorOnStart = false;
 
 	InitializeCriticalSection(&(data->acquisition.mutex));
@@ -83,14 +101,17 @@ static OScDev_Error SimulateImage(OScDev_Device* device, OScDev_Acquisition* acq
 	uint32_t xOffset, yOffset, width, height;
 	OScDev_Acquisition_GetROI(acq, &xOffset, &yOffset, &width, &height);
 
-	bool shouldContinue;
-	srand((unsigned)time(NULL));
-	for (int i = 0; i < width * height; ++i)
+	if (GetData(device)->produceImages)
 	{
-		buf_frame[i] = rand() % 256;
+		bool shouldContinue;
+		srand((unsigned)time(NULL));
+		for (int i = 0; i < width * height; ++i)
+		{
+			buf_frame[i] = rand() % 256;
+		}
+		shouldContinue = OScDev_Acquisition_CallFrameCallback(acq, 0, buf_frame);
+		Sleep(100);
 	}
-	shouldContinue = OScDev_Acquisition_CallFrameCallback(acq, 0, buf_frame);
-	Sleep(100);
 
 	return OScDev_OK;
 }
@@ -310,6 +331,12 @@ static OScDev_Error MakeSettings(OScDev_Device* device, OScDev_PtrArray** settin
 		&SettingImpl_ErrorOnStart, device)))
 		goto error;
 	OScDev_PtrArray_Append(*settings, lineDelay);
+
+	OScDev_Setting* produceImages;
+	if (OScDev_CHECK(err, OScDev_Setting_Create(&produceImages, "ProduceImages (legacy)", OScDev_ValueType_Bool,
+		&SettingImpl_ProduceImages, device)))
+		goto error;
+	OScDev_PtrArray_Append(*settings, produceImages);
 	return OScDev_OK;
 
 error:
@@ -324,6 +351,26 @@ error:
 
 static OScDev_Error Arm(OScDev_Device* device, OScDev_Acquisition* acq)
 {
+	bool useClock, useScanner, useDetector;
+	OScDev_Acquisition_IsClockRequested(acq, &useClock);
+	OScDev_Acquisition_IsScannerRequested(acq, &useScanner);
+	OScDev_Acquisition_IsDetectorRequested(acq, &useDetector);
+
+	// assume scanner is always enabled
+	if (!useClock || !useScanner)
+		return OScDev_Error_ReturnAsCode(OScDev_Error_Create("unsupported error"));
+
+	if (useDetector)
+	{
+		// arm scanner, detector, and clock
+		GetData(device)->produceImages = true;
+	}
+	else
+	{
+		// arm scanner and clock
+		GetData(device)->produceImages = false;
+	}
+
 	EnterCriticalSection(&(GetData(device)->acquisition.mutex));
 	{
 		GetData(device)->acquisition.acquisition = acq;
@@ -351,7 +398,7 @@ static OScDev_Error Start(OScDev_Device* device)
 		if (GetData(device)->acquisition.started)
 		{
 			LeaveCriticalSection(&(GetData(device)->acquisition.mutex));
-			return OScDev_Error_Acquisition_Running;
+			return  OScDev_Error_Acquisition_Running;
 		}
 
 		if (GetData(device)->simulatedErrorOnStart) {
