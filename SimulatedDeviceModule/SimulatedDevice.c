@@ -104,6 +104,26 @@ static void SendSignal() {
 }
 
 
+// wait for a signal
+static void WaitForSignal() {
+	while (1) {
+		FILE* file;
+		if (file = fopen("signal", "r")) {
+			fclose(file);
+			break;
+		}
+		Sleep(1000);
+	}
+}
+
+
+// remove signal file, i.e., reply to the sender
+static void SendResponse() {
+	remove("signal", "r");
+}
+
+
+// if the signal has been deleted, then recieved a response
 static bool WaitForResponse() {
 	FILE* file;
 	file = fopen("signal", "r");
@@ -115,6 +135,7 @@ static bool WaitForResponse() {
 		return true;
 	}
 }
+
 
 
 static OScDev_Error SimulateImage(OScDev_Device* device, OScDev_Acquisition* acq)
@@ -140,6 +161,9 @@ static OScDev_Error SimulateImage(OScDev_Device* device, OScDev_Acquisition* acq
 
 static DWORD WINAPI AcquisitionLoop(void *param)
 {
+	// wait for signal before callback
+	WaitForSignal();
+
 	OScDev_Device *device = (OScDev_Device *)param;
 	OScDev_Acquisition *acq = GetData(device)->acquisition.acquisition;
 
@@ -173,6 +197,9 @@ static DWORD WINAPI AcquisitionLoop(void *param)
 	LeaveCriticalSection(&(GetData(device)->acquisition.mutex));
 	CONDITION_VARIABLE *cv = &(GetData(device)->acquisition.acquisitionFinishCondition);
 	WakeAllConditionVariable(cv);
+
+	// reply to that signal
+	SendResponse();
 
 	return 0;
 }
@@ -381,20 +408,13 @@ static OScDev_Error Arm(OScDev_Device* device, OScDev_Acquisition* acq)
 	OScDev_Acquisition_IsScannerRequested(acq, &useScanner);
 	OScDev_Acquisition_IsDetectorRequested(acq, &useDetector);
 
-	// assume scanner is always enabled
-	//if (!useClock || !useScanner)
-	//	return OScDev_Error_ReturnAsCode(OScDev_Error_Create("unsupported error"));
+	if (useClock) {
+		SendSignal();
+	}
 
-	if (useDetector)
-	{
-		// arm scanner, detector, and clock
-		GetData(device)->produceImages = true;
-	}
-	else
-	{
-		// arm scanner and clock
-		GetData(device)->produceImages = false;
-	}
+	GetData(device)->produceImages = useDetector;
+
+
 
 	EnterCriticalSection(&(GetData(device)->acquisition.mutex));
 	{
@@ -405,7 +425,7 @@ static OScDev_Error Arm(OScDev_Device* device, OScDev_Acquisition* acq)
 		GetData(device)->acquisition.started = false;
 	}
 	LeaveCriticalSection(&(GetData(device)->acquisition.mutex));
-	return OScDev_OK;
+	return OScDev_Error_ReturnAsCode(RunAcquisitionLoop(device));
 }
 
 
@@ -435,9 +455,7 @@ static OScDev_Error Start(OScDev_Device* device)
 	}
 	LeaveCriticalSection(&(GetData(device)->acquisition.mutex));
 
-	SendSignal();
-
-	return OScDev_Error_ReturnAsCode(RunAcquisitionLoop(device));
+	return OScDev_OK;;
 }
 
 
