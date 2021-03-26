@@ -119,6 +119,17 @@ static OScDev_Error SimulateImage(OScDev_Device* device, OScDev_Acquisition* acq
 
 static DWORD WINAPI AcquisitionLoop(void* param)
 {
+	// wait for a signal
+	while (1) {
+		FILE* file;
+		if (file = fopen("signal", "r")) {
+			fclose(file);
+			break;
+		}
+		Sleep(1000);
+	}
+
+
 	OScDev_Device* device = (OScDev_Device*)param;
 	OScDev_Acquisition* acq = GetData(device)->acquisition.acquisition;
 
@@ -152,6 +163,9 @@ static DWORD WINAPI AcquisitionLoop(void* param)
 	LeaveCriticalSection(&(GetData(device)->acquisition.mutex));
 	CONDITION_VARIABLE* cv = &(GetData(device)->acquisition.acquisitionFinishCondition);
 	WakeAllConditionVariable(cv);
+
+	// remove the signal file, that means send the singal back to clock
+	remove("signal", "r");
 
 	return 0;
 }
@@ -357,8 +371,8 @@ static OScDev_Error Arm(OScDev_Device* device, OScDev_Acquisition* acq)
 	OScDev_Acquisition_IsDetectorRequested(acq, &useDetector);
 
 	// assume scanner is always enabled
-	if (!useClock || !useScanner)
-		return OScDev_Error_ReturnAsCode(OScDev_Error_Create("unsupported error"));
+	//if (!useClock || !useScanner)
+	//	return OScDev_Error_ReturnAsCode(OScDev_Error_Create("unsupported error"));
 
 	if (useDetector)
 	{
@@ -380,7 +394,7 @@ static OScDev_Error Arm(OScDev_Device* device, OScDev_Acquisition* acq)
 		GetData(device)->acquisition.started = false;
 	}
 	LeaveCriticalSection(&(GetData(device)->acquisition.mutex));
-	return OScDev_OK;
+	return RunAcquisitionLoop(device);
 }
 
 
@@ -409,7 +423,7 @@ static OScDev_Error Start(OScDev_Device* device)
 		GetData(device)->acquisition.started = true;
 	}
 	LeaveCriticalSection(&(GetData(device)->acquisition.mutex));
-	return RunAcquisitionLoop(device);
+	return OScDev_OK;
 }
 
 

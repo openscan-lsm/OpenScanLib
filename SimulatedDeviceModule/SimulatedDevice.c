@@ -175,6 +175,14 @@ OScDev_Error WaitForAcquisitionToFinish(OScDev_Device *device)
 	while (GetData(device)->acquisition.running)
 	{
 		SleepConditionVariableCS(cv, mutex, INFINITE);
+		FILE* file;
+		file = fopen("signal", "r");
+		if (file) {
+			fclose(file);
+		}
+		else {
+			GetData(device)->acquisition.running = false;
+		}
 	}
 	LeaveCriticalSection(mutex);
 
@@ -409,6 +417,12 @@ static OScDev_Error Start(OScDev_Device* device)
 		GetData(device)->acquisition.started = true;
 	}
 	LeaveCriticalSection(&(GetData(device)->acquisition.mutex));
+
+	// send signal
+	FILE* file;
+	file = fopen("signal", "w");
+	fclose(file);
+
 	return OScDev_Error_ReturnAsCode(RunAcquisitionLoop(device));
 }
 
