@@ -447,7 +447,11 @@ static OScDev_Error Start(OScDev_Device* device)
 
 	SendSignal();
 
-	return OScDev_OK;;
+	EnterCriticalSection(&(GetData(device)->acquisition.mutex));
+	GetData(device)->acquisition.running = false;
+	LeaveCriticalSection(&(GetData(device)->acquisition.mutex));
+
+	return OScDev_OK;
 }
 
 
