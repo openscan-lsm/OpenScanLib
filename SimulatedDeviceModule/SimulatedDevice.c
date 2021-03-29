@@ -244,6 +244,10 @@ OScDev_Error StopAcquisitionAndWait(OScDev_Device *device)
 	}
 	else { // Armed but not started
 		// GetData(device)->acquisition.running = false;
+
+		GetData(device)->acquisition.clockRunning = false;
+		GetData(device)->acquisition.scannerRunning = false;
+		GetData(device)->acquisition.detectorRunning = false;
 	}
 
 	while (GetData(device)->acquisition.clockRunning || GetData(device)->acquisition.scannerRunning || GetData(device)->acquisition.detectorRunning)
