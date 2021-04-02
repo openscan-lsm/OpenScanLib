@@ -37,7 +37,7 @@ struct DevicePrivateData
 
 static inline struct DevicePrivateData *GetSettingDeviceData(OScDev_Setting *setting)
 {
-	return (struct OScNIDAQPrivateData *)OScDev_Device_GetImplData((OScDev_Device *)OScDev_Setting_GetImplData(setting));
+	return (struct DevicePrivateData *)OScDev_Device_GetImplData((OScDev_Device *)OScDev_Setting_GetImplData(setting));
 }
 
 
