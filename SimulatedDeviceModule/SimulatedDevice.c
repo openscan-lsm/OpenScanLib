@@ -44,7 +44,6 @@ static inline struct DevicePrivateData *GetSettingDeviceData(OScDev_Setting *set
 static OScDev_Error GetErrorOnStart(OScDev_Setting *setting, bool *value)
 {
 	*value = GetSettingDeviceData(setting)->simulatedErrorOnStart;
-
 	return OScDev_OK;
 }
 
@@ -88,7 +87,8 @@ static void InitializeDevicePrivateData(struct DevicePrivateData *data)
 
 // Simulate a hardware trigger from the clock to scanner/detector.
 // This is done by creating a "singal" file which the receiver waits for.
-static void SendSignal(const char *signalName) {
+static void SendSignal(const char *signalName)
+{
 	FILE* file;
 	file = fopen(signalName, "w");
 	fclose(file);
@@ -99,7 +99,8 @@ static void SendSignal(const char *signalName) {
 // if the given flag (protected by the given mutex) turns true. Return true if
 // the wait succeeded, false if it was canceled.
 static bool WaitForSignal(const char *signalName,
-	bool *cancelFlag, CRITICAL_SECTION *mutex) {
+	bool *cancelFlag, CRITICAL_SECTION *mutex)
+{
 	for (;;) {
 		bool cancel;
 		EnterCriticalSection(mutex);
@@ -127,8 +128,7 @@ static OScDev_Error SimulateImage(OScDev_Device* device, OScDev_Acquisition* acq
 
 	bool shouldContinue;
 	srand((unsigned)time(NULL));
-	for (int i = 0; i < width * height; ++i)
-	{
+	for (int i = 0; i < width * height; ++i) {
 		buf_frame[i] = rand() % 256;
 	}
 	shouldContinue = OScDev_Acquisition_CallFrameCallback(acq, 0, buf_frame);
@@ -164,8 +164,7 @@ static DWORD WINAPI AcquisitionLoop(void *param)
 		OScDev_Acquisition_GetROI(acq, &xOffset, &yOffset, &width, &height);
 
 		buf_frame = (uint16_t*)malloc(width * height * sizeof(uint16_t));
-		for (uint32_t frame = 0; frame < totalFrames; ++frame)
-		{
+		for (uint32_t frame = 0; frame < totalFrames; ++frame) {
 			bool stopRequested;
 			EnterCriticalSection(&(GetData(device)->acquisition.mutex));
 			stopRequested = GetData(device)->acquisition.stopRequested;
@@ -210,8 +209,7 @@ OScDev_Error WaitForAcquisitionToFinish(OScDev_Device *device)
 	CONDITION_VARIABLE *cv = &(GetData(device)->acquisition.acquisitionFinishCondition);
 
 	EnterCriticalSection(mutex);
-	while (GetData(device)->acquisition.clockRunning || GetData(device)->acquisition.scannerRunning || GetData(device)->acquisition.detectorRunning)
-	{
+	while (GetData(device)->acquisition.clockRunning || GetData(device)->acquisition.scannerRunning || GetData(device)->acquisition.detectorRunning) {
 		SleepConditionVariableCS(cv, mutex, INFINITE);
 	}
 	LeaveCriticalSection(mutex);
@@ -250,8 +248,7 @@ OScDev_Error StopAcquisitionAndWait(OScDev_Device *device)
 		GetData(device)->acquisition.stopRequested = true;
 	}
 
-	while (GetData(device)->acquisition.clockRunning || GetData(device)->acquisition.scannerRunning || GetData(device)->acquisition.detectorRunning)
-	{
+	while (GetData(device)->acquisition.clockRunning || GetData(device)->acquisition.scannerRunning || GetData(device)->acquisition.detectorRunning) {
 		SleepConditionVariableCS(cv, mutex, INFINITE);
 	}
 	LeaveCriticalSection(mutex);
