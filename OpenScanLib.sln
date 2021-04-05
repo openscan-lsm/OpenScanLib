@@ -13,6 +13,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenScanDeviceLib", "OpenSc
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenScanLibTests", "OpenScanLibTests\OpenScanLibTests.vcxproj", "{EFC1F5DA-8689-4020-990E-3EC4336262B7}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SimulatedDeviceModule", "SimulatedDeviceModule\SimulatedDeviceModule.vcxproj", "{8B4FFA2B-7968-434A-890D-F54119351013}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SimulatedDeviceModule2", "SimulatedDeviceModule2\SimulatedDeviceModule2.vcxproj", "{EF6060FE-D462-465B-82BB-5CFC6E90FD3D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -61,6 +65,22 @@ Global
 		{EFC1F5DA-8689-4020-990E-3EC4336262B7}.Release|x64.Build.0 = Release|x64
 		{EFC1F5DA-8689-4020-990E-3EC4336262B7}.Release|x86.ActiveCfg = Release|Win32
 		{EFC1F5DA-8689-4020-990E-3EC4336262B7}.Release|x86.Build.0 = Release|Win32
+		{8B4FFA2B-7968-434A-890D-F54119351013}.Debug|x64.ActiveCfg = Debug|x64
+		{8B4FFA2B-7968-434A-890D-F54119351013}.Debug|x64.Build.0 = Debug|x64
+		{8B4FFA2B-7968-434A-890D-F54119351013}.Debug|x86.ActiveCfg = Debug|Win32
+		{8B4FFA2B-7968-434A-890D-F54119351013}.Debug|x86.Build.0 = Debug|Win32
+		{8B4FFA2B-7968-434A-890D-F54119351013}.Release|x64.ActiveCfg = Release|x64
+		{8B4FFA2B-7968-434A-890D-F54119351013}.Release|x64.Build.0 = Release|x64
+		{8B4FFA2B-7968-434A-890D-F54119351013}.Release|x86.ActiveCfg = Release|Win32
+		{8B4FFA2B-7968-434A-890D-F54119351013}.Release|x86.Build.0 = Release|Win32
+		{EF6060FE-D462-465B-82BB-5CFC6E90FD3D}.Debug|x64.ActiveCfg = Debug|x64
+		{EF6060FE-D462-465B-82BB-5CFC6E90FD3D}.Debug|x64.Build.0 = Debug|x64
+		{EF6060FE-D462-465B-82BB-5CFC6E90FD3D}.Debug|x86.ActiveCfg = Debug|Win32
+		{EF6060FE-D462-465B-82BB-5CFC6E90FD3D}.Debug|x86.Build.0 = Debug|Win32
+		{EF6060FE-D462-465B-82BB-5CFC6E90FD3D}.Release|x64.ActiveCfg = Release|x64
+		{EF6060FE-D462-465B-82BB-5CFC6E90FD3D}.Release|x64.Build.0 = Release|x64
+		{EF6060FE-D462-465B-82BB-5CFC6E90FD3D}.Release|x86.ActiveCfg = Release|Win32
+		{EF6060FE-D462-465B-82BB-5CFC6E90FD3D}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
