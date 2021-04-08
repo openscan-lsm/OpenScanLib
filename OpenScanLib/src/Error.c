@@ -75,6 +75,97 @@ OSc_RichError *OScInternal_Error_RetrieveFromModule(OScDev_ModuleImpl *modImpl, 
 }
 
 
+const char* getErrorMessageFromEnum(int32_t code)
+{
+	switch (code)
+	{
+		case OScDev_OK:
+
+			// WARNING: Do not edit these without correctly incrementing the device
+			// interface version.
+		case OScDev_Error_Unknown:
+			return "Error Unknown";
+		case OScDev_Error_Unsupported_Operation:
+			return "Error Unsupported Operation";
+		case OScDev_Error_Illegal_Argument:
+			return "Error Illegal Argument";
+		case OScDev_Error_Device_Module_Already_Exists:
+			return "Error Device Module Already Exists";
+		case OScDev_Error_No_Such_Device_Module:
+			return "Error No Such Device Module";
+		case OScDev_Error_Driver_Not_Available:
+			return "Error Driver Not Available";
+		case OScDev_Error_Device_Already_Open:
+			return "Error Device Already Open";
+		case OScDev_Error_Device_Not_Opened_For_LSM:
+			return "Error Device Not Opened For LSM";
+		case OScDev_Error_Device_Does_Not_Support_Clock:
+			return "Error Device Does Not Support Clock";
+		case OScDev_Error_Device_Does_Not_Support_Scanner:
+			return "Error Device Does Not Support Scanner";
+		case OScDev_Error_Device_Does_Not_Support_Detector:
+			return "Error Device Does Not Support Detector";
+		case OScDev_Error_Wrong_Value_Type:
+			return "Error Wrong Value Type";
+		case OScDev_Error_Setting_Not_Writable:
+			return "Error Setting Not Writable";
+		case OScDev_Error_Wrong_Constraint_Type:
+			return "Error Wrong Constraint Type";
+		case OScDev_Error_Unknown_Enum_Value_Name:
+			return "Error Unknown Enum Value Name";
+		case OScDev_Error_Acquisition_Running:
+			return "Error Acquisition Running";
+		case OScDev_Error_Not_Armed:
+			return "Error Not Armed";
+		case OScDev_Error_Waveform_Out_Of_Range:
+			return "Error Waveform Out Of Range";
+		case OScDev_Error_Waveform_Memory_Size_Mismatch:
+			return "Error Waveform Memory Size Mismatch";
+		case OScDev_Error_Data_Left_In_Fifo_After_Reading_Image:
+			return "Error Data Left In Fifo After Reading Image";
+		default:
+			return "Other Error";
+	}
+}
+
+
+
+
+OSc_RichError *OScInternal_Error_AsRichError(void* impl, int source, int32_t code)
+{
+	if (!code)
+		return OSc_OK;
+	switch (source)
+	{
+		// from device
+		case 0:
+			if (OScInternal_Device_SupportsRichErrors((OSc_Device*)impl)) {
+				return OScInternal_Error_RetrieveRichErrors(code);
+			}
+			break;
+
+		// from module
+		case 1:
+			if (OScInternal_Module_SupportsRichErrors((OSc_Device*)impl)) {
+				return OScInternal_Error_RetrieveRichErrors(code);
+			}
+			break;
+
+		// from setting
+		case 2:
+			if (OScInternal_Setting_SupportsRichErrors((OSc_Device*)impl)) {
+				return OScInternal_Error_RetrieveRichErrors(code);
+			}
+			break;
+
+	default:
+		break;
+	}
+
+	return OScInternal_Error_CreateWithCode(OScInternal_Error_LegacyCodeDomain(), code, getErrorMessageFromEnum(code));
+}
+
+
 OSc_RichError *OScInternal_Error_Create(const char *message)
 {
 	return RERR_Error_Create(message);
@@ -111,31 +202,96 @@ char *OScInternal_Error_LegacyCodeDomain()
 
 
 
-const char *OSc_Error_GetMessage(OSc_RichError *error) 
+const char *OScInternal_Error_GetMessage(OSc_RichError *error)
 {
 	return RERR_Error_GetMessage(error);
 }
 
 
-const char *OSc_Error_GetDomain(OSc_RichError *error) 
+const char* OSc_Error_GetMessage(OSc_RichError* error)
+{
+	return OScInternal_Error_GetMessage(error);
+}
+
+
+const char *OScInternal_Error_GetDomain(OSc_RichError *error)
 {
 	return RERR_Error_GetDomain(error);
 }
 
 
-int32_t OSc_Error_GetCode(OSc_RichError *error) 
+const char* OSc_Error_GetDomain(OSc_RichError* error)
+{
+	return OScInternal_Error_GetDomain(error);
+}
+
+
+int32_t OScInternal_Error_GetCode(OSc_RichError *error)
 {
 	return RERR_Error_GetCode(error);
 }
 
 
-OSc_RichError *OSc_Error_GetCause(OSc_RichError *error) 
+int32_t OSc_Error_GetCode(OSc_RichError* error)
+{
+	return OScInternal_Error_GetCode(error);
+}
+
+
+OSc_RichError *OScInternal_Error_GetCause(OSc_RichError *error)
 {
 	return RERR_Error_GetCause(error);
 }
 
 
-void OSc_Error_Destroy(OSc_RichError *error) 
+OSc_RichError* OSc_Error_GetCause(OSc_RichError* error)
+{
+	return OScInternal_Error_GetCause(error);
+}
+
+
+const char* OScInternal_Error_Format(OSc_RichError* error)
+{
+	char* format = (char*)malloc(1000 * sizeof(char));
+	sprintf(format, "<%s> (<%s> error <%d>)", RERR_Error_GetMessage(error),
+		RERR_Error_GetDomain(error), RERR_Error_GetCode(error));
+	return format;
+}
+
+
+const char* OSc_Error_Format(OSc_RichError* error)
+{
+	return OScInternal_Error_Format(error);
+}
+
+
+const char* OScInternal_Error_FormatRecursive(OSc_RichError* error)
+{
+	char* format = (char*)malloc(1000 * sizeof(char));
+	OSc_RichError *cause = OSc_Error_GetCause(error);
+	if (cause) 
+		sprintf(format, "<%s> (<%s> error <%d>)[caused by:%s]", RERR_Error_GetMessage(error),
+			RERR_Error_GetDomain(error), RERR_Error_GetCode(error), OSc_Error_Format(cause));
+	else
+		sprintf(format, "<%s> (<%s> error <%d>)", RERR_Error_GetMessage(error),
+			RERR_Error_GetDomain(error), RERR_Error_GetCode(error));
+	return format;
+}
+
+
+const char* OSc_Error_FormatRecursive(OSc_RichError* error)
+{
+	return OScInternal_Error_FormatRecursive(error);
+}
+
+
+void OScInternal_Error_Destroy(OSc_RichError *error)
 {
 	RERR_Error_Destroy(error);
+}
+
+
+void OSc_Error_Destroy(OSc_RichError* error)
+{
+	OScInternal_Error_Destroy(error);
 }

@@ -31,6 +31,20 @@ OScDev_RichError *OScInternal_Error_RegisterCodeDomain(const char *domainName, R
 
 char *OScInternal_Error_LegacyCodeDomain();
 
+const char* OScInternal_Error_GetMessage(OSc_RichError* error);
+
+const char* OScInternal_Error_GetDomain(OSc_RichError* error);
+
+int32_t OScInternal_Error_GetCode(OSc_RichError* error);
+
+OSc_RichError* OScInternal_Error_GetCause(OSc_RichError* error);
+
+const char* OScInternal_Error_Format(OSc_RichError* error);
+
+const char* OScInternal_Error_FormatRecursive(OSc_RichError* error);
+
+void OScInternal_Error_Destroy(OSc_RichError* error);
+
 // Internal functions
 
 void OScInternal_Log(OSc_Device *device, OSc_LogLevel level, const char *message);

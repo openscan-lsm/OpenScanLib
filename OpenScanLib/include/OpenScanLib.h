@@ -10,6 +10,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -127,6 +128,10 @@ OSc_API const char *OSc_Error_GetDomain(OSc_RichError *error);
 OSc_API int32_t OSc_Error_GetCode(OSc_RichError *error);
 
 OSc_API OSc_RichError *OSc_Error_GetCause(OSc_RichError *error);
+
+OSc_API const char* OSc_Error_Format(OSc_RichError* error);
+
+OSc_API const char* OSc_Error_FormatRecursive(OSc_RichError* error);
 
 OSc_API void OSc_Error_Destroy(OSc_RichError *error);
 
