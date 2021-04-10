@@ -87,6 +87,12 @@ static const char *Error_FormatRecursive(OScDev_ModuleImpl* modImpl, OSc_RichErr
 }
 
 
+static OSc_RichError *Error_AsRichError(OScDev_ModuleImpl* modImpl, OScDev_Error code)
+{
+	return OScInternal_Error_AsRichError(code);
+}
+
+
 static void Error_Destroy(OScDev_ModuleImpl* modImpl, OSc_RichError* error)
 {
 	return OScInternal_Error_Destroy(error);
@@ -349,6 +355,7 @@ struct OScDevInternal_Interface DeviceInterfaceFunctionTable = {
 	.Error_Destroy = Error_Destroy,
 	.Error_Format = Error_Format,
 	.Error_FormatRecursive = Error_FormatRecursive,
+	.Error_AsRichError = Error_AsRichError,
 	.PtrArray_Create = PtrArray_Create,
 	.PtrArray_CreateFromNullTerminated = PtrArray_CreateFromNullTerminated,
 	.PtrArray_Destroy = PtrArray_Destroy,

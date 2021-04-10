@@ -349,6 +349,7 @@ struct OScDevInternal_Interface
 	OScDev_RichError *(*Error_GetCause)(OScDev_ModuleImpl *modImpl, OScDev_RichError *error);
 	const char *(*Error_Format)(OScDev_ModuleImpl *modImpl, OScDev_RichError *error);
 	const char *(*Error_FormatRecursive)(OScDev_ModuleImpl *modImpl, OScDev_RichError *error);
+	OScDev_RichError *(*Error_AsRichError)(OScDev_ModuleImpl* modImpl, OScDev_Error code);
 	void (*Error_Destroy)(OScDev_ModuleImpl *modImpl, OScDev_RichError *error);
 
 
@@ -978,8 +979,12 @@ OScDev_API const char *OScDev_Error_FormatRecursive(OScDev_RichError* error) {
 	return OScDevInternal_FunctionTable->Error_FormatRecursive(&OScDevInternal_TheModuleImpl, error);
 }
 
+OScDev_API OScDev_RichError *OScDev_Error_AsRichError(OScDev_Error code) {
+	return OScDevInternal_FunctionTable->Error_AsRichError(&OScDevInternal_TheModuleImpl, code);
+}
+
 OScDev_API void OScDev_Error_Destroy(OScDev_RichError* error) {
-	return OScDevInternal_FunctionTable->Error_Destroy(&OScDevInternal_TheModuleImpl, error);
+	OScDevInternal_FunctionTable->Error_Destroy(&OScDevInternal_TheModuleImpl, error);
 }
 
 
