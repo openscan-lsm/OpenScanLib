@@ -134,7 +134,9 @@ static const char* OScInternal_Error_MessageForLegacyCode(OScDev_Error code)
 
 OSc_RichError *OScInternal_Error_AsRichError(OScDev_Error code)
 {
-	return OScInternal_Error_CreateWithCode(OScInternal_Error_LegacyCodeDomain(), code, OScInternal_Error_MessageForLegacyCode(code));
+	if (code)
+		return OScInternal_Error_CreateWithCode(OScInternal_Error_LegacyCodeDomain(), code, OScInternal_Error_MessageForLegacyCode(code));
+	return OScDev_RichError_OK;
 }
 
 
