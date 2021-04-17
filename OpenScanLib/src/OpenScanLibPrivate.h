@@ -4,6 +4,48 @@
 #include "OpenScanLib.h"
 #include "OpenScanDeviceLib.h"
 
+#include <RichErrors/Err2Code.h>
+
+
+typedef struct RERR_Error OScInternal_RichError;
+#define OScDev_OK (OScDev_Error)0
+
+// APIs for OpenScanLib
+OSc_RichError *OScInternal_Error_RetrieveFromDevice(OSc_Device *device, int32_t code);
+
+OSc_RichError *OScInternal_Error_RetrieveFromSetting(OSc_Setting *setting, int32_t code);
+
+OSc_RichError *OScInternal_Error_RetrieveFromModule(OScDev_ModuleImpl *modImpl, int32_t code);
+
+OSc_RichError* OScInternal_Error_AsRichError(OScDev_Error code);
+
+OSc_RichError *OScInternal_Error_Create(const char *message);
+
+OSc_RichError *OScInternal_Error_CreateWithCode(const char *domainName, int32_t code, const char *message);
+
+OSc_RichError *OScInternal_Error_Wrap(OSc_RichError *cause, const char *message);
+
+OSc_RichError *OScInternal_Error_WrapWithCode(OSc_RichError *cause, const char *domainName, int32_t code, const char *message);
+
+OScDev_Error OScInternal_Error_ReturnAsCode(OScDev_RichError *error);
+
+OScDev_RichError *OScInternal_Error_RegisterCodeDomain(const char *domainName, RERR_CodeFormat codeFormat);
+
+char *OScInternal_Error_LegacyCodeDomain();
+
+const char* OScInternal_Error_GetMessage(OSc_RichError* error);
+
+const char* OScInternal_Error_GetDomain(OSc_RichError* error);
+
+int32_t OScInternal_Error_GetCode(OSc_RichError* error);
+
+OSc_RichError* OScInternal_Error_GetCause(OSc_RichError* error);
+
+void OScInternal_Error_Format(OSc_RichError* error, char *buffer, size_t bufsize);
+
+void OScInternal_Error_FormatRecursive(OSc_RichError* error, char* buffer, size_t bufsize);
+
+void OScInternal_Error_Destroy(OSc_RichError* error);
 
 // Internal functions
 
@@ -81,16 +123,16 @@ OScInternal_NumRange *OScInternal_NumRange_Intersection6(
 	const OScInternal_NumRange *r1, const OScInternal_NumRange *r2, const OScInternal_NumRange *r3,
 	const OScInternal_NumRange *r4, const OScInternal_NumRange *r5, const OScInternal_NumRange *r6);
 
-OSc_Error OScInternal_DeviceModule_GetCount(size_t *count);
-OSc_Error OScInternal_DeviceModule_GetNames(const char **modules, size_t *count);
-OSc_Error OScInternal_DeviceModule_GetDeviceImpls(const char *module, OScInternal_PtrArray **deviceImpls);
+OSc_RichError *OScInternal_DeviceModule_GetCount(size_t *count);
+OSc_RichError *OScInternal_DeviceModule_GetNames(const char **modules, size_t *count);
+OSc_RichError *OScInternal_DeviceModule_GetDeviceImpls(const char *module, OScInternal_PtrArray **deviceImpls);
 
-OSc_Error OScInternal_LSM_Associate_Device(OSc_LSM *lsm, OSc_Device *device);
-OSc_Error OScInternal_LSM_Dissociate_Device(OSc_LSM *lsm, OSc_Device *device);
-OSc_Error OScInternal_LSM_Is_Device_Associated(OSc_LSM *lsm, OSc_Device *device, bool *isAssociated);
+OSc_RichError *OScInternal_LSM_Associate_Device(OSc_LSM *lsm, OSc_Device *device);
+OSc_RichError *OScInternal_LSM_Dissociate_Device(OSc_LSM *lsm, OSc_Device *device);
+OSc_RichError *OScInternal_LSM_Is_Device_Associated(OSc_LSM *lsm, OSc_Device *device, bool *isAssociated);
 
-OSc_Error OScInternal_Device_Create(OSc_Device **device, OScDev_DeviceImpl *impl, void *data);
-OSc_Error OScInternal_Device_Destroy(OSc_Device *device);
+OScDev_Error OScInternal_Device_Create(OScDev_ModuleImpl *modImpl, OSc_Device **device, OScDev_DeviceImpl *impl, void *data);
+OSc_RichError *OScInternal_Device_Destroy(OSc_Device *device);
 bool OScInternal_Device_Log(OSc_Device *device, OSc_LogLevel level, const char *message);
 void *OScInternal_Device_GetImplData(OSc_Device *device);
 OScInternal_NumRange *OScInternal_Device_GetPixelRates(OSc_Device *device);
@@ -99,18 +141,22 @@ OScInternal_NumRange *OScInternal_Device_GetZooms(OSc_Device *device);
 bool OScInternal_Device_IsROIScanSupported(OSc_Device *device);
 OScInternal_NumRange *OScInternal_Device_GetRasterWidths(OSc_Device *device);
 OScInternal_NumRange *OScInternal_Device_GetRasterHeights(OSc_Device *device);
-OSc_Error OScInternal_Device_GetNumberOfChannels(OSc_Device *device, uint32_t *numberOfChannels);
-OSc_Error OScInternal_Device_GetBytesPerSample(OSc_Device *device, uint32_t *bytesPerSample);
-OSc_Error OScInternal_Device_Arm(OSc_Device *device, OSc_Acquisition *acq);
-OSc_Error OScInternal_Device_Start(OSc_Device *device);
+OSc_RichError *OScInternal_Device_GetNumberOfChannels(OSc_Device *device, uint32_t *numberOfChannels);
+OSc_RichError *OScInternal_Device_GetBytesPerSample(OSc_Device *device, uint32_t *bytesPerSample);
+OSc_RichError *OScInternal_Device_Arm(OSc_Device *device, OSc_Acquisition *acq);
+OSc_RichError *OScInternal_Device_Start(OSc_Device *device);
 void OScInternal_Device_Stop(OSc_Device *device);
 void OScInternal_Device_Wait(OSc_Device *device);
-OSc_Error OScInternal_Device_IsRunning(OSc_Device *device, bool *isRunning);
+OSc_RichError *OScInternal_Device_IsRunning(OSc_Device *device, bool *isRunning);
+bool OScInternal_Device_SupportsRichErrors(OSc_Device *device);
 
-OSc_Error OScInternal_Setting_Create(OSc_Setting **setting, const char *name, OSc_ValueType valueType, OScDev_SettingImpl *impl, void *data);
+OSc_RichError *OScInternal_Setting_Create(OScDev_ModuleImpl *modImpl, OSc_Setting **setting, const char *name, OSc_ValueType valueType, OScDev_SettingImpl *impl, void *data);
 void OScInternal_Setting_Destroy(OSc_Setting *setting);
 void *OScInternal_Setting_GetImplData(OSc_Setting *setting);
 void OScInternal_Setting_Invalidate(OSc_Setting *setting);
+bool OScInternal_Setting_SupportsRichErrors(OSc_Setting *setting);
+
+bool OScInternal_Module_SupportsRichErrors(OScDev_ModuleImpl *modImpl);
 
 OSc_Device *OScInternal_AcquisitionForDevice_GetDevice(OScDev_Acquisition *devAcq);
 OSc_Acquisition *OScInternal_AcquisitionForDevice_GetAcquisition(OScDev_Acquisition *devAcq);

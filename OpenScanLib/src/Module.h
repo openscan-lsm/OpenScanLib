@@ -13,8 +13,8 @@ typedef HMODULE OScInternal_Module;
 
 void OScInternal_FileList_Free(char **files);
 
-OSc_Error OScInternal_FileList_Create(char ***files, const char *path, const char *suffix);
+OSc_RichError *OScInternal_FileList_Create(char ***files, const char *path, const char *suffix);
 
-OSc_Error OScInternal_Module_Load(OScInternal_Module *module, const char *path);
+OSc_RichError *OScInternal_Module_Load(OScInternal_Module *module, const char *path);
 
-OSc_Error OScInternal_Module_GetEntryPoint(OScInternal_Module module, const char *funcName, void **func);
+OSc_RichError *OScInternal_Module_GetEntryPoint(OScInternal_Module module, const char *funcName, void **func);

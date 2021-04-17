@@ -32,7 +32,6 @@ static char *test_NumRange_Intersection(void) {
 		OScInternal_NumRange_CreateContinuous(1e-6, 1e6);
 	OScInternal_NumRange *smallRange =
 		OScInternal_NumRange_CreateContinuous(0.5, 40.0);
-
 	OScInternal_NumRange *overlap =
 		OScInternal_NumRange_Intersection(smallRange, bigRange);
 

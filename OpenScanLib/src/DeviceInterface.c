@@ -15,6 +15,90 @@ static void Log(OScDev_ModuleImpl *modImpl, OScDev_Device *device, OScDev_LogLev
 }
 
 
+static OScDev_RichError *Error_RegisterCodeDomain(OScDev_ModuleImpl *modImpl, const char *domainName, OScDev_ErrorCodeFormat codeFormat)
+{
+	return OScInternal_Error_RegisterCodeDomain(domainName, codeFormat);
+}
+
+
+static OScDev_Error Error_ReturnAsCode(OScDev_ModuleImpl *modImpl, OScDev_RichError *error) 
+{
+	return OScInternal_Error_ReturnAsCode(error);
+}
+
+
+static OScDev_RichError *Error_Create(OScDev_ModuleImpl *modImpl, const char *message) 
+{
+	return OScInternal_Error_Create(message);
+}
+
+
+static OScDev_RichError *Error_CreateWithCode(OScDev_ModuleImpl *modImpl, const char *domainName, OScDev_Error code, const char *message) 
+{
+	return OScInternal_Error_CreateWithCode(domainName, code, message);
+}
+
+
+static OScDev_RichError *Error_Wrap(OScDev_ModuleImpl *modImpl, OScDev_RichError *cause, const char *message)
+{
+	return OScInternal_Error_Wrap(cause, message);
+}
+
+
+static OScDev_RichError *Error_WrapWithCode(OScDev_ModuleImpl *modImpl, OSc_RichError *cause, const char *domainName, int32_t code, const char *message) 
+{
+	return OScInternal_Error_WrapWithCode(cause, domainName, code, message);
+}
+
+
+static const char *Error_GetMessage(OScDev_ModuleImpl* modImpl, OSc_RichError* error)
+{
+	return OScInternal_Error_GetMessage(error);
+}
+
+
+static const char *Error_GetDomain(OScDev_ModuleImpl* modImpl, OSc_RichError* error)
+{
+	return OScInternal_Error_GetDomain(error);
+}
+
+
+static int32_t Error_GetCode(OScDev_ModuleImpl* modImpl, OSc_RichError* error)
+{
+	return OScInternal_Error_GetCode(error);
+}
+
+
+static OSc_RichError *Error_GetCause(OScDev_ModuleImpl* modImpl, OSc_RichError* error)
+{
+	return OScInternal_Error_GetCause(error);
+}
+
+
+static void Error_Format(OScDev_ModuleImpl* modImpl, OSc_RichError * error, char* buffer, size_t bufsize)
+{
+	OScInternal_Error_Format(error, buffer, bufsize);
+}
+
+
+static void Error_FormatRecursive(OScDev_ModuleImpl* modImpl, OSc_RichError * error, char* buffer, size_t bufsize)
+{
+	OScInternal_Error_FormatRecursive(error, buffer, bufsize);
+}
+
+
+static OSc_RichError *Error_AsRichError(OScDev_ModuleImpl* modImpl, OScDev_Error code)
+{
+	return OScInternal_Error_AsRichError(code);
+}
+
+
+static void Error_Destroy(OScDev_ModuleImpl* modImpl, OSc_RichError* error)
+{
+	OScInternal_Error_Destroy(error);
+}
+
+
 static OScInternal_PtrArray *PtrArray_Create(OScDev_ModuleImpl *modImpl)
 {
 	return OScInternal_PtrArray_Create();
@@ -132,7 +216,7 @@ static void NumRange_AppendDiscrete(OScDev_ModuleImpl *modImpl, OScDev_NumRange 
 // TODO: Replace with direct provision of impl and data (once we have DeviceLoaders)
 static OScDev_Error Device_Create(OScDev_ModuleImpl *modImpl, OScDev_Device **device, OScDev_DeviceImpl *impl, void *data)
 {
-	return OScInternal_Device_Create(device, impl, data);
+	return OScInternal_Device_Create(modImpl, device, impl, data);
 }
 
 
@@ -145,7 +229,7 @@ static void *Device_GetImplData(OScDev_ModuleImpl *modImpl, OScDev_Device *devic
 // TODO: Replace with a SettingsCreateContext-based method
 static OScDev_Error Setting_Create(OScDev_ModuleImpl *modImpl, OScDev_Setting **setting, const char *name, OScDev_ValueType valueType, OScDev_SettingImpl *impl, void *data)
 {
-	return OScInternal_Setting_Create(setting, name, valueType, impl, data);
+	return OScInternal_Error_ReturnAsCode(OScInternal_Setting_Create(modImpl, setting, name, valueType, impl, data));
 }
 
 
@@ -258,6 +342,20 @@ static bool Acquisition_CallFrameCallback(OScDev_ModuleImpl *modImpl, OScDev_Acq
 
 struct OScDevInternal_Interface DeviceInterfaceFunctionTable = {
 	.Log = Log,
+	.Error_RegisterCodeDomain = Error_RegisterCodeDomain,
+	.Error_ReturnAsCode = Error_ReturnAsCode,
+	.Error_Create = Error_Create,
+	.Error_CreateWithCode = Error_CreateWithCode,
+	.Error_Wrap = Error_Wrap,
+	.Error_WrapWithCode = Error_WrapWithCode,
+	.Error_GetMessage = Error_GetMessage,
+	.Error_GetDomain = Error_GetDomain,
+	.Error_GetCode = Error_GetCode,
+	.Error_GetCause = Error_GetCause,
+	.Error_Destroy = Error_Destroy,
+	.Error_Format = Error_Format,
+	.Error_FormatRecursive = Error_FormatRecursive,
+	.Error_AsRichError = Error_AsRichError,
 	.PtrArray_Create = PtrArray_Create,
 	.PtrArray_CreateFromNullTerminated = PtrArray_CreateFromNullTerminated,
 	.PtrArray_Destroy = PtrArray_Destroy,
