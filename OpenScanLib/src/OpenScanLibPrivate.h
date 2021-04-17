@@ -17,6 +17,8 @@ OSc_RichError *OScInternal_Error_RetrieveFromSetting(OSc_Setting *setting, int32
 
 OSc_RichError *OScInternal_Error_RetrieveFromModule(OScDev_ModuleImpl *modImpl, int32_t code);
 
+OSc_RichError* OScInternal_Error_AsRichError(OScDev_Error code);
+
 OSc_RichError *OScInternal_Error_Create(const char *message);
 
 OSc_RichError *OScInternal_Error_CreateWithCode(const char *domainName, int32_t code, const char *message);
@@ -30,6 +32,20 @@ OScDev_Error OScInternal_Error_ReturnAsCode(OScDev_RichError *error);
 OScDev_RichError *OScInternal_Error_RegisterCodeDomain(const char *domainName, RERR_CodeFormat codeFormat);
 
 char *OScInternal_Error_LegacyCodeDomain();
+
+const char* OScInternal_Error_GetMessage(OSc_RichError* error);
+
+const char* OScInternal_Error_GetDomain(OSc_RichError* error);
+
+int32_t OScInternal_Error_GetCode(OSc_RichError* error);
+
+OSc_RichError* OScInternal_Error_GetCause(OSc_RichError* error);
+
+void OScInternal_Error_Format(OSc_RichError* error, char *buffer, size_t bufsize);
+
+void OScInternal_Error_FormatRecursive(OSc_RichError* error, char* buffer, size_t bufsize);
+
+void OScInternal_Error_Destroy(OSc_RichError* error);
 
 // Internal functions
 

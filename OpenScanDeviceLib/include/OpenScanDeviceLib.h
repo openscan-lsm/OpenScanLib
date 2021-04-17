@@ -343,6 +343,16 @@ struct OScDevInternal_Interface
 	OScDev_RichError *(*Error_Wrap)(OScDev_ModuleImpl *modImpl, OScDev_RichError *cause, const char *message);
 	OScDev_RichError *(*Error_WrapWithCode)(OScDev_ModuleImpl *modImpl, OScDev_RichError *cause, const char *domainName, int32_t code, const char *message);
 
+	const char *(*Error_GetMessage)(OScDev_ModuleImpl *modImpl, OScDev_RichError *error);
+	const char *(*Error_GetDomain)(OScDev_ModuleImpl *modImpl, OScDev_RichError *error);
+	int32_t (*Error_GetCode)(OScDev_ModuleImpl *modImpl, OScDev_RichError *error);
+	OScDev_RichError *(*Error_GetCause)(OScDev_ModuleImpl *modImpl, OScDev_RichError *error);
+	void (*Error_Format)(OScDev_ModuleImpl *modImpl, OScDev_RichError *error, char* buffer, size_t bufsize);
+	void (*Error_FormatRecursive)(OScDev_ModuleImpl *modImpl, OScDev_RichError *error, char* buffer, size_t bufsize);
+	OScDev_RichError *(*Error_AsRichError)(OScDev_ModuleImpl* modImpl, OScDev_Error code);
+	void (*Error_Destroy)(OScDev_ModuleImpl *modImpl, OScDev_RichError *error);
+
+
 	OScDev_PtrArray *(*PtrArray_Create)(OScDev_ModuleImpl *modImpl);
 	OScDev_PtrArray *(*PtrArray_CreateFromNullTerminated)(OScDev_ModuleImpl *modImpl, void *const *nullTerminatedArray);
 	void (*PtrArray_Destroy)(OScDev_ModuleImpl *modImpl, const OScDev_PtrArray *arr);
@@ -943,6 +953,38 @@ OScDev_API OScDev_RichError *OScDev_Error_Wrap(OScDev_RichError *cause, const ch
 
 OScDev_API OScDev_RichError *OScDev_Error_WrapWithCode(OScDev_RichError *cause, const char *domainName, int32_t code, const char *message) {
 	return OScDevInternal_FunctionTable->Error_WrapWithCode(&OScDevInternal_TheModuleImpl, cause, domainName, code, message);
+}
+
+OScDev_API const char *OScDev_Error_GetMessage(OScDev_RichError* error) {
+	return OScDevInternal_FunctionTable->Error_GetMessage(&OScDevInternal_TheModuleImpl, error);
+}
+
+OScDev_API const char *OScDev_Error_GetDomain(OScDev_RichError* error) {
+	return OScDevInternal_FunctionTable->Error_GetDomain(&OScDevInternal_TheModuleImpl, error);
+}
+
+OScDev_API int32_t OScDev_Error_GetCode(OScDev_RichError* error) {
+	return OScDevInternal_FunctionTable->Error_GetCode(&OScDevInternal_TheModuleImpl, error);
+}
+
+OScDev_API OScDev_RichError *OScDev_Error_GetCause(OScDev_RichError* error) {
+	return OScDevInternal_FunctionTable->Error_GetCause(&OScDevInternal_TheModuleImpl, error);
+}
+
+OScDev_API void OScDev_Error_Format(OScDev_RichError* error, char* buffer, size_t bufsize) {
+	OScDevInternal_FunctionTable->Error_Format(&OScDevInternal_TheModuleImpl, error, buffer, bufsize);
+}
+
+OScDev_API void OScDev_Error_FormatRecursive(OScDev_RichError* error, char* buffer, size_t bufsize) {
+	OScDevInternal_FunctionTable->Error_FormatRecursive(&OScDevInternal_TheModuleImpl, error, buffer, bufsize);
+}
+
+OScDev_API OScDev_RichError *OScDev_Error_AsRichError(OScDev_Error code) {
+	return OScDevInternal_FunctionTable->Error_AsRichError(&OScDevInternal_TheModuleImpl, code);
+}
+
+OScDev_API void OScDev_Error_Destroy(OScDev_RichError* error) {
+	OScDevInternal_FunctionTable->Error_Destroy(&OScDevInternal_TheModuleImpl, error);
 }
 
 

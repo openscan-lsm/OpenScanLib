@@ -51,6 +51,54 @@ static OScDev_RichError *Error_WrapWithCode(OScDev_ModuleImpl *modImpl, OSc_Rich
 }
 
 
+static const char *Error_GetMessage(OScDev_ModuleImpl* modImpl, OSc_RichError* error)
+{
+	return OScInternal_Error_GetMessage(error);
+}
+
+
+static const char *Error_GetDomain(OScDev_ModuleImpl* modImpl, OSc_RichError* error)
+{
+	return OScInternal_Error_GetDomain(error);
+}
+
+
+static int32_t Error_GetCode(OScDev_ModuleImpl* modImpl, OSc_RichError* error)
+{
+	return OScInternal_Error_GetCode(error);
+}
+
+
+static OSc_RichError *Error_GetCause(OScDev_ModuleImpl* modImpl, OSc_RichError* error)
+{
+	return OScInternal_Error_GetCause(error);
+}
+
+
+static void Error_Format(OScDev_ModuleImpl* modImpl, OSc_RichError * error, char* buffer, size_t bufsize)
+{
+	OScInternal_Error_Format(error, buffer, bufsize);
+}
+
+
+static void Error_FormatRecursive(OScDev_ModuleImpl* modImpl, OSc_RichError * error, char* buffer, size_t bufsize)
+{
+	OScInternal_Error_FormatRecursive(error, buffer, bufsize);
+}
+
+
+static OSc_RichError *Error_AsRichError(OScDev_ModuleImpl* modImpl, OScDev_Error code)
+{
+	return OScInternal_Error_AsRichError(code);
+}
+
+
+static void Error_Destroy(OScDev_ModuleImpl* modImpl, OSc_RichError* error)
+{
+	OScInternal_Error_Destroy(error);
+}
+
+
 static OScInternal_PtrArray *PtrArray_Create(OScDev_ModuleImpl *modImpl)
 {
 	return OScInternal_PtrArray_Create();
@@ -300,6 +348,14 @@ struct OScDevInternal_Interface DeviceInterfaceFunctionTable = {
 	.Error_CreateWithCode = Error_CreateWithCode,
 	.Error_Wrap = Error_Wrap,
 	.Error_WrapWithCode = Error_WrapWithCode,
+	.Error_GetMessage = Error_GetMessage,
+	.Error_GetDomain = Error_GetDomain,
+	.Error_GetCode = Error_GetCode,
+	.Error_GetCause = Error_GetCause,
+	.Error_Destroy = Error_Destroy,
+	.Error_Format = Error_Format,
+	.Error_FormatRecursive = Error_FormatRecursive,
+	.Error_AsRichError = Error_AsRichError,
 	.PtrArray_Create = PtrArray_Create,
 	.PtrArray_CreateFromNullTerminated = PtrArray_CreateFromNullTerminated,
 	.PtrArray_Destroy = PtrArray_Destroy,
