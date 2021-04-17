@@ -129,9 +129,9 @@ OSc_API int32_t OSc_Error_GetCode(OSc_RichError *error);
 
 OSc_API OSc_RichError *OSc_Error_GetCause(OSc_RichError *error);
 
-OSc_API const char* OSc_Error_Format(OSc_RichError* error);
+OSc_API void OSc_Error_Format(OSc_RichError* error, char* buffer, size_t bufsize);
 
-OSc_API const char* OSc_Error_FormatRecursive(OSc_RichError* error);
+OSc_API void OSc_Error_FormatRecursive(OSc_RichError* error, char* buffer, size_t bufsize);
 
 OSc_API void OSc_Error_Destroy(OSc_RichError *error);
 

@@ -347,8 +347,8 @@ struct OScDevInternal_Interface
 	const char *(*Error_GetDomain)(OScDev_ModuleImpl *modImpl, OScDev_RichError *error);
 	int32_t (*Error_GetCode)(OScDev_ModuleImpl *modImpl, OScDev_RichError *error);
 	OScDev_RichError *(*Error_GetCause)(OScDev_ModuleImpl *modImpl, OScDev_RichError *error);
-	const char *(*Error_Format)(OScDev_ModuleImpl *modImpl, OScDev_RichError *error);
-	const char *(*Error_FormatRecursive)(OScDev_ModuleImpl *modImpl, OScDev_RichError *error);
+	void (*Error_Format)(OScDev_ModuleImpl *modImpl, OScDev_RichError *error, char* buffer, size_t bufsize);
+	void (*Error_FormatRecursive)(OScDev_ModuleImpl *modImpl, OScDev_RichError *error, char* buffer, size_t bufsize);
 	OScDev_RichError *(*Error_AsRichError)(OScDev_ModuleImpl* modImpl, OScDev_Error code);
 	void (*Error_Destroy)(OScDev_ModuleImpl *modImpl, OScDev_RichError *error);
 
@@ -971,12 +971,12 @@ OScDev_API OScDev_RichError *OScDev_Error_GetCause(OScDev_RichError* error) {
 	return OScDevInternal_FunctionTable->Error_GetCause(&OScDevInternal_TheModuleImpl, error);
 }
 
-OScDev_API const char *OScDev_Error_Format(OScDev_RichError* error) {
-	return OScDevInternal_FunctionTable->Error_Format(&OScDevInternal_TheModuleImpl, error);
+OScDev_API void OScDev_Error_Format(OScDev_RichError* error, char* buffer, size_t bufsize) {
+	OScDevInternal_FunctionTable->Error_Format(&OScDevInternal_TheModuleImpl, error, buffer, bufsize);
 }
 
-OScDev_API const char *OScDev_Error_FormatRecursive(OScDev_RichError* error) {
-	return OScDevInternal_FunctionTable->Error_FormatRecursive(&OScDevInternal_TheModuleImpl, error);
+OScDev_API void OScDev_Error_FormatRecursive(OScDev_RichError* error, char* buffer, size_t bufsize) {
+	OScDevInternal_FunctionTable->Error_FormatRecursive(&OScDevInternal_TheModuleImpl, error, buffer, bufsize);
 }
 
 OScDev_API OScDev_RichError *OScDev_Error_AsRichError(OScDev_Error code) {

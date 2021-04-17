@@ -1,6 +1,8 @@
 #include "OpenScanLibPrivate.h"
 #include <RichErrors/Err2Code.h>
 
+#include <string.h>
+
 static const char* OScInternal_Error_MessageForLegacyCode(OScDev_Error code);
 
 RERR_ErrorMapPtr OScInternal_Error_Map()
@@ -224,38 +226,68 @@ OSc_RichError* OSc_Error_GetCause(OSc_RichError* error)
 }
 
 
-const char* OScInternal_Error_Format(OSc_RichError* error)
+void OScInternal_Error_Format(OSc_RichError* error, char* buffer, size_t bufsize)
 {
-	char* format = (char*)malloc(1000 * sizeof(char));
-	sprintf(format, "<%s> (<%s> error <%d>)", RERR_Error_GetMessage(error),
-		RERR_Error_GetDomain(error), RERR_Error_GetCode(error));
-	return format;
-}
+	if (!buffer || bufsize == 0)
+		return; // Buggy caller, nothing we can do
 
+	if (!error) {
+		snprintf(buffer, bufsize, "(No error)"); // Just in case
+		return;
+	}
 
-const char* OSc_Error_Format(OSc_RichError* error)
-{
-	return OScInternal_Error_Format(error);
-}
+	snprintf(buffer, bufsize, "%s", RERR_Error_GetMessage(error));
+	size_t len = strlen(buffer);
+	buffer += len;
+	bufsize -= len;
 
-
-const char* OScInternal_Error_FormatRecursive(OSc_RichError* error)
-{
-	char* format = (char*)malloc(1000 * sizeof(char));
-	OSc_RichError *cause = OSc_Error_GetCause(error);
-	if (cause) 
-		sprintf(format, "<%s> (<%s> error <%d>)[caused by:%s]", RERR_Error_GetMessage(error),
-			RERR_Error_GetDomain(error), RERR_Error_GetCode(error), OSc_Error_FormatRecursive(cause));
-	else
-		sprintf(format, "<%s> (<%s> error <%d>)", RERR_Error_GetMessage(error),
+	if (RERR_Error_HasCode(error)) {
+		snprintf(buffer, bufsize, " (%s error %d)",
 			RERR_Error_GetDomain(error), RERR_Error_GetCode(error));
-	return format;
+	}
 }
 
 
-const char* OSc_Error_FormatRecursive(OSc_RichError* error)
+void OSc_Error_Format(OSc_RichError* error, char* buffer, size_t bufsize)
 {
-	return OScInternal_Error_FormatRecursive(error);
+	OScInternal_Error_Format(error, buffer, bufsize);
+}
+
+
+void OScInternal_Error_FormatRecursive(OSc_RichError* error, char* buffer, size_t bufsize)
+{
+	if (!buffer || bufsize == 0)
+		return; // Buggy caller, nothing we can do
+
+	if (!error) {
+		snprintf(buffer, bufsize, "(No error)"); // Just in case
+		return;
+	}
+
+	OScInternal_Error_Format(error, buffer, bufsize);
+	size_t len = strlen(buffer);
+	buffer += len;
+	bufsize -= len;
+
+	if (RERR_Error_HasCause(error)) {
+		snprintf(buffer, bufsize, " [caused by: ");
+		len = strlen(buffer);
+		buffer += len;
+		bufsize -= len;
+
+		OScInternal_Error_FormatRecursive(RERR_Error_GetCause(error), buffer, bufsize);
+		len = strlen(buffer);
+		buffer += len;
+		bufsize -= len;
+
+		snprintf(buffer, bufsize, "]");
+	}
+}
+
+
+void OSc_Error_FormatRecursive(OSc_RichError* error, char* buffer, size_t bufsize)
+{
+	OScInternal_Error_FormatRecursive(error, buffer, bufsize);
 }
 
 

@@ -75,15 +75,15 @@ static OSc_RichError *Error_GetCause(OScDev_ModuleImpl* modImpl, OSc_RichError* 
 }
 
 
-static const char *Error_Format(OScDev_ModuleImpl* modImpl, OSc_RichError * error)
+static void Error_Format(OScDev_ModuleImpl* modImpl, OSc_RichError * error, char* buffer, size_t bufsize)
 {
-	return OScInternal_Error_Format(error);
+	OScInternal_Error_Format(error, buffer, bufsize);
 }
 
 
-static const char *Error_FormatRecursive(OScDev_ModuleImpl* modImpl, OSc_RichError * error)
+static void Error_FormatRecursive(OScDev_ModuleImpl* modImpl, OSc_RichError * error, char* buffer, size_t bufsize)
 {
-	return OScInternal_Error_FormatRecursive(error);
+	OScInternal_Error_FormatRecursive(error, buffer, bufsize);
 }
 
 
@@ -95,7 +95,7 @@ static OSc_RichError *Error_AsRichError(OScDev_ModuleImpl* modImpl, OScDev_Error
 
 static void Error_Destroy(OScDev_ModuleImpl* modImpl, OSc_RichError* error)
 {
-	return OScInternal_Error_Destroy(error);
+	OScInternal_Error_Destroy(error);
 }
 
 
