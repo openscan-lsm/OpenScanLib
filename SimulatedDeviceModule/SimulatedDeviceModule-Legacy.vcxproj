@@ -29,8 +29,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{EF6060FE-D462-465B-82BB-5CFC6E90FD3D}</ProjectGuid>
-    <RootNamespace>SimulatedDeviceModule</RootNamespace>
+    <ProjectGuid>{a274c829-bc39-488e-a54a-39c7e13d5653}</ProjectGuid>
+    <RootNamespace>SimulatedDeviceModuleLegacy</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -98,7 +98,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;SIMULATEDDEVICEMODULE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_DEBUG;SIMULATEDDEVICEMODULELEGACY_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>..\OpenScanDeviceLib\include</AdditionalIncludeDirectories>
     </ClCompile>
@@ -114,7 +114,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;SIMULATEDDEVICEMODULE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;SIMULATEDDEVICEMODULELEGACY_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>..\OpenScanDeviceLib\include</AdditionalIncludeDirectories>
     </ClCompile>
@@ -130,9 +130,9 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;SIMULATEDDEVICEMODULE_EXPORTS;_WINDOWS;_USRDLL</PreprocessorDefinitions>
+      <PreprocessorDefinitions>SIMULATED_DEVICE_LEGACY_ERRORS;_CRT_SECURE_NO_WARNINGS;_DEBUG;SIMULATEDDEVICEMODULELEGACY_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\OpenScanDeviceLib\include;C:\Program Files (x86)\National Instruments\Shared\ExternalCompilerSupport\c\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\OpenScanDeviceLib\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -146,7 +146,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;SIMULATEDDEVICEMODULE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;SIMULATEDDEVICEMODULELEGACY_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>..\OpenScanDeviceLib\include</AdditionalIncludeDirectories>
     </ClCompile>

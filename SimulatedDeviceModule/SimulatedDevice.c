@@ -7,6 +7,7 @@
 #include <time.h>
 
 
+
 uint16_t* buf_frame;
 static OScDev_DeviceImpl g_SimulatedDeviceImpl;
 
@@ -259,7 +260,11 @@ OScDev_Error StopAcquisitionAndWait(OScDev_Device *device)
 
 static OScDev_Error GetModelName(const char **name)
 {
+#ifdef SIMULATED_DEVICE_LEGACY_ERRORS
+	*name = "SimulatedDevice_legacy_errors";
+#else
 	*name = "SimulatedDevice_rich_errors";
+#endif
 	return OScDev_OK;
 }
 
@@ -295,7 +300,11 @@ static OScDev_Error ReleaseInstance(OScDev_Device *device)
 
 static OScDev_Error GetName(OScDev_Device *device, char *name)
 {
+#ifdef SIMULATED_DEVICE_LEGACY_ERRORS
+	strncpy(name, "SimulatedDevice_legacy_errors", OScDev_MAX_STR_LEN);
+#else
 	strncpy(name, "SimulatedDevice_rich_errors", OScDev_MAX_STR_LEN);
+#endif
 	return OScDev_OK;
 }
 
@@ -370,16 +379,16 @@ static OScDev_Error MakeSettings(OScDev_Device* device, OScDev_PtrArray** settin
 	*settings = OScDev_PtrArray_Create();
 
 	OScDev_Setting* lineDelay;
+#ifdef SIMULATED_DEVICE_LEGACY_ERRORS
+	if (OScDev_CHECK(err, OScDev_Setting_Create(&lineDelay, "Error on start (legacy)", OScDev_ValueType_Bool,
+		&SettingImpl_ErrorOnStart, device)))
+#else
 	if (OScDev_CHECK(err, OScDev_Setting_Create(&lineDelay, "Error on start (rich)", OScDev_ValueType_Bool,
 		&SettingImpl_ErrorOnStart, device)))
+#endif
 		goto error;
 	OScDev_PtrArray_Append(*settings, lineDelay);
 
-	// OScDev_Setting* produceImages;
-	// if (OScDev_CHECK(err, OScDev_Setting_Create(&produceImages, "ProduceImages (rich)", OScDev_ValueType_Bool,
-	// 	&SettingImpl_ProduceImages, device)))
-	// 	goto error;
-	// OScDev_PtrArray_Append(*settings, produceImages);
 	return OScDev_OK;
 
 error:
@@ -407,7 +416,11 @@ static OScDev_Error Arm(OScDev_Device* device, OScDev_Acquisition* acq)
 	{
 		if (GetData(device)->simulatedErrorOnStart) {
 			LeaveCriticalSection(&(GetData(device)->acquisition.mutex));
+#ifdef SIMULATED_DEVICE_LEGACY_ERRORS
+			return OScDev_Error_Unknown;
+#else
 			return OScDev_Error_ReturnAsCode(OScDev_Error_Create("simulated error"));
+#endif
 		}
 		GetData(device)->acquisition.acquisition = acq;
 		GetData(device)->acquisition.stopRequested = false;
@@ -443,13 +456,21 @@ static OScDev_Error Start(OScDev_Device* device)
 			!GetData(device)->acquisition.armed)
 		{
 			LeaveCriticalSection(&(GetData(device)->acquisition.mutex));
+#ifdef SIMULATED_DEVICE_LEGACY_ERRORS
+			return OScDev_Error_Not_Armed;
+#else
 			return OScDev_Error_ReturnAsCode(OScDev_Error_Create("not armed"));
+#endif
 		}
 
 		if (GetData(device)->acquisition.started)
 		{
 			LeaveCriticalSection(&(GetData(device)->acquisition.mutex));
+#ifdef SIMULATED_DEVICE_LEGACY_ERRORS
+			return OScDev_Error_Acquisition_Running;
+#else
 			return OScDev_Error_ReturnAsCode(OScDev_Error_Create("acquisition running"));
+#endif
 		}
 
 		GetData(device)->acquisition.started = true;
@@ -518,7 +539,11 @@ OScDev_Error GetDeviceImpls(OScDev_PtrArray **deviceImpls)
 
 OScDev_MODULE_IMPL =
 {
+#ifdef SIMULATED_DEVICE_LEGACY_ERRORS
+	.displayName = "Simulated Device (legacy errors)",
+#else
 	.displayName = "Simulated Device (rich errors)",
-	.GetDeviceImpls = GetDeviceImpls,
 	.supportsRichErrors = true,
+#endif
+	.GetDeviceImpls = GetDeviceImpls,
 };
