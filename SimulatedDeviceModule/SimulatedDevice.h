@@ -47,20 +47,20 @@ struct DevicePrivateData
 };
 
 
-static inline struct DevicePrivateData* GetSettingDeviceData(OScDev_Setting* setting)
+static inline struct DevicePrivateData *GetSettingDeviceData(OScDev_Setting *setting)
 {
-	return (struct DevicePrivateData*)OScDev_Device_GetImplData((OScDev_Device*)OScDev_Setting_GetImplData(setting));
+	return (struct DevicePrivateData *)OScDev_Device_GetImplData((OScDev_Device *)OScDev_Setting_GetImplData(setting));
 }
 
 
-static OScDev_Error GetErrorOnStart(OScDev_Setting* setting, bool* value)
+static OScDev_Error GetErrorOnStart(OScDev_Setting *setting, bool *value)
 {
 	*value = GetSettingDeviceData(setting)->simulatedErrorOnStart;
 	return OScDev_OK;
 }
 
 
-static OScDev_Error SetErrorOnStart(OScDev_Setting* setting, bool value)
+static OScDev_Error SetErrorOnStart(OScDev_Setting *setting, bool value)
 {
 	GetSettingDeviceData(setting)->simulatedErrorOnStart = value;
 	return OScDev_OK;
@@ -73,13 +73,13 @@ OScDev_SettingImpl SettingImpl_ErrorOnStart = {
 };
 
 
-static inline struct DevicePrivateData* GetData(OScDev_Device* device)
+static inline struct DevicePrivateData *GetData(OScDev_Device *device)
 {
 	return (struct DevicePrivateData*)OScDev_Device_GetImplData(device);
 }
 
 
-static void InitializeDevicePrivateData(struct DevicePrivateData* data)
+static void InitializeDevicePrivateData(struct DevicePrivateData *data)
 {
 	// data->produceImages = true;
 	data->simulatedErrorOnStart = false;
@@ -99,7 +99,7 @@ static void InitializeDevicePrivateData(struct DevicePrivateData* data)
 
 // Simulate a hardware trigger from the clock to scanner/detector.
 // This is done by creating a "singal" file which the receiver waits for.
-static void SendSignal(const char* signalName)
+static void SendSignal(const char *signalName)
 {
 	FILE* file;
 	file = fopen(signalName, "w");
@@ -110,8 +110,8 @@ static void SendSignal(const char* signalName)
 // Wait for a simulated hardware trigger signal. In doing so, cancel the wait
 // if the given flag (protected by the given mutex) turns true. Return true if
 // the wait succeeded, false if it was canceled.
-static bool WaitForSignal(const char* signalName,
-	bool* cancelFlag, CRITICAL_SECTION* mutex)
+static bool WaitForSignal(const char *signalName,
+	bool *cancelFlag, CRITICAL_SECTION *mutex)
 {
 	for (;;) {
 		bool cancel;
@@ -121,7 +121,7 @@ static bool WaitForSignal(const char* signalName,
 		if (cancel)
 			return false;
 
-		FILE* file;
+		FILE *file;
 		if (file = fopen(signalName, "r")) {
 			fclose(file);
 			remove(signalName);
@@ -133,7 +133,7 @@ static bool WaitForSignal(const char* signalName,
 }
 
 
-static OScDev_Error SimulateImage(OScDev_Device* device, OScDev_Acquisition* acq)
+static OScDev_Error SimulateImage(OScDev_Device *device, OScDev_Acquisition *acq)
 {
 	uint32_t xOffset, yOffset, width, height;
 	OScDev_Acquisition_GetROI(acq, &xOffset, &yOffset, &width, &height);
@@ -150,9 +150,9 @@ static OScDev_Error SimulateImage(OScDev_Device* device, OScDev_Acquisition* acq
 }
 
 
-static DWORD WINAPI AcquisitionLoop(void* param)
+static DWORD WINAPI AcquisitionLoop(void *param)
 {
-	OScDev_Device* device = (OScDev_Device*)param;
+	OScDev_Device *device = (OScDev_Device *)param;
 
 	bool canceled = false;
 	if (GetData(device)->useScanner) {
@@ -175,7 +175,7 @@ static DWORD WINAPI AcquisitionLoop(void* param)
 		uint32_t xOffset, yOffset, width, height;
 		OScDev_Acquisition_GetROI(acq, &xOffset, &yOffset, &width, &height);
 
-		buf_frame = (uint16_t*)malloc(width * height * sizeof(uint16_t));
+		buf_frame = (uint16_t *)malloc(width * height * sizeof(uint16_t));
 		for (uint32_t frame = 0; frame < totalFrames; ++frame) {
 			bool stopRequested;
 			EnterCriticalSection(&(GetData(device)->acquisition.mutex));
@@ -200,14 +200,14 @@ static DWORD WINAPI AcquisitionLoop(void* param)
 	GetData(device)->acquisition.detectorRunning = false;
 	LeaveCriticalSection(&(GetData(device)->acquisition.mutex));
 
-	CONDITION_VARIABLE* cv = &(GetData(device)->acquisition.acquisitionFinishCondition);
+	CONDITION_VARIABLE *cv = &(GetData(device)->acquisition.acquisitionFinishCondition);
 	WakeAllConditionVariable(cv);
 
 	return 0;
 }
 
 
-void RunAcquisitionLoop(OScDev_Device* device)
+void RunAcquisitionLoop(OScDev_Device *device)
 {
 	DWORD id;
 	GetData(device)->acquisition.thread =
@@ -215,10 +215,10 @@ void RunAcquisitionLoop(OScDev_Device* device)
 }
 
 
-OScDev_Error WaitForAcquisitionToFinish(OScDev_Device* device)
+OScDev_Error WaitForAcquisitionToFinish(OScDev_Device *device)
 {
-	CRITICAL_SECTION* mutex = &GetData(device)->acquisition.mutex;
-	CONDITION_VARIABLE* cv = &(GetData(device)->acquisition.acquisitionFinishCondition);
+	CRITICAL_SECTION *mutex = &GetData(device)->acquisition.mutex;
+	CONDITION_VARIABLE *cv = &(GetData(device)->acquisition.acquisitionFinishCondition);
 
 	EnterCriticalSection(mutex);
 	while (GetData(device)->acquisition.clockRunning || GetData(device)->acquisition.scannerRunning || GetData(device)->acquisition.detectorRunning) {
@@ -230,7 +230,7 @@ OScDev_Error WaitForAcquisitionToFinish(OScDev_Device* device)
 }
 
 
-OScDev_Error IsAcquisitionRunning(OScDev_Device* device, bool* isRunning)
+OScDev_Error IsAcquisitionRunning(OScDev_Device *device, bool *isRunning)
 {
 	EnterCriticalSection(&(GetData(device)->acquisition.mutex));
 	*isRunning = GetData(device)->acquisition.clockRunning || GetData(device)->acquisition.scannerRunning || GetData(device)->acquisition.detectorRunning;
@@ -239,10 +239,10 @@ OScDev_Error IsAcquisitionRunning(OScDev_Device* device, bool* isRunning)
 }
 
 
-OScDev_Error StopAcquisitionAndWait(OScDev_Device* device)
+OScDev_Error StopAcquisitionAndWait(OScDev_Device *device)
 {
-	CRITICAL_SECTION* mutex = &GetData(device)->acquisition.mutex;
-	CONDITION_VARIABLE* cv = &(GetData(device)->acquisition.acquisitionFinishCondition);
+	CRITICAL_SECTION *mutex = &GetData(device)->acquisition.mutex;
+	CONDITION_VARIABLE *cv = &(GetData(device)->acquisition.acquisitionFinishCondition);
 
 	EnterCriticalSection(mutex);
 
@@ -269,21 +269,21 @@ OScDev_Error StopAcquisitionAndWait(OScDev_Device* device)
 }
 
 
-static OScDev_Error GetModelName(const char** name)
+static OScDev_Error GetModelName(const char **name)
 {
 	*name = DEVICE_NAME;
 	return OScDev_OK;
 }
 
 
-static OScDev_Error EnumerateInstances(OScDev_PtrArray** devices)
+static OScDev_Error EnumerateInstances(OScDev_PtrArray **devices)
 {
 	*devices = OScDev_PtrArray_Create();
 
-	struct DevicePrivateData* data = calloc(1, sizeof(struct DevicePrivateData));
+	struct DevicePrivateData *data = calloc(1, sizeof(struct DevicePrivateData));
 
 	OScDev_Error errCode;
-	OScDev_Device* device0 = NULL;
+	OScDev_Device *device0 = NULL;
 	errCode = OScDev_Device_Create(&device0, &g_SimulatedDeviceImpl, data);
 	if (errCode) {
 		OScDev_PtrArray_Destroy(*devices);
@@ -298,54 +298,54 @@ static OScDev_Error EnumerateInstances(OScDev_PtrArray** devices)
 }
 
 
-static OScDev_Error ReleaseInstance(OScDev_Device* device)
+static OScDev_Error ReleaseInstance(OScDev_Device *device)
 {
 	free(GetData(device));
 	return OScDev_OK;
 }
 
 
-static OScDev_Error GetName(OScDev_Device* device, char* name)
+static OScDev_Error GetName(OScDev_Device *device, char *name)
 {
 	strncpy(name, DEVICE_NAME, OScDev_MAX_STR_LEN);
 	return OScDev_OK;
 }
 
 
-static OScDev_Error Open(OScDev_Device* device)
+static OScDev_Error Open(OScDev_Device *device)
 {
 	return OScDev_OK;
 }
 
 
-static OScDev_Error Close(OScDev_Device* device)
+static OScDev_Error Close(OScDev_Device *device)
 {
 	return StopAcquisitionAndWait(device);
 }
 
 
-static OScDev_Error HasClock(OScDev_Device* device, bool* hasClock)
+static OScDev_Error HasClock(OScDev_Device *device, bool *hasClock)
 {
 	*hasClock = true;
 	return OScDev_OK;
 }
 
 
-static OScDev_Error HasScanner(OScDev_Device* device, bool* hasScanner)
+static OScDev_Error HasScanner(OScDev_Device *device, bool *hasScanner)
 {
 	*hasScanner = true;
 	return OScDev_OK;
 }
 
 
-static OScDev_Error HasDetector(OScDev_Device* device, bool* hasDetector)
+static OScDev_Error HasDetector(OScDev_Device *device, bool *hasDetector)
 {
 	*hasDetector = true;
 	return OScDev_OK;
 }
 
 
-static OScDev_Error GetPixelRates(OScDev_Device* device, OScDev_NumRange** pixelRatesHz)
+static OScDev_Error GetPixelRates(OScDev_Device *device, OScDev_NumRange **pixelRatesHz)
 {
 	*pixelRatesHz = OScDev_NumRange_CreateDiscrete();
 	OScDev_NumRange_AppendDiscrete(*pixelRatesHz, 1e6 * 1.2500);
@@ -353,7 +353,7 @@ static OScDev_Error GetPixelRates(OScDev_Device* device, OScDev_NumRange** pixel
 }
 
 
-static OScDev_Error GetResolutions(OScDev_Device* device, OScDev_NumRange** resolutions)
+static OScDev_Error GetResolutions(OScDev_Device *device, OScDev_NumRange **resolutions)
 {
 	*resolutions = OScDev_NumRange_CreateDiscrete();
 	OScDev_NumRange_AppendDiscrete(*resolutions, 256);
@@ -362,21 +362,21 @@ static OScDev_Error GetResolutions(OScDev_Device* device, OScDev_NumRange** reso
 }
 
 
-static OScDev_Error GetNumberOfChannels(OScDev_Device* device, uint32_t* nChannels)
+static OScDev_Error GetNumberOfChannels(OScDev_Device *device, uint32_t *nChannels)
 {
 	*nChannels = 1;
 	return OScDev_OK;
 }
 
 
-static OScDev_Error GetBytesPerSample(OScDev_Device* device, uint32_t* bytesPerSample)
+static OScDev_Error GetBytesPerSample(OScDev_Device *device, uint32_t *bytesPerSample)
 {
 	*bytesPerSample = 2;
 	return OScDev_OK;
 }
 
 
-static OScDev_Error MakeSettings(OScDev_Device* device, OScDev_PtrArray** settings)
+static OScDev_Error MakeSettings(OScDev_Device *device, OScDev_PtrArray **settings)
 {
 	OScDev_Error err = OScDev_OK;
 	*settings = OScDev_PtrArray_Create();
@@ -399,7 +399,7 @@ error:
 }
 
 
-static OScDev_Error Arm(OScDev_Device* device, OScDev_Acquisition* acq)
+static OScDev_Error Arm(OScDev_Device *device, OScDev_Acquisition *acq)
 {
 	bool useClock, useScanner, useDetector;
 	OScDev_Acquisition_IsClockRequested(acq, &useClock);
@@ -446,7 +446,7 @@ static OScDev_Error Arm(OScDev_Device* device, OScDev_Acquisition* acq)
 }
 
 
-static OScDev_Error Start(OScDev_Device* device)
+static OScDev_Error Start(OScDev_Device *device)
 {
 	EnterCriticalSection(&(GetData(device)->acquisition.mutex));
 	{
@@ -486,19 +486,19 @@ static OScDev_Error Start(OScDev_Device* device)
 }
 
 
-static OScDev_Error Stop(OScDev_Device* device)
+static OScDev_Error Stop(OScDev_Device *device)
 {
 	return StopAcquisitionAndWait(device);
 }
 
 
-static OScDev_Error IsRunning(OScDev_Device* device, bool* isRunning)
+static OScDev_Error IsRunning(OScDev_Device *device, bool *isRunning)
 {
 	return IsAcquisitionRunning(device, isRunning);
 }
 
 
-static OScDev_Error Wait(OScDev_Device* device)
+static OScDev_Error Wait(OScDev_Device *device)
 {
 	return WaitForAcquisitionToFinish(device);
 }
@@ -527,7 +527,7 @@ static OScDev_DeviceImpl g_SimulatedDeviceImpl = {
 };
 
 
-OScDev_Error GetDeviceImpls(OScDev_PtrArray** deviceImpls)
+OScDev_Error GetDeviceImpls(OScDev_PtrArray **deviceImpls)
 {
 	*deviceImpls = OScDev_PtrArray_CreateFromNullTerminated(
 		(OScDev_DeviceImpl * []) {
