@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="SimulatedDevice.c">
+    <ClCompile Include="SimulatedDevice_Legacy.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
