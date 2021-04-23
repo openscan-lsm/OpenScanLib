@@ -130,7 +130,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>SIMULATED_DEVICE_LEGACY_ERRORS;_CRT_SECURE_NO_WARNINGS;_DEBUG;SIMULATEDDEVICEMODULELEGACY_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DEBUG;SIMULATEDDEVICEMODULELEGACY_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>..\OpenScanDeviceLib\include</AdditionalIncludeDirectories>
     </ClCompile>
