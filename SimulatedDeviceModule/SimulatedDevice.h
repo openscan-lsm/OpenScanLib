@@ -13,7 +13,7 @@
 #define DEVICE_NAME "Simulated Device (legacy errors)"
 #define SETTING_NAME "Error on start (legacy errors)"
 #else
-#define DEVICE_NAME "imulated Device (rich errors)"
+#define DEVICE_NAME "Simulated Device (rich errors)"
 #define SETTING_NAME "Error on start (rich errors)"
 #endif
 
