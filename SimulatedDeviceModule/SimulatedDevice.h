@@ -1,3 +1,5 @@
+#pragma once
+
 #include "OpenScanDeviceLib.h"
 
 #include <stdlib.h>
@@ -5,6 +7,16 @@
 #include <Windows.h>
 #include <stdio.h>
 #include <time.h>
+
+
+#ifdef SIMULATED_DEVICE_LEGACY_ERRORS
+#define DEVICE_NAME "Simulated Device (legacy errors)"
+#define SETTING_NAME "Error on start (legacy errors)"
+#else
+#define DEVICE_NAME "Simulated Device (rich errors)"
+#define SETTING_NAME "Error on start (rich errors)"
+#endif
+
 
 
 uint16_t* buf_frame;
@@ -61,7 +73,7 @@ OScDev_SettingImpl SettingImpl_ErrorOnStart = {
 };
 
 
-static inline struct DevicePrivateData* GetData(OScDev_Device* device)
+static inline struct DevicePrivateData *GetData(OScDev_Device *device)
 {
 	return (struct DevicePrivateData*)OScDev_Device_GetImplData(device);
 }
@@ -109,7 +121,7 @@ static bool WaitForSignal(const char *signalName,
 		if (cancel)
 			return false;
 
-		FILE* file;
+		FILE *file;
 		if (file = fopen(signalName, "r")) {
 			fclose(file);
 			remove(signalName);
@@ -121,7 +133,7 @@ static bool WaitForSignal(const char *signalName,
 }
 
 
-static OScDev_Error SimulateImage(OScDev_Device* device, OScDev_Acquisition* acq)
+static OScDev_Error SimulateImage(OScDev_Device *device, OScDev_Acquisition *acq)
 {
 	uint32_t xOffset, yOffset, width, height;
 	OScDev_Acquisition_GetROI(acq, &xOffset, &yOffset, &width, &height);
@@ -163,7 +175,7 @@ static DWORD WINAPI AcquisitionLoop(void *param)
 		uint32_t xOffset, yOffset, width, height;
 		OScDev_Acquisition_GetROI(acq, &xOffset, &yOffset, &width, &height);
 
-		buf_frame = (uint16_t*)malloc(width * height * sizeof(uint16_t));
+		buf_frame = (uint16_t *)malloc(width * height * sizeof(uint16_t));
 		for (uint32_t frame = 0; frame < totalFrames; ++frame) {
 			bool stopRequested;
 			EnterCriticalSection(&(GetData(device)->acquisition.mutex));
@@ -195,7 +207,7 @@ static DWORD WINAPI AcquisitionLoop(void *param)
 }
 
 
-void RunAcquisitionLoop(OScDev_Device* device)
+void RunAcquisitionLoop(OScDev_Device *device)
 {
 	DWORD id;
 	GetData(device)->acquisition.thread =
@@ -251,7 +263,6 @@ OScDev_Error StopAcquisitionAndWait(OScDev_Device *device)
 	while (GetData(device)->acquisition.clockRunning || GetData(device)->acquisition.scannerRunning || GetData(device)->acquisition.detectorRunning) {
 		SleepConditionVariableCS(cv, mutex, INFINITE);
 	}
-
 	LeaveCriticalSection(mutex);
 
 	return OScDev_OK;
@@ -260,7 +271,7 @@ OScDev_Error StopAcquisitionAndWait(OScDev_Device *device)
 
 static OScDev_Error GetModelName(const char **name)
 {
-	*name = "SimulatedDevice_legacy_errors";
+	*name = DEVICE_NAME;
 	return OScDev_OK;
 }
 
@@ -296,45 +307,45 @@ static OScDev_Error ReleaseInstance(OScDev_Device *device)
 
 static OScDev_Error GetName(OScDev_Device *device, char *name)
 {
-	strncpy(name, "SimulatedDevice_legacy_errors", OScDev_MAX_STR_LEN);
+	strncpy(name, DEVICE_NAME, OScDev_MAX_STR_LEN);
 	return OScDev_OK;
 }
 
 
-static OScDev_Error Open(OScDev_Device* device)
+static OScDev_Error Open(OScDev_Device *device)
 {
 	return OScDev_OK;
 }
 
 
-static OScDev_Error Close(OScDev_Device* device)
+static OScDev_Error Close(OScDev_Device *device)
 {
 	return StopAcquisitionAndWait(device);
 }
 
 
-static OScDev_Error HasClock(OScDev_Device* device, bool* hasClock)
+static OScDev_Error HasClock(OScDev_Device *device, bool *hasClock)
 {
 	*hasClock = true;
 	return OScDev_OK;
 }
 
 
-static OScDev_Error HasScanner(OScDev_Device* device, bool* hasScanner)
+static OScDev_Error HasScanner(OScDev_Device *device, bool *hasScanner)
 {
 	*hasScanner = true;
 	return OScDev_OK;
 }
 
 
-static OScDev_Error HasDetector(OScDev_Device* device, bool* hasDetector)
+static OScDev_Error HasDetector(OScDev_Device *device, bool *hasDetector)
 {
 	*hasDetector = true;
 	return OScDev_OK;
 }
 
 
-static OScDev_Error GetPixelRates(OScDev_Device* device, OScDev_NumRange** pixelRatesHz)
+static OScDev_Error GetPixelRates(OScDev_Device *device, OScDev_NumRange **pixelRatesHz)
 {
 	*pixelRatesHz = OScDev_NumRange_CreateDiscrete();
 	OScDev_NumRange_AppendDiscrete(*pixelRatesHz, 1e6 * 1.2500);
@@ -342,7 +353,7 @@ static OScDev_Error GetPixelRates(OScDev_Device* device, OScDev_NumRange** pixel
 }
 
 
-static OScDev_Error GetResolutions(OScDev_Device* device, OScDev_NumRange** resolutions)
+static OScDev_Error GetResolutions(OScDev_Device *device, OScDev_NumRange **resolutions)
 {
 	*resolutions = OScDev_NumRange_CreateDiscrete();
 	OScDev_NumRange_AppendDiscrete(*resolutions, 256);
@@ -351,36 +362,31 @@ static OScDev_Error GetResolutions(OScDev_Device* device, OScDev_NumRange** reso
 }
 
 
-static OScDev_Error GetNumberOfChannels(OScDev_Device* device, uint32_t* nChannels)
+static OScDev_Error GetNumberOfChannels(OScDev_Device *device, uint32_t *nChannels)
 {
 	*nChannels = 1;
 	return OScDev_OK;
 }
 
 
-static OScDev_Error GetBytesPerSample(OScDev_Device* device, uint32_t* bytesPerSample)
+static OScDev_Error GetBytesPerSample(OScDev_Device *device, uint32_t *bytesPerSample)
 {
 	*bytesPerSample = 2;
 	return OScDev_OK;
 }
 
 
-static OScDev_Error MakeSettings(OScDev_Device* device, OScDev_PtrArray** settings)
+static OScDev_Error MakeSettings(OScDev_Device *device, OScDev_PtrArray **settings)
 {
 	OScDev_Error err = OScDev_OK;
 	*settings = OScDev_PtrArray_Create();
 
 	OScDev_Setting* lineDelay;
-	if (OScDev_CHECK(err, OScDev_Setting_Create(&lineDelay, "Error on start (legacy)", OScDev_ValueType_Bool,
+	if (OScDev_CHECK(err, OScDev_Setting_Create(&lineDelay, SETTING_NAME, OScDev_ValueType_Bool,
 		&SettingImpl_ErrorOnStart, device)))
 		goto error;
 	OScDev_PtrArray_Append(*settings, lineDelay);
 
-	// OScDev_Setting* produceImages;
-	// if (OScDev_CHECK(err, OScDev_Setting_Create(&produceImages, "ProduceImages (rich)", OScDev_ValueType_Bool,
-	// 	&SettingImpl_ProduceImages, device)))
-	// 	goto error;
-	// OScDev_PtrArray_Append(*settings, produceImages);
 	return OScDev_OK;
 
 error:
@@ -393,7 +399,7 @@ error:
 }
 
 
-static OScDev_Error Arm(OScDev_Device* device, OScDev_Acquisition* acq)
+static OScDev_Error Arm(OScDev_Device *device, OScDev_Acquisition *acq)
 {
 	bool useClock, useScanner, useDetector;
 	OScDev_Acquisition_IsClockRequested(acq, &useClock);
@@ -408,19 +414,23 @@ static OScDev_Error Arm(OScDev_Device* device, OScDev_Acquisition* acq)
 	{
 		if (GetData(device)->simulatedErrorOnStart) {
 			LeaveCriticalSection(&(GetData(device)->acquisition.mutex));
+#ifdef SIMULATED_DEVICE_LEGACY_ERRORS
 			return OScDev_Error_Unknown;
+#else
+			return OScDev_Error_ReturnAsCode(OScDev_Error_Create("simulated error"));
+#endif
 		}
 		GetData(device)->acquisition.acquisition = acq;
 		GetData(device)->acquisition.stopRequested = false;
-		if (useClock) 
+		if (useClock)
 		{
 			GetData(device)->acquisition.clockRunning = true;
 		}
-		if (useScanner) 
+		if (useScanner)
 		{
 			GetData(device)->acquisition.scannerRunning = true;
 		}
-		if (useDetector) 
+		if (useDetector)
 		{
 			GetData(device)->acquisition.detectorRunning = true;
 		}
@@ -436,7 +446,7 @@ static OScDev_Error Arm(OScDev_Device* device, OScDev_Acquisition* acq)
 }
 
 
-static OScDev_Error Start(OScDev_Device* device)
+static OScDev_Error Start(OScDev_Device *device)
 {
 	EnterCriticalSection(&(GetData(device)->acquisition.mutex));
 	{
@@ -444,13 +454,21 @@ static OScDev_Error Start(OScDev_Device* device)
 			!GetData(device)->acquisition.armed)
 		{
 			LeaveCriticalSection(&(GetData(device)->acquisition.mutex));
+#ifdef SIMULATED_DEVICE_LEGACY_ERRORS
 			return OScDev_Error_Not_Armed;
+#else
+			return OScDev_Error_ReturnAsCode(OScDev_Error_Create("not armed"));
+#endif
 		}
 
 		if (GetData(device)->acquisition.started)
 		{
 			LeaveCriticalSection(&(GetData(device)->acquisition.mutex));
+#ifdef SIMULATED_DEVICE_LEGACY_ERRORS
 			return OScDev_Error_Acquisition_Running;
+#else
+			return OScDev_Error_ReturnAsCode(OScDev_Error_Create("acquisition running"));
+#endif
 		}
 
 		GetData(device)->acquisition.started = true;
@@ -468,19 +486,19 @@ static OScDev_Error Start(OScDev_Device* device)
 }
 
 
-static OScDev_Error Stop(OScDev_Device* device)
+static OScDev_Error Stop(OScDev_Device *device)
 {
 	return StopAcquisitionAndWait(device);
 }
 
 
-static OScDev_Error IsRunning(OScDev_Device* device, bool* isRunning)
+static OScDev_Error IsRunning(OScDev_Device *device, bool *isRunning)
 {
 	return IsAcquisitionRunning(device, isRunning);
 }
 
 
-static OScDev_Error Wait(OScDev_Device* device)
+static OScDev_Error Wait(OScDev_Device *device)
 {
 	return WaitForAcquisitionToFinish(device);
 }
@@ -512,14 +530,18 @@ static OScDev_DeviceImpl g_SimulatedDeviceImpl = {
 OScDev_Error GetDeviceImpls(OScDev_PtrArray **deviceImpls)
 {
 	*deviceImpls = OScDev_PtrArray_CreateFromNullTerminated(
-		(OScDev_DeviceImpl *[]){ &g_SimulatedDeviceImpl, NULL });
+		(OScDev_DeviceImpl * []) {
+		&g_SimulatedDeviceImpl, NULL
+	});
 	return OScDev_OK;
 }
 
 
 OScDev_MODULE_IMPL =
 {
-	.displayName = "Simulated Device (legacy errors)",
+#ifndef SIMULATED_DEVICE_LEGACY_ERRORS
+	.supportsRichErrors = true,
+#endif
+	.displayName = DEVICE_NAME,
 	.GetDeviceImpls = GetDeviceImpls,
-	.supportsRichErrors = false,
 };
