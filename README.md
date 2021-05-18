@@ -53,3 +53,10 @@ configuration.)
 
 After the above steps, all projects in `OpenScanLib.sln` should build in Visual
 Studio 2019.
+
+
+Code of Conduct
+---------------
+
+[![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.0-4baaaa.svg)](https://github.com/openscan-lsm/OpenScan/blob/main/CODE_OF_CONDUCT.md)
+
