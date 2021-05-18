@@ -26,3 +26,30 @@ Applications using OpenScan (such as the µManager OpenScan device adapter)
 should link to **OpenScanLib** and include `OpenScanLib.h`. OpenScanLib
 discovers and loads device modules, and presents a device-independent
 programming interface to the application.
+
+
+Building
+--------
+
+Only Windows is currently supported.
+
+OpenScanLib has one external dependency:
+[RichErrors](https://github.com/marktsuchida/RichErrors). Clone RichErrors
+(under the same parent directory as OpenScanLib) and build using the following
+commands (to place the headers and libraries in the correct location). These
+commands must be run in the **x64 Native Tools Command Prompt for VS 2019**,
+which can be launched by searching in the Start Menu.
+
+```
+cd /d C:\path\to\RichErrors
+meson setup --buildtype=debug build-Debug
+ninja -C build-Debug
+
+meson setup --buildtype=release build-Release
+ninja -C build-Release
+```
+(This builds, but does not install, the static libraries for Debug and Release
+configuration.)
+
+After the above steps, all projects in `OpenScanLib.sln` should build in Visual
+Studio 2019.
