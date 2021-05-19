@@ -18,6 +18,8 @@ of `.dll`, `.so`, etc.).
 Device modules are built by linking with the
 [OpenScanDeviceLib](OpenScanDeviceLib/README.md) library.
 
+[Doxygen documentation for OpenScanDeviceLib](https://openscan-lsm.github.io/OpenScanLib/OpenScanDeviceLib/)
+
 
 Application Programming Interface
 ---------------------------------
@@ -26,6 +28,8 @@ Applications using OpenScan (such as the µManager OpenScan device adapter)
 should link to **OpenScanLib** and include `OpenScanLib.h`. OpenScanLib
 discovers and loads device modules, and presents a device-independent
 programming interface to the application.
+
+[Doxygen documentation for OpenScanLib API](https://openscan-lsm.github.io/OpenScanLib/OpenScanLib/)
 
 
 Building
