@@ -45,6 +45,12 @@ extern "C" {
 
 /**
  * \defgroup api OpenScan C API
+ *
+ * Start by creating an #OSc_LSM. Set the LSM's clock, scanner, and detector
+ * devices. From the LSM, you can obtain a set of #OSc_Setting objects to set
+ * device parameters. Create an #OSc_AcqTemplate, which contains common
+ * settings for an acquisition. Finally, create an #OSc_Acquisition from the
+ * acquisition template to perform an actual acquisition.
  */
 
 /**
@@ -109,7 +115,14 @@ extern "C" {
 #define OSc_MAX_STR_LEN (OSc_MAX_STR_SIZE - 1)
 
 
+/**
+ * \brief Log level.
+ *
+ * See enum constants starting with `OSc_LogLevel_`.
+ */
 typedef int32_t OSc_LogLevel;
+
+/** \brief Constants for #OSc_LogLevel. */
 enum
 {
 	OSc_LogLevel_Debug,
@@ -118,23 +131,24 @@ enum
 	OSc_LogLevel_Error,
 };
 
+
+/**
+ * \brief Error type.
+ *
+ * Many of the OpenScan API functions return a pointer to the opaque structure
+ * `OSc_RichError` (whose actual type is an implementation detail). The error
+ * object contains an error message and other information, which can be queried
+ * or formatted using the `OSc_Error_*()` functions.
+ *
+ * In all cases where an `OSc_RichError` is returned, it must be destroyed by
+ * the caller by calling OSc_Error_Destroy().
+ */
 typedef struct RERR_Error OSc_RichError;
+
+/**
+ * \brief Error return value for success.
+ */
 #define OSc_OK NULL
-
-OSc_API const char *OSc_Error_GetMessage(OSc_RichError *error);
-
-OSc_API const char *OSc_Error_GetDomain(OSc_RichError *error);
-
-OSc_API int32_t OSc_Error_GetCode(OSc_RichError *error);
-
-OSc_API OSc_RichError *OSc_Error_GetCause(OSc_RichError *error);
-
-OSc_API void OSc_Error_Format(OSc_RichError* error, char* buffer, size_t bufsize);
-
-OSc_API void OSc_Error_FormatRecursive(OSc_RichError* error, char* buffer, size_t bufsize);
-
-OSc_API void OSc_Error_Destroy(OSc_RichError *error);
-
 
 /**
  * \brief Convenience macro for if-statement checking error.
@@ -150,7 +164,15 @@ OSc_API void OSc_Error_Destroy(OSc_RichError *error);
 #define OSc_CHECK_ERROR(err, call) \
 	((err = (call)) != OSc_OK)
 
+
+/**
+ * \brief The value type of a setting.
+ *
+ * See enum constants starting with `OSc_ValueType_`.
+ */
 typedef int32_t OSc_ValueType;
+
+/** \brief Constants for #OSc_ValueType */
 enum
 {
 	OSc_ValueType_String,
@@ -161,7 +183,14 @@ enum
 };
 
 
+/**
+ * \brief Type of constraint on a numerical setting value.
+ *
+ * See enum constants starting with `OSc_ValueConstraint_`.
+ */
 typedef int32_t OSc_ValueConstraint;
+
+/** \brief Constants for #OSc_ValueConstraint */
 enum
 {
 	OSc_ValueConstraint_None,
@@ -206,6 +235,9 @@ typedef struct OScInternal_Acquisition OSc_Acquisition;
  */
 typedef void (*OSc_LogFunc)(const char *message, OSc_LogLevel level, void *data);
 
+/**
+ * \brief Pointer to function that is called when a setting's value is no longer valid.
+ */
 typedef void (*OSc_SettingInvalidateFunc)(OSc_Setting *setting, void *data);
 
 /**
@@ -268,6 +300,57 @@ OSc_API void OSc_LogFunc_Set(OSc_LogFunc func, void *data);
  * \sa OSc_LogFunc_Set()
  */
 OSc_API void OSc_Device_SetLogFunc(OSc_Device *device, OSc_LogFunc func, void *data);
+
+/**
+ * \brief Get the error message from an error.
+ *
+ * The returned string is valid until the given error is destroyed.
+ */
+OSc_API const char *OSc_Error_GetMessage(OSc_RichError *error);
+
+/**
+ * \brief Get the error code domain from an error.
+ *
+ * The code domain is a short string indicating which system an error code
+ * belongs to. The returned string is valid until the given error is destroyed.
+ *
+ * If the given error does not have an error code, the return value will be
+ * `NULL`.
+ */
+OSc_API const char *OSc_Error_GetDomain(OSc_RichError *error);
+
+/**
+ * \brief Get the error code from an error.
+ *
+ * If the given error does not have an error code, zero is returned. This
+ * should not be confused with the case where the given error is `OSc_OK`,
+ * in which case also zero is returned.
+ *
+ * Error codes can only be interpreted within the error code domain.
+ */
+OSc_API int32_t OSc_Error_GetCode(OSc_RichError *error);
+
+/**
+ * \brief Get the error that caused the given error.
+ *
+ * Some errors contain a "cause", which is another error describing the error
+ * from a lower-level subsystem. This function returns the cause of the given
+ * error, or `NULL` if there is no cause.
+ *
+ * The returned error (if any) is valid until the given error is destroyed, and
+ * it is a borrowed reference: it must not be destroyed by the caller.
+ */
+OSc_API OSc_RichError *OSc_Error_GetCause(OSc_RichError *error);
+
+OSc_API void OSc_Error_Format(OSc_RichError* error, char* buffer, size_t bufsize);
+
+OSc_API void OSc_Error_FormatRecursive(OSc_RichError* error, char* buffer, size_t bufsize);
+
+/**
+ * \brief Destroy an error.
+ */
+OSc_API void OSc_Error_Destroy(OSc_RichError *error);
+
 
 /**
  * \brief Set the search path for device modules.
