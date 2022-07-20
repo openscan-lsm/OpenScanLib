@@ -1,0 +1,7 @@
+[wrap-git]
+url = https://github.com/marktsuchida/RichErrors.git
+revision = cadde7172a8456699f02b2fa25889c929975d7fd
+depth = 1
+
+[provide]
+dependency_names = RichErrors

@@ -24,12 +24,8 @@ extern "C" {
 #		error
 #	endif
 #else
-#	ifdef _MSC_VER
-#		define OSc_API __declspec(dllimport)
-#	else
-#		define OSc_API
-#		error
-#	endif
+// Avoid dllimport because we want static linking to also work.
+#	define OSc_API
 #endif
 
 #define OSc_InlineAPI static inline
