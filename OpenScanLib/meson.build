@@ -2,6 +2,14 @@ public_inc = include_directories('include')
 
 private_inc = include_directories('src')
 
+openscan_documented_headers = files(
+	'include/OpenScanLib.h',
+)
+
+openscan_doxygen_inputs = [
+	meson.current_source_dir() + '/include/OpenScanLib.h',
+]
+
 openscan_src = files(
 	'src/AcqTemplate.c',
 	'src/Acquisition.c',
@@ -47,3 +55,5 @@ openscan_dep = declare_dependency(
 		public_inc,
 	],
 )
+
+subdir('doc')
