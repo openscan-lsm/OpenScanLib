@@ -30,6 +30,10 @@ openscan_src = files(
 richerrors_dep = dependency('RichErrors',
 	fallback: 'RichErrors',
 	static: true,
+	default_options: [
+		'docs=disabled',
+		'tests=disabled',
+	],
 )
 
 openscan_lib = library('OpenScanLib',
