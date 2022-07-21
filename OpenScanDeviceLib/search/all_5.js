@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['hasclock_18',['HasClock',['../struct_o_sc_dev___device_impl.html#a17cc1833b02a87dbea49ffbda128c82f',1,'OScDev_DeviceImpl']]],
-  ['hasdetector_19',['HasDetector',['../struct_o_sc_dev___device_impl.html#a03c2e6dd06d7d8a88e95e47c3fb99789',1,'OScDev_DeviceImpl']]],
-  ['hasscanner_20',['HasScanner',['../struct_o_sc_dev___device_impl.html#a8c00ab37750671566f7c5ae5e4b0d894',1,'OScDev_DeviceImpl']]]
+  ['hasclock_18',['HasClock',['../structOScDev__DeviceImpl.html#ab12a79f93d5035d72feb54afe2b89f7e',1,'OScDev_DeviceImpl']]],
+  ['hasdetector_19',['HasDetector',['../structOScDev__DeviceImpl.html#a82506540f24510a30e52b86d0ce290d0',1,'OScDev_DeviceImpl']]],
+  ['hasscanner_20',['HasScanner',['../structOScDev__DeviceImpl.html#a193a94ca518e9df57acb1200d55dbd34',1,'OScDev_DeviceImpl']]]
 ];

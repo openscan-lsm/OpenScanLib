@@ -1,0 +1,11 @@
+digraph "/home/runner/work/OpenScanLib/OpenScanLib/OpenScanDeviceLib" {
+  compound=true
+  node [ fontsize="10", fontname="Helvetica"];
+  edge [ labelfontsize="10", labelfontname="Helvetica"];
+  subgraph clusterdir_a44b2e0b3f3bb1b1d983ed98a7159f61 {
+    graph [ bgcolor="#eeeeff", pencolor="black", label="" URL="dir_a44b2e0b3f3bb1b1d983ed98a7159f61.html"];
+    dir_a44b2e0b3f3bb1b1d983ed98a7159f61 [shape=plaintext label="OpenScanDeviceLib"];
+    dir_13ab9a843c3134cadc5f631e60187646 [shape=box label="include" color="black" fillcolor="white" style="filled" URL="dir_13ab9a843c3134cadc5f631e60187646.html"];
+  }
+  dir_a44b2e0b3f3bb1b1d983ed98a7159f61->dir_13ab9a843c3134cadc5f631e60187646 [headlabel="1", labeldistance=1.5 headhref="dir_000000_000001.html"];
+}

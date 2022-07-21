@@ -18,5 +18,5 @@ var searchData=
   ['oscdev_5fptrarray_5fappend_103',['OScDev_PtrArray_Append',['../group__dpi.html#gaf74abeb0507bad5e17b568494beea6ed',1,'OpenScanDeviceLib.h']]],
   ['oscdev_5fptrarray_5fcreate_104',['OScDev_PtrArray_Create',['../group__dpi.html#ga2e1aef99641bcc1781ca91feb96808e0',1,'OpenScanDeviceLib.h']]],
   ['oscdev_5fptrarray_5fdestroy_105',['OScDev_PtrArray_Destroy',['../group__dpi.html#ga3bc37885a1d11f2849297e2ebad8f226',1,'OpenScanDeviceLib.h']]],
-  ['oscdevinternal_5fentry_5fpoint_106',['OScDevInternal_ENTRY_POINT',['../group__internal.html#ga5ff029b89250172af72180ea76995c1a',1,'OScDevInternal_ENTRY_POINT(struct OScDevInternal_Interface ***devif, OScDev_ModuleImpl **impl):&#160;OpenScanDeviceLib.c'],['../group__internal.html#ga5ff029b89250172af72180ea76995c1a',1,'OScDevInternal_ENTRY_POINT(struct OScDevInternal_Interface ***devif, OScDev_ModuleImpl **impl):&#160;OpenScanDeviceLib.c']]]
+  ['oscdevinternal_5fentry_5fpoint_106',['OScDevInternal_ENTRY_POINT',['../group__internal.html#ga5ff029b89250172af72180ea76995c1a',1,'OpenScanDeviceLibPrivate.h']]]
 ];
