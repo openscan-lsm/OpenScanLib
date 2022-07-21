@@ -6,10 +6,13 @@ doxygen_prog = find_program('doxygen',
 
 subdir('OpenScanDeviceLib')
 subdir('OpenScanLib')
-subdir('OpenScanLibTests')
 subdir('SimulatedDeviceModule')
 subdir('TestDeviceModule')
-subdir('ModuleLoadTest')
+
+if get_option('tests').enabled()
+	subdir('OpenScanLibTests')
+	subdir('ModuleLoadTest')
+endif
 
 if doxygen_prog.found()
 	alias_target('docs',
