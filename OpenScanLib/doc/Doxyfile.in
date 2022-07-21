@@ -1,0 +1,17 @@
+PROJECT_NAME           = OpenScanLib
+PROJECT_BRIEF          = "OpenScan Application Programming Interface"
+INPUT                  = @DOXYGEN_INPUT@
+OUTPUT_DIRECTORY       = @DOXYGEN_OUTPUT@
+OPTIMIZE_OUTPUT_FOR_C  = YES
+TOC_INCLUDE_HEADINGS   = 0
+HIDE_SCOPE_NAMES       = YES
+SORT_MEMBER_DOCS       = NO
+SORT_BRIEF_DOCS        = YES
+WARN_IF_UNDOCUMENTED   = NO
+SOURCE_BROWSER         = YES
+HTML_COLORSTYLE_HUE    = 160
+MACRO_EXPANSION        = YES
+EXPAND_ONLY_PREDEF     = YES
+PREDEFINED             = OSc_API= \
+                         OSc_InlineAPI=
+CLASS_GRAPH            = TEXT

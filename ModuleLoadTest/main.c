@@ -6,15 +6,7 @@
 #include <Windows.h>
 #endif
 
-
-/*
- * Hint: Set the Visual Studio project property Debugging > Working Directory
- * to $(OutDir), so that TestDeviceModule.osdev can be found.
- * The Working Directory setting is stored in the .vcxproj.user file, so it
- * is not stored in Git and needs to be set in each working copy.
- */
-
-int main()
+int main(int argc, char *argv[])
 {
 	if (!OSc_CheckVersion())
 	{
@@ -22,20 +14,22 @@ int main()
 		return 1;
 	}
 
-	char currentDir[512];
-#ifdef _WIN32
-	DWORD len = GetCurrentDirectoryA(sizeof(currentDir), currentDir);
-	if (len == 0 || len > sizeof(currentDir)) {
-		fprintf(stderr, "Could not get the current directory\n");
+	if (argc != 2) {
+		fprintf(stderr, "Expected 1 argument (module whose directory to test)\n");
+		return 1;
 	}
-#else
-#error TODO
-#endif
-	printf("Current directory: %s\n", currentDir);
 
-	printf("Using \".\" as search path\n");
+	printf("Using directory containing \"%s\" as search path\n", argv[1]);
+	char dir[MAX_PATH + 1];
+	strncpy(dir, argv[1], MAX_PATH);
+	char *last_slash = strrchr(dir, '/');
+	char *last_bslash = strrchr(dir, '\\');
+	char *dirend = last_slash > last_bslash ? last_slash : last_bslash;
+	*dirend = '\0';
+	printf("Using directory \"%s\" as search path\n", dir);
+
 	char *paths[2];
-	paths[0] = ".";
+	paths[0] = dir;
 	paths[1] = NULL;
 	OSc_SetDeviceModuleSearchPaths(paths);
 
@@ -48,6 +42,9 @@ int main()
 	}
 
 	printf("Count of devices = %zu\n", count);
+	if (count < 1) {
+		return 1;
+	}
 
 	OSc_Device **devices;
 	if (OSc_CHECK_ERROR(err, OSc_GetAllDevices(&devices, &count)))

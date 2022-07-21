@@ -35,29 +35,30 @@ programming interface to the application.
 Building
 --------
 
-Only Windows is currently supported.
+Only Windows/MSVC is currently supported.
 
-OpenScanLib has one external dependency:
-[RichErrors](https://github.com/marktsuchida/RichErrors). Clone RichErrors
-(under the same parent directory as OpenScanLib) and build using the following
-commands (to place the headers and libraries in the correct location). These
-commands must be run in the **x64 Native Tools Command Prompt for VS 2019**,
-which can be launched by searching in the Start Menu.
+Make sure Python is installed an on `PATH`.
 
+[Meson](https://mesonbuild.com/) is used for build (installed as part of the
+following instructions).
+
+In Git Bash:
+
+```sh
+git clone https://github.com/openscan-lsm/OpenScanLib.git
+cd OpenScanLib
+python -m venv venv           # Create virtual environment
+echo '*' > venv/.gitignore    # Do not track 'venv'
+. venv/Scripts/activate
+pip install meson ninja
+meson setup --vsenv --buildtype=release builddir
+meson compile -C builddir
+meson test -C builddir
 ```
-cd /d C:\path\to\RichErrors
-meson setup --buildtype=debug build-Debug
-ninja -C build-Debug
 
-meson setup --buildtype=release build-Release
-ninja -C build-Release
-```
-(This builds, but does not install, the static libraries for Debug and Release
-configuration.)
-
-After the above steps, all projects in `OpenScanLib.sln` should build in Visual
-Studio 2019.
-
+OpenScanLib currently has one external dependency:
+[RichErrors](https://github.com/marktsuchida/RichErrors). By default it is
+automatically fetched using Meson's wrap facility.
 
 Code of Conduct
 ---------------
