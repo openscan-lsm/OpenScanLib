@@ -20,3 +20,6 @@ if doxygen_prog.found()
 		openscan_doc,
 	)
 endif
+
+meson.override_dependency('OpenScanLib', openscan_dep)
+meson.override_dependency('OpenScanDeviceLib', devicelib_dep)
