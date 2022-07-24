@@ -75,56 +75,46 @@ $(function() {
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
 <div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="OpenScanDeviceLib_8h.html">OpenScanDeviceLib.h</a>&quot;</span></div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#ifdef OScDevInternal_BUILDING_OPENSCANLIB</span></div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#   define OScDevInternal_ENTRY_POINT_EXPORT</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="keyword">extern</span> <span class="stringliteral">&quot;C&quot;</span> {</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#ifdef OScDevInternal_BUILDING_OPENSCANLIB</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#define OScDevInternal_ENTRY_POINT_EXPORT</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#else</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#ifdef _MSC_VER</span></div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#define OScDevInternal_ENTRY_POINT_EXPORT __declspec(dllexport)</span></div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#else</span></div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#   ifdef _MSC_VER</span></div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#       define OScDevInternal_ENTRY_POINT_EXPORT __declspec(dllexport)</span></div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#   else</span></div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#       error Not implemented for this platform.</span></div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#   endif</span></div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#endif // OScDev_IMPORT</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
-<div class="line"><a name="l00040"></a><span class="lineno"><a class="line" href="group__internal.html#ga73462e937ff2a64df1621803aa7b5ede">   40</a></span>&#160;<span class="preprocessor">#define OScDevInternal_ENTRY_POINT OScDev_Module_EntryPoint_v0</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#error Not implemented for this platform.</span></div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#endif // OScDev_IMPORT</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
+<div class="line"><a name="l00036"></a><span class="lineno"><a class="line" href="group__internal.html#ga73462e937ff2a64df1621803aa7b5ede">   36</a></span>&#160;<span class="preprocessor">#define OScDevInternal_ENTRY_POINT OScDev_Module_EntryPoint_v0</span></div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="comment">// See the GCC manual under &quot;Stringification&quot; for an explanation of this trick</span></div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="preprocessor">#define OScDevInternal_STRINGIFY_EXPANSION(s) OScDevInternal_STRINGIFY(s)</span></div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="preprocessor">#define OScDevInternal_STRINGIFY(s) #s</span></div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="comment">// See the GCC manual under &quot;Stringification&quot; for an explanation of this trick</span></div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="preprocessor">#define OScDevInternal_STRINGIFY_EXPANSION(s) OScDevInternal_STRINGIFY(s)</span></div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="preprocessor">#define OScDevInternal_STRINGIFY(s) #s</span></div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
+<div class="line"><a name="l00043"></a><span class="lineno"><a class="line" href="group__internal.html#ga33214298c7ac99be84e0b14526970628">   43</a></span>&#160;<span class="preprocessor">#define OScDevInternal_ENTRY_POINT_NAME                                       \</span></div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="preprocessor">    OScDevInternal_STRINGIFY_EXPANSION(OScDevInternal_ENTRY_POINT)</span></div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
-<div class="line"><a name="l00049"></a><span class="lineno"><a class="line" href="group__internal.html#ga33214298c7ac99be84e0b14526970628">   49</a></span>&#160;<span class="preprocessor">#define OScDevInternal_ENTRY_POINT_NAME OScDevInternal_STRINGIFY_EXPANSION(OScDevInternal_ENTRY_POINT)</span></div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;uint32_t OScDevInternal_ENTRY_POINT_EXPORT <a class="code" href="group__internal.html#ga73462e937ff2a64df1621803aa7b5ede">OScDevInternal_ENTRY_POINT</a>(</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="keyword">struct</span> <a class="code" href="structOScDevInternal__Interface.html">OScDevInternal_Interface</a> ***devif,</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <a class="code" href="structOScDev__ModuleImpl.html">OScDev_ModuleImpl</a> **impl);</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160; </div>
-<div class="line"><a name="l00072"></a><span class="lineno"><a class="line" href="group__internal.html#gaef2bce8a403a22b812f2d89deedd09cc">   72</a></span>&#160;<span class="keyword">typedef</span> uint32_t (*<a class="code" href="group__internal.html#gaef2bce8a403a22b812f2d89deedd09cc">OScDevInternal_EntryPointPtr</a>)(</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    <span class="keyword">struct </span><a class="code" href="structOScDevInternal__Interface.html">OScDevInternal_Interface</a> ***devif,</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    <a class="code" href="structOScDev__ModuleImpl.html">OScDev_ModuleImpl</a> **impl);</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160; <span class="comment">// addtogroup internal</span></div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;} <span class="comment">// extern &quot;C&quot;</span></div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;uint32_t OScDevInternal_ENTRY_POINT_EXPORT <a class="code" href="group__internal.html#ga73462e937ff2a64df1621803aa7b5ede">OScDevInternal_ENTRY_POINT</a>(</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <span class="keyword">struct</span> <a class="code" href="structOScDevInternal__Interface.html">OScDevInternal_Interface</a> ***devif, <a class="code" href="structOScDev__ModuleImpl.html">OScDev_ModuleImpl</a> **impl);</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
+<div class="line"><a name="l00064"></a><span class="lineno"><a class="line" href="group__internal.html#gaef2bce8a403a22b812f2d89deedd09cc">   64</a></span>&#160;<span class="keyword">typedef</span> uint32_t (*<a class="code" href="group__internal.html#gaef2bce8a403a22b812f2d89deedd09cc">OScDevInternal_EntryPointPtr</a>)(</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="keyword">struct </span><a class="code" href="structOScDevInternal__Interface.html">OScDevInternal_Interface</a> ***devif, <a class="code" href="structOScDev__ModuleImpl.html">OScDev_ModuleImpl</a> **impl);</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; <span class="comment">// addtogroup internal</span></div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="preprocessor">#ifdef __cplusplus</span></div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;} <span class="comment">// extern &quot;C&quot;</span></div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="astructOScDevInternal__Interface_html"><div class="ttname"><a href="structOScDevInternal__Interface.html">OScDevInternal_Interface</a></div><div class="ttdoc">Interface function table for module to call OpenScanLib.</div><div class="ttdef"><b>Definition:</b> <a href="OpenScanDeviceLib_8h_source.html#l00332">OpenScanDeviceLib.h:332</a></div></div>
-<div class="ttc" id="agroup__internal_html_gaef2bce8a403a22b812f2d89deedd09cc"><div class="ttname"><a href="group__internal.html#gaef2bce8a403a22b812f2d89deedd09cc">OScDevInternal_EntryPointPtr</a></div><div class="ttdeci">uint32_t(* OScDevInternal_EntryPointPtr)(struct OScDevInternal_Interface ***devif, OScDev_ModuleImpl **impl)</div><div class="ttdoc">Pointer to module entry point function.</div><div class="ttdef"><b>Definition:</b> <a href="OpenScanDeviceLibPrivate_8h_source.html#l00072">OpenScanDeviceLibPrivate.h:72</a></div></div>
-<div class="ttc" id="agroup__internal_html_ga73462e937ff2a64df1621803aa7b5ede"><div class="ttname"><a href="group__internal.html#ga73462e937ff2a64df1621803aa7b5ede">OScDevInternal_ENTRY_POINT</a></div><div class="ttdeci">#define OScDevInternal_ENTRY_POINT</div><div class="ttdoc">Name of the device module entry point function.</div><div class="ttdef"><b>Definition:</b> <a href="OpenScanDeviceLibPrivate_8h_source.html#l00040">OpenScanDeviceLibPrivate.h:40</a></div></div>
-<div class="ttc" id="astructOScDev__ModuleImpl_html"><div class="ttname"><a href="structOScDev__ModuleImpl.html">OScDev_ModuleImpl</a></div><div class="ttdoc">The module implementation function table.</div><div class="ttdef"><b>Definition:</b> <a href="OpenScanDeviceLib_8h_source.html#l00413">OpenScanDeviceLib.h:413</a></div></div>
+<div class="ttc" id="astructOScDevInternal__Interface_html"><div class="ttname"><a href="structOScDevInternal__Interface.html">OScDevInternal_Interface</a></div><div class="ttdoc">Interface function table for module to call OpenScanLib.</div><div class="ttdef"><b>Definition:</b> <a href="OpenScanDeviceLib_8h_source.html#l00308">OpenScanDeviceLib.h:308</a></div></div>
+<div class="ttc" id="agroup__internal_html_gaef2bce8a403a22b812f2d89deedd09cc"><div class="ttname"><a href="group__internal.html#gaef2bce8a403a22b812f2d89deedd09cc">OScDevInternal_EntryPointPtr</a></div><div class="ttdeci">uint32_t(* OScDevInternal_EntryPointPtr)(struct OScDevInternal_Interface ***devif, OScDev_ModuleImpl **impl)</div><div class="ttdoc">Pointer to module entry point function.</div><div class="ttdef"><b>Definition:</b> <a href="OpenScanDeviceLibPrivate_8h_source.html#l00064">OpenScanDeviceLibPrivate.h:64</a></div></div>
+<div class="ttc" id="agroup__internal_html_ga73462e937ff2a64df1621803aa7b5ede"><div class="ttname"><a href="group__internal.html#ga73462e937ff2a64df1621803aa7b5ede">OScDevInternal_ENTRY_POINT</a></div><div class="ttdeci">#define OScDevInternal_ENTRY_POINT</div><div class="ttdoc">Name of the device module entry point function.</div><div class="ttdef"><b>Definition:</b> <a href="OpenScanDeviceLibPrivate_8h_source.html#l00036">OpenScanDeviceLibPrivate.h:36</a></div></div>
+<div class="ttc" id="astructOScDev__ModuleImpl_html"><div class="ttname"><a href="structOScDev__ModuleImpl.html">OScDev_ModuleImpl</a></div><div class="ttdoc">The module implementation function table.</div><div class="ttdef"><b>Definition:</b> <a href="OpenScanDeviceLib_8h_source.html#l00449">OpenScanDeviceLib.h:449</a></div></div>
 <div class="ttc" id="aOpenScanDeviceLib_8h_html"><div class="ttname"><a href="OpenScanDeviceLib_8h.html">OpenScanDeviceLib.h</a></div><div class="ttdoc">Public header for OpenScanDeviceLib.</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

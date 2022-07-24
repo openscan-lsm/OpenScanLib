@@ -470,7 +470,7 @@ if (OSc_CHECK_ERROR(err, OSc_Foo(...))) {
     return err;
 }
 </pre> 
-<p class="definition">Definition at line <a class="el" href="OpenScanLib_8h_source.html#l00160">160</a> of file <a class="el" href="OpenScanLib_8h_source.html">OpenScanLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanLib_8h_source.html#l00157">157</a> of file <a class="el" href="OpenScanLib_8h_source.html">OpenScanLib.h</a>.</p>
 
 </div>
 </div>
@@ -490,7 +490,7 @@ if (OSc_CHECK_ERROR(err, OSc_Foo(...))) {
 <p>Log level. </p>
 <p>See enum constants starting with <code>OSc_LogLevel_</code>. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanLib_8h_source.html#l00119">119</a> of file <a class="el" href="OpenScanLib_8h_source.html">OpenScanLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanLib_8h_source.html#l00118">118</a> of file <a class="el" href="OpenScanLib_8h_source.html">OpenScanLib.h</a>.</p>
 
 </div>
 </div>
@@ -510,7 +510,7 @@ if (OSc_CHECK_ERROR(err, OSc_Foo(...))) {
 <p>Many of the OpenScan API functions return a pointer to the opaque structure <code>OSc_RichError</code> (whose actual type is an implementation detail). The error object contains an error message and other information, which can be queried or formatted using the <code>OSc_Error_*()</code> functions.</p>
 <p>In all cases where an <code>OSc_RichError</code> is returned, it must be destroyed by the caller by calling <a class="el" href="group__api.html#ga6f16e1a8063386e48578024931a938be" title="Destroy an error.">OSc_Error_Destroy()</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanLib_8h_source.html#l00142">142</a> of file <a class="el" href="OpenScanLib_8h_source.html">OpenScanLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanLib_8h_source.html#l00139">139</a> of file <a class="el" href="OpenScanLib_8h_source.html">OpenScanLib.h</a>.</p>
 
 </div>
 </div>
@@ -529,7 +529,7 @@ if (OSc_CHECK_ERROR(err, OSc_Foo(...))) {
 <p>The value type of a setting. </p>
 <p>See enum constants starting with <code>OSc_ValueType_</code>. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanLib_8h_source.html#l00169">169</a> of file <a class="el" href="OpenScanLib_8h_source.html">OpenScanLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanLib_8h_source.html#l00164">164</a> of file <a class="el" href="OpenScanLib_8h_source.html">OpenScanLib.h</a>.</p>
 
 </div>
 </div>
@@ -548,7 +548,7 @@ if (OSc_CHECK_ERROR(err, OSc_Foo(...))) {
 <p>Type of constraint on a numerical setting value. </p>
 <p>See enum constants starting with <code>OSc_ValueConstraint_</code>. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanLib_8h_source.html#l00187">187</a> of file <a class="el" href="OpenScanLib_8h_source.html">OpenScanLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanLib_8h_source.html#l00180">180</a> of file <a class="el" href="OpenScanLib_8h_source.html">OpenScanLib.h</a>.</p>
 
 </div>
 </div>
@@ -567,7 +567,7 @@ if (OSc_CHECK_ERROR(err, OSc_Foo(...))) {
 <p>A device object, which models a particular hardware device. </p>
 <p>A device has some combination of clock, scanner, and/or detector capability. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanLib_8h_source.html#l00209">209</a> of file <a class="el" href="OpenScanLib_8h_source.html">OpenScanLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanLib_8h_source.html#l00200">200</a> of file <a class="el" href="OpenScanLib_8h_source.html">OpenScanLib.h</a>.</p>
 
 </div>
 </div>
@@ -588,7 +588,7 @@ if (OSc_CHECK_ERROR(err, OSc_Foo(...))) {
 <dd>
 <a class="el" href="group__api.html#ga24122a0397ff1e719d51abfc8e23c93f" title="Set the logger for a particular device.">OSc_Device_SetLogFunc()</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanLib_8h_source.html#l00232">232</a> of file <a class="el" href="OpenScanLib_8h_source.html">OpenScanLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanLib_8h_source.html#l00223">223</a> of file <a class="el" href="OpenScanLib_8h_source.html">OpenScanLib.h</a>.</p>
 
 </div>
 </div>
@@ -610,14 +610,14 @@ if (OSc_CHECK_ERROR(err, OSc_Foo(...))) {
   <table class="params">
     <tr><td class="paramname">acq</td><td>the acquisition </td></tr>
     <tr><td class="paramname">channel</td><td>the channel number (zero-based) </td></tr>
-    <tr><td class="paramname">pixels</td><td>image data for the given channel, which the frame callback must copy </td></tr>
+    <tr><td class="paramname">pixels</td><td>image data for the given channel, which the frame callback must copy</td></tr>
     <tr><td class="paramname">data</td><td>the acquisition client data set by OSc_Acquisition_SetData() </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd><code>true</code> normally, or <code>false</code> to cancel the acquisition </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanLib_8h_source.html#l00248">248</a> of file <a class="el" href="OpenScanLib_8h_source.html">OpenScanLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanLib_8h_source.html#l00242">242</a> of file <a class="el" href="OpenScanLib_8h_source.html">OpenScanLib.h</a>.</p>
 
 </div>
 </div>
@@ -642,7 +642,7 @@ if (OSc_CHECK_ERROR(err, OSc_Foo(...))) {
 <p>Determines if the version of OpenScanLib currently in use is compatible with the version against which the application was built.</p>
 <dl class="section return"><dt>Returns</dt><dd><code>true</code> if the OpenScanLib is compatible; <code>false</code> otherwise </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanLib_8h_source.html#l00272">272</a> of file <a class="el" href="OpenScanLib_8h_source.html">OpenScanLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanLib_8h_source.html#l00267">267</a> of file <a class="el" href="OpenScanLib_8h_source.html">OpenScanLib.h</a>.</p>
 
 </div>
 </div>
@@ -676,7 +676,7 @@ if (OSc_CHECK_ERROR(err, OSc_Foo(...))) {
 <p>The given function will be used for all logging by OpenScanLib and device modules, unless a device-specific logger is used.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">func</td><td>the logger function, or null, in which case the logger is removed </td></tr>
+    <tr><td class="paramname">func</td><td>the logger function, or null, in which case the logger is removed</td></tr>
     <tr><td class="paramname">data</td><td>client data passed to the logger function </td></tr>
   </table>
   </dd>
@@ -722,7 +722,7 @@ if (OSc_CHECK_ERROR(err, OSc_Foo(...))) {
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">device</td><td>the device for which the logger should be used </td></tr>
-    <tr><td class="paramname">func</td><td>the logger function, or null, in which case the logger is removed </td></tr>
+    <tr><td class="paramname">func</td><td>the logger function, or null, in which case the logger is removed</td></tr>
     <tr><td class="paramname">data</td><td>client data passed to the logger function </td></tr>
   </table>
   </dd>
@@ -924,7 +924,7 @@ if (OSc_CHECK_ERROR(err, OSc_Foo(...))) {
 <p>The returned array of devices remains valid indefinitely.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramdir">[out]</td><td class="paramname">devices</td><td>location where pointer to array of pointers to devices will be written </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">devices</td><td>location where pointer to array of pointers to devices will be written</td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">count</td><td>location where number of devices in the array will be written</td></tr>
   </table>
   </dd>
@@ -1087,7 +1087,7 @@ if (OSc_CHECK_ERROR(err, OSc_Foo(...))) {
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir"></td><td class="paramname">device</td><td>the device </td></tr>
-    <tr><td class="paramdir">[out]</td><td class="paramname">settings</td><td>location where pointer to array of pointers to settings will be written </td></tr>
+    <tr><td class="paramdir">[out]</td><td class="paramname">settings</td><td>location where pointer to array of pointers to settings will be written</td></tr>
     <tr><td class="paramdir">[out]</td><td class="paramname">count</td><td>location where number of settings in the array will be written</td></tr>
   </table>
   </dd>

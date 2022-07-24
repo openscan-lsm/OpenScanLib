@@ -209,7 +209,7 @@ Enumerations</h2></td></tr>
 <a class="el" href="group__dpi.html#ggadf764cbdea00d65edcd07bb9953ad2b7a0e0f7cb4875713c1522ec393eae1789e">OScDev_ErrorCodeFormat_I16</a> = 8, 
 <br />
 &#160;&#160;<a class="el" href="group__dpi.html#ggadf764cbdea00d65edcd07bb9953ad2b7a064f3e4c813cf53556e1e9d6fc342ba2">OScDev_ErrorCodeFormat_U16</a> = 16, 
-<a class="el" href="group__dpi.html#ggadf764cbdea00d65edcd07bb9953ad2b7af489e5fcedd526630e54d924c472d4ab">OScDev_ErrorCodeFormat_Hex16</a> = 32, 
+<a class="el" href="group__dpi.html#ggadf764cbdea00d65edcd07bb9953ad2b7af489e5fcedd526630e54d924c472d4ab">OScDev_ErrorCodeFormat_Hex16</a>, 
 <a class="el" href="group__dpi.html#ggadf764cbdea00d65edcd07bb9953ad2b7a2211e4401aa8dab55e0881efc2eee4c0">OScDev_ErrorCodeFormat_HexNoPad</a> = 1 &lt;&lt; 31
 <br />
  }</td></tr>
@@ -295,17 +295,11 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>OScDev_Acquisition_Ge
 <tr class="memitem:ga3ea6e791284139e904e0902a5b0508d9"><td class="memItemLeft" align="right" valign="top">
 double&#160;</td><td class="memItemRight" valign="bottom"><b>OScDev_Acquisition_GetZoomFactor</b> (OScDev_Acquisition *acq)</td></tr>
 <tr class="separator:ga3ea6e791284139e904e0902a5b0508d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gae1bfbb2ac399b32557e27f0c3bd94bc3"><td class="memItemLeft" align="right" valign="top">
-<a class="el" href="group__dpi.html#ga946e0f935b49cfd20c0c8f3dc6346311">OScDev_Error</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dpi.html#gae1bfbb2ac399b32557e27f0c3bd94bc3">OScDev_Acquisition_IsClockRequested</a> (OScDev_Acquisition *acq, bool *isRequested)</td></tr>
-<tr class="memdesc:gae1bfbb2ac399b32557e27f0c3bd94bc3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determine whether this device should provide the clock for the given acquisition. <br /></td></tr>
+<tr class="memitem:gae1bfbb2ac399b32557e27f0c3bd94bc3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__dpi.html#ga946e0f935b49cfd20c0c8f3dc6346311">OScDev_Error</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dpi.html#gae1bfbb2ac399b32557e27f0c3bd94bc3">OScDev_Acquisition_IsClockRequested</a> (OScDev_Acquisition *acq, bool *isRequested)</td></tr>
 <tr class="separator:gae1bfbb2ac399b32557e27f0c3bd94bc3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga0c9eac1d0f8f0713d80d15eb0dc68a0b"><td class="memItemLeft" align="right" valign="top">
-<a class="el" href="group__dpi.html#ga946e0f935b49cfd20c0c8f3dc6346311">OScDev_Error</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dpi.html#ga0c9eac1d0f8f0713d80d15eb0dc68a0b">OScDev_Acquisition_IsDetectorRequested</a> (OScDev_Acquisition *acq, bool *isRequested)</td></tr>
-<tr class="memdesc:ga0c9eac1d0f8f0713d80d15eb0dc68a0b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determine whether this device should perform detection for the given acquisition. <br /></td></tr>
+<tr class="memitem:ga0c9eac1d0f8f0713d80d15eb0dc68a0b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__dpi.html#ga946e0f935b49cfd20c0c8f3dc6346311">OScDev_Error</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dpi.html#ga0c9eac1d0f8f0713d80d15eb0dc68a0b">OScDev_Acquisition_IsDetectorRequested</a> (OScDev_Acquisition *acq, bool *isRequested)</td></tr>
 <tr class="separator:ga0c9eac1d0f8f0713d80d15eb0dc68a0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga9c405d2a690c2bb3dc82b41e784e8242"><td class="memItemLeft" align="right" valign="top">
-<a class="el" href="group__dpi.html#ga946e0f935b49cfd20c0c8f3dc6346311">OScDev_Error</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dpi.html#ga9c405d2a690c2bb3dc82b41e784e8242">OScDev_Acquisition_IsScannerRequested</a> (OScDev_Acquisition *acq, bool *isRequested)</td></tr>
-<tr class="memdesc:ga9c405d2a690c2bb3dc82b41e784e8242"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determine whether this device should perform scanning for the given acquisition. <br /></td></tr>
+<tr class="memitem:ga9c405d2a690c2bb3dc82b41e784e8242"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__dpi.html#ga946e0f935b49cfd20c0c8f3dc6346311">OScDev_Error</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dpi.html#ga9c405d2a690c2bb3dc82b41e784e8242">OScDev_Acquisition_IsScannerRequested</a> (OScDev_Acquisition *acq, bool *isRequested)</td></tr>
 <tr class="separator:ga9c405d2a690c2bb3dc82b41e784e8242"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga36f4161f2ba8ed4b75c8d29a50ff7ee6"><td class="memItemLeft" align="right" valign="top">
 <a class="el" href="group__dpi.html#ga946e0f935b49cfd20c0c8f3dc6346311">OScDev_Error</a>&#160;</td><td class="memItemRight" valign="bottom"><b>OScDev_Device_Create</b> (OScDev_Device **device, <a class="el" href="structOScDev__DeviceImpl.html">OScDev_DeviceImpl</a> *impl, void *data)</td></tr>
