@@ -27,13 +27,14 @@ static void EnumerateDevicesForImpl(const char *moduleName, OScDev_DeviceImpl *i
 		// The device module should not create the array if it encounters an
 		// error. But that is a likely programming error, so catch it.
 		if (devices) {
-			snprintf(msg, sizeof(msg), "Device enumeration created an array "
-				"despite returning an error (this is a memory leak): %s", model);
+			snprintf(msg, sizeof(msg),
+				"Device enumeration created an array despite returning an error (this is a memory leak): module %s, model %s",
+				moduleName, model);
 			// We do not attempt to free the array, because the elements may
 			// or may not be valid.
 		}
 
-		snprintf(msg, sizeof(msg), "Cannot enumerate devices: %s", model);
+		snprintf(msg, sizeof(msg), "Cannot enumerate devices: module %s, model %s", moduleName, model);
 		OScInternal_LogWarning(NULL, msg);
 		return;
 	}
@@ -89,9 +90,9 @@ static OSc_RichError *EnumerateDevices(void)
 			continue;
 		}
 
-		for (size_t i = 0; i < OScInternal_PtrArray_Size(deviceImpls); ++i) {
+		for (size_t j = 0; j < OScInternal_PtrArray_Size(deviceImpls); ++j) {
 			EnumerateDevicesForImpl(moduleName,
-				(OScDev_DeviceImpl *)OScInternal_PtrArray_At(deviceImpls, i));
+				(OScDev_DeviceImpl *)OScInternal_PtrArray_At(deviceImpls, j));
 		}
 		OScInternal_PtrArray_Destroy(deviceImpls);
 	}

@@ -51,22 +51,22 @@ void OScInternal_Error_Destroy(OSc_RichError* error);
 
 void OScInternal_Log(OSc_Device *device, OSc_LogLevel level, const char *message);
 
-static inline OScInternal_LogDebug(OSc_Device *device, const char *message)
+static inline void OScInternal_LogDebug(OSc_Device *device, const char *message)
 {
 	OScInternal_Log(device, OSc_LogLevel_Debug, message);
 }
 
-static inline OScInternal_LogInfo(OSc_Device *device, const char *message)
+static inline void OScInternal_LogInfo(OSc_Device *device, const char *message)
 {
 	OScInternal_Log(device, OSc_LogLevel_Info, message);
 }
 
-static inline OScInternal_LogWarning(OSc_Device *device, const char *message)
+static inline void OScInternal_LogWarning(OSc_Device *device, const char *message)
 {
 	OScInternal_Log(device, OSc_LogLevel_Warning, message);
 }
 
-static inline OScInternal_LogError(OSc_Device *device, const char *message)
+static inline void OScInternal_LogError(OSc_Device *device, const char *message)
 {
 	OScInternal_Log(device, OSc_LogLevel_Error, message);
 }

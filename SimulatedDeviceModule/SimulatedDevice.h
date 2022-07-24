@@ -120,7 +120,7 @@ static bool WaitForSignal(const char *signalName,
 			return false;
 
 		FILE *file;
-		if (file = fopen(signalName, "r")) {
+		if ((file = fopen(signalName, "r")) != NULL) {
 			fclose(file);
 			remove(signalName);
 			return true;
@@ -133,6 +133,8 @@ static bool WaitForSignal(const char *signalName,
 
 static OScDev_Error SimulateImage(OScDev_Device *device, OScDev_Acquisition *acq)
 {
+	(void)device;
+
 	uint32_t xOffset, yOffset, width, height;
 	OScDev_Acquisition_GetROI(acq, &xOffset, &yOffset, &width, &height);
 
@@ -305,6 +307,7 @@ static OScDev_Error ReleaseInstance(OScDev_Device *device)
 
 static OScDev_Error GetName(OScDev_Device *device, char *name)
 {
+	(void)device;
 	strncpy(name, DEVICE_NAME, OScDev_MAX_STR_LEN);
 	return OScDev_OK;
 }
@@ -312,6 +315,7 @@ static OScDev_Error GetName(OScDev_Device *device, char *name)
 
 static OScDev_Error Open(OScDev_Device *device)
 {
+	(void)device;
 	return OScDev_OK;
 }
 
@@ -324,6 +328,7 @@ static OScDev_Error Close(OScDev_Device *device)
 
 static OScDev_Error HasClock(OScDev_Device *device, bool *hasClock)
 {
+	(void)device;
 	*hasClock = true;
 	return OScDev_OK;
 }
@@ -331,6 +336,7 @@ static OScDev_Error HasClock(OScDev_Device *device, bool *hasClock)
 
 static OScDev_Error HasScanner(OScDev_Device *device, bool *hasScanner)
 {
+	(void)device;
 	*hasScanner = true;
 	return OScDev_OK;
 }
@@ -338,6 +344,7 @@ static OScDev_Error HasScanner(OScDev_Device *device, bool *hasScanner)
 
 static OScDev_Error HasDetector(OScDev_Device *device, bool *hasDetector)
 {
+	(void)device;
 	*hasDetector = true;
 	return OScDev_OK;
 }
@@ -345,6 +352,7 @@ static OScDev_Error HasDetector(OScDev_Device *device, bool *hasDetector)
 
 static OScDev_Error GetPixelRates(OScDev_Device *device, OScDev_NumRange **pixelRatesHz)
 {
+	(void)device;
 	*pixelRatesHz = OScDev_NumRange_CreateDiscrete();
 	OScDev_NumRange_AppendDiscrete(*pixelRatesHz, 1e6 * 1.2500);
 	return OScDev_OK;
@@ -353,6 +361,7 @@ static OScDev_Error GetPixelRates(OScDev_Device *device, OScDev_NumRange **pixel
 
 static OScDev_Error GetResolutions(OScDev_Device *device, OScDev_NumRange **resolutions)
 {
+	(void)device;
 	*resolutions = OScDev_NumRange_CreateDiscrete();
 	OScDev_NumRange_AppendDiscrete(*resolutions, 256);
 	OScDev_NumRange_AppendDiscrete(*resolutions, 512);
@@ -362,6 +371,7 @@ static OScDev_Error GetResolutions(OScDev_Device *device, OScDev_NumRange **reso
 
 static OScDev_Error GetNumberOfChannels(OScDev_Device *device, uint32_t *nChannels)
 {
+	(void)device;
 	*nChannels = 1;
 	return OScDev_OK;
 }
@@ -369,6 +379,7 @@ static OScDev_Error GetNumberOfChannels(OScDev_Device *device, uint32_t *nChanne
 
 static OScDev_Error GetBytesPerSample(OScDev_Device *device, uint32_t *bytesPerSample)
 {
+	(void)device;
 	*bytesPerSample = 2;
 	return OScDev_OK;
 }

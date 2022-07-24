@@ -74,7 +74,6 @@ OSc_RichError *OScInternal_FileList_Create(char ***files, const char *path, cons
 			goto error;
 		}
 	}
-	return OSc_OK;
 
 error:
 	OScInternal_FileList_Free(*files);
@@ -94,7 +93,7 @@ OSc_RichError *OScInternal_Module_Load(OScInternal_Module *module, const char *p
 
 OSc_RichError *OScInternal_Module_GetEntryPoint(OScInternal_Module module, const char *funcName, void **func)
 {
-	*func = GetProcAddress(module, funcName);
+	*func = (void *)GetProcAddress(module, funcName);
 	if (!*func)
 		return OScInternal_Error_Unknown();
 	return OSc_OK;

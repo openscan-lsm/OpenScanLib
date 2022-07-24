@@ -8,9 +8,5 @@ bool OScInternal_CheckVersion(uint32_t version)
 	uint16_t appMajor = version >> 16;
 	uint16_t appMinor = version & 0xffff;
 
-	if (appMajor != dllMajor)
-		return false;
-	if (appMajor < dllMajor)
-		return false;
-	return true;
+	return appMajor == dllMajor && appMinor <= dllMinor;
 }

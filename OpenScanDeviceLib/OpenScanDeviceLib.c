@@ -11,6 +11,7 @@ uint32_t OScDevInternal_ENTRY_POINT(struct OScDevInternal_Interface ***devif,
 		// In lieu of a static assert, allow the compiler to produce a warning if
 		// signature doesn't match.
 		OScDevInternal_EntryPointPtr entryPoint = OScDevInternal_ENTRY_POINT;
+		(void)entryPoint;
 	}
 
 	*devif = &OScDevInternal_FunctionTable;

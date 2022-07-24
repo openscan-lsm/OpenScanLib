@@ -139,21 +139,21 @@ OSc_RichError *OSc_Setting_GetInt32DiscreteValues(OSc_Setting *setting, int32_t 
 	}
 
 	if (setting->i32DiscreteValues == NULL) {
-		OScDev_NumArray *values;
+		OScDev_NumArray *vs;
 		OScDev_Error errCode;
-		errCode = setting->impl->GetInt32DiscreteValues(setting, &values);
+		errCode = setting->impl->GetInt32DiscreteValues(setting, &vs);
 		if (errCode)
 			return OScInternal_Error_RetrieveFromSetting(setting, errCode);
 
-		if (values) {
-			size_t count = OScInternal_NumArray_Size(values);
-			setting->i32DiscreteValues = malloc(sizeof(int32_t) * count);
-			for (size_t i = 0; i < count; ++i) {
-				setting->i32DiscreteValues[i] = (int32_t)OScInternal_NumArray_At(values, i);
+		if (vs) {
+			size_t c = OScInternal_NumArray_Size(vs);
+			setting->i32DiscreteValues = malloc(sizeof(int32_t) * c);
+			for (size_t i = 0; i < c; ++i) {
+				setting->i32DiscreteValues[i] = (int32_t)OScInternal_NumArray_At(vs, i);
 			}
-			setting->i32DiscreteValueCount = count;
+			setting->i32DiscreteValueCount = c;
 		}
-		OScInternal_NumArray_Destroy(values);
+		OScInternal_NumArray_Destroy(vs);
 	}
 
 	*values = setting->i32DiscreteValues;
@@ -191,21 +191,21 @@ OSc_RichError *OSc_Setting_GetFloat64DiscreteValues(OSc_Setting *setting, double
 	}
 
 	if (setting->f64DiscreteValues == NULL) {
-		OScDev_NumArray *values;
+		OScDev_NumArray *vs;
 		OScDev_Error errCode;
-		errCode = setting->impl->GetFloat64DiscreteValues(setting, &values);
+		errCode = setting->impl->GetFloat64DiscreteValues(setting, &vs);
 		if (errCode)
 			return OScInternal_Error_RetrieveFromSetting(setting, errCode);
 
-		if (values) {
-			size_t count = OScInternal_NumArray_Size(values);
-			setting->f64DiscreteValues = malloc(sizeof(double) * count);
-			for (size_t i = 0; i < count; ++i) {
-				setting->f64DiscreteValues[i] = OScInternal_NumArray_At(values, i);
+		if (vs) {
+			size_t c = OScInternal_NumArray_Size(vs);
+			setting->f64DiscreteValues = malloc(sizeof(double) * c);
+			for (size_t i = 0; i < c; ++i) {
+				setting->f64DiscreteValues[i] = OScInternal_NumArray_At(vs, i);
 			}
-			setting->f64DiscreteValueCount = count;
+			setting->f64DiscreteValueCount = c;
 		}
-		OScInternal_NumArray_Destroy(values);
+		OScInternal_NumArray_Destroy(vs);
 	}
 
 	*values = setting->f64DiscreteValues;
@@ -265,6 +265,7 @@ void OScInternal_Setting_Invalidate(OSc_Setting *setting)
 
 static OScDev_Error DefaultIsEnabled(OSc_Setting *setting, bool *enabled)
 {
+	(void)setting;
 	*enabled = true;
 	return OScDev_OK;
 }
@@ -272,6 +273,7 @@ static OScDev_Error DefaultIsEnabled(OSc_Setting *setting, bool *enabled)
 
 static OScDev_Error DefaultIsWritable(OSc_Setting *setting, bool *writable)
 {
+	(void)setting;
 	*writable = true;
 	return OScDev_OK;
 }
@@ -301,6 +303,8 @@ static OScDev_Error DefaultGetString(OSc_Setting *setting, char *value)
 
 static OScDev_Error DefaultSetString(OSc_Setting *setting, const char *value)
 {
+	(void)value;
+
 	if (setting->valueType != OSc_ValueType_String)
 		return OScDev_Error_Wrong_Value_Type;
 
@@ -327,6 +331,8 @@ static OScDev_Error DefaultGetBool(OSc_Setting *setting, bool *value)
 
 static OScDev_Error DefaultSetBool(OSc_Setting *setting, bool value)
 {
+	(void)value;
+
 	if (setting->valueType != OSc_ValueType_Bool)
 		return OScDev_Error_Wrong_Value_Type;
 
@@ -353,6 +359,8 @@ static OScDev_Error DefaultGetInt32(OSc_Setting *setting, int32_t *value)
 
 static OScDev_Error DefaultSetInt32(OSc_Setting *setting, int32_t value)
 {
+	(void)value;
+
 	if (setting->valueType != OSc_ValueType_Int32)
 		return OScDev_Error_Wrong_Value_Type;
 
@@ -400,7 +408,7 @@ static OScDev_Error DefaultGetInt32DiscreteValues(OSc_Setting *setting, OScDev_N
 	}
 	if (constraint != OSc_ValueConstraint_Discrete)
 		return OScDev_Error_Wrong_Constraint_Type;
-		
+
 	*values = OScInternal_NumArray_Create();
 	return OScDev_OK;
 }
@@ -417,6 +425,8 @@ static OScDev_Error DefaultGetFloat64(OSc_Setting *setting, double *value)
 
 static OScDev_Error DefaultSetFloat64(OSc_Setting *setting, double value)
 {
+	(void)value;
+
 	if (setting->valueType != OSc_ValueType_Float64)
 		return OScDev_Error_Wrong_Value_Type;
 
@@ -480,6 +490,8 @@ static OScDev_Error DefaultGetEnum(OSc_Setting *setting, uint32_t *value)
 
 static OScDev_Error DefaultSetEnum(OSc_Setting *setting, uint32_t value)
 {
+	(void)value;
+
 	if (setting->valueType != OSc_ValueType_Int32)
 		return OScDev_Error_Wrong_Value_Type;
 
@@ -540,6 +552,7 @@ static OScDev_Error DefaultGetEnumValueForName(OSc_Setting *setting, uint32_t *v
 
 static void DefaultRelease(OSc_Setting *setting)
 {
+	(void)setting;
 }
 
 
@@ -609,6 +622,7 @@ void OScInternal_Setting_Destroy(OSc_Setting *setting)
 
 OSc_RichError *OSc_Setting_NumericConstraintRange(OSc_Setting *setting, OSc_ValueConstraint *constraintType)
 {
+	(void)setting;
 	*constraintType = OSc_ValueConstraint_Continuous;
 	return OSc_OK;
 }
@@ -616,6 +630,7 @@ OSc_RichError *OSc_Setting_NumericConstraintRange(OSc_Setting *setting, OSc_Valu
 
 OSc_RichError *OSc_Setting_NumericConstraintDiscreteValues(OSc_Setting *setting, OSc_ValueConstraint *constraintType)
 {
+	(void)setting;
 	*constraintType = OSc_ValueConstraint_Discrete;
 	return OSc_OK;
 }

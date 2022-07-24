@@ -217,9 +217,10 @@ static OScDev_Error GetResolution(OScDev_Setting *setting, int32_t *value)
 
 static OScDev_Error SetResolution(OScDev_Setting *setting, int32_t value)
 {
+	uint32_t v = value;
 	OSc_AcqTemplate *tmpl = OScInternal_Setting_GetImplData(setting);
-	if (tmpl->resolution != value) {
-		tmpl->resolution = value;
+	if (tmpl->resolution != v) {
+		tmpl->resolution = v;
 		OSc_AcqTemplate_ResetROI(tmpl);
 		OScInternal_Setting_Invalidate(tmpl->magnificationSetting);
 	}
@@ -332,6 +333,7 @@ static OScDev_SettingImpl ZoomSettingImpl = {
 
 static OScDev_Error IsMagnificationWritable(OScDev_Setting *setting, bool *writable)
 {
+	(void)setting;
 	*writable = false;
 	return OScDev_OK;
 }

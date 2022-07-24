@@ -34,12 +34,14 @@ static OScDev_Error TestEnumerateInstances(OScDev_PtrArray **devices)
 
 static OScDev_Error TestReleaseInstance(OScDev_Device *device)
 {
+	(void)device;
 	return OScDev_OK;
 }
 
 
 static OScDev_Error TestGetName(OScDev_Device *device, char *name)
 {
+	(void)device;
 	strncpy(name, "TestDevice", OScDev_MAX_STR_LEN);
 	return OScDev_OK;
 }
@@ -47,18 +49,21 @@ static OScDev_Error TestGetName(OScDev_Device *device, char *name)
 
 static OScDev_Error TestOpen(OScDev_Device *device)
 {
+	(void)device;
 	return OScDev_OK;
 }
 
 
 static OScDev_Error TestClose(OScDev_Device *device)
 {
+	(void)device;
 	return OScDev_OK;
 }
 
 
 static OScDev_Error TestHasClock(OScDev_Device *device, bool *hasClock)
 {
+	(void)device;
 	*hasClock = false;
 	return OScDev_OK;
 }
@@ -66,6 +71,7 @@ static OScDev_Error TestHasClock(OScDev_Device *device, bool *hasClock)
 
 static OScDev_Error TestHasScanner(OScDev_Device *device, bool *hasScanner)
 {
+	(void)device;
 	*hasScanner = false;
 	return OScDev_OK;
 }
@@ -73,6 +79,7 @@ static OScDev_Error TestHasScanner(OScDev_Device *device, bool *hasScanner)
 
 static OScDev_Error TestHasDetector(OScDev_Device *device, bool *hasDetector)
 {
+	(void)device;
 	*hasDetector = false;
 	return OScDev_OK;
 }

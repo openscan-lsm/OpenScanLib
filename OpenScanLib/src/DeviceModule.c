@@ -73,7 +73,10 @@ static void LoadAdaptersAtPath(const char *path)
 		// Remove suffix (we trust OScInternal_FileList_Create returned what it should)
 		*strrchr(name, '.') = '\0';
 		OSc_RichError *err = LoadAdapter(filePath, name);
-		// TODO Log or report error
+		char msg[1024];
+		OScInternal_Error_FormatRecursive(err, msg, sizeof(msg));
+		OScInternal_Error_Destroy(err);
+		OScInternal_LogError(NULL, msg);
 	}
 	OScInternal_FileList_Free(files);
 }

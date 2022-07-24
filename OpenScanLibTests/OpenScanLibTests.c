@@ -10,7 +10,7 @@
 
 /*
  * MinUnit - http://www.jera.com/techinfo/jtns/jtn002.html
- * 
+ *
  * License for MinUnit:
  * You may use the code in this tech note for any purpose, with the
  * understanding that it comes with NO WARRANTY.
@@ -52,7 +52,7 @@ static char *all_tests(void) {
 
 int tests_run;
 
-int main(int argc, char *argv[]) {
+int main() {
 	char *result = all_tests();
 
 	if (result != NULL)
