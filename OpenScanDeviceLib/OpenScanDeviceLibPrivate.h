@@ -9,27 +9,23 @@
 
 #include "OpenScanDeviceLib.h"
 
-
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 
 /** \addtogroup internal
  * @{
  */
 
-
 #ifdef OScDevInternal_BUILDING_OPENSCANLIB
-#	define OScDevInternal_ENTRY_POINT_EXPORT
+#define OScDevInternal_ENTRY_POINT_EXPORT
 #else
-#	ifdef _MSC_VER
-#		define OScDevInternal_ENTRY_POINT_EXPORT __declspec(dllexport)
-#	else
-#		error Not implemented for this platform.
-#	endif
+#ifdef _MSC_VER
+#define OScDevInternal_ENTRY_POINT_EXPORT __declspec(dllexport)
+#else
+#error Not implemented for this platform.
+#endif
 #endif // OScDev_IMPORT
-
 
 /// Name of the device module entry point function.
 /**
@@ -39,15 +35,13 @@ extern "C" {
  */
 #define OScDevInternal_ENTRY_POINT OScDev_Module_EntryPoint_v0
 
-
 // See the GCC manual under "Stringification" for an explanation of this trick
 #define OScDevInternal_STRINGIFY_EXPANSION(s) OScDevInternal_STRINGIFY(s)
 #define OScDevInternal_STRINGIFY(s) #s
 
-
 /// Name of the entry point, used to obtain its address
-#define OScDevInternal_ENTRY_POINT_NAME OScDevInternal_STRINGIFY_EXPANSION(OScDevInternal_ENTRY_POINT)
-
+#define OScDevInternal_ENTRY_POINT_NAME                                       \
+    OScDevInternal_STRINGIFY_EXPANSION(OScDevInternal_ENTRY_POINT)
 
 /// Entry point of device module.
 /**
@@ -64,18 +58,13 @@ extern "C" {
  * \returns the module's device interface version
  */
 uint32_t OScDevInternal_ENTRY_POINT_EXPORT OScDevInternal_ENTRY_POINT(
-	struct OScDevInternal_Interface ***devif,
-	OScDev_ModuleImpl **impl);
-
+    struct OScDevInternal_Interface ***devif, OScDev_ModuleImpl **impl);
 
 /// Pointer to module entry point function.
 typedef uint32_t (*OScDevInternal_EntryPointPtr)(
-	struct OScDevInternal_Interface ***devif,
-	OScDev_ModuleImpl **impl);
-
+    struct OScDevInternal_Interface ***devif, OScDev_ModuleImpl **impl);
 
 /** @} */ // addtogroup internal
-
 
 #ifdef __cplusplus
 } // extern "C"
