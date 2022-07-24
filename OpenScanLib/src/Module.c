@@ -3,104 +3,92 @@
 
 #include <string.h>
 
-
 /*
  * This file contains platform-dependent utility functions for finding and
  * loading modules (DLLs).
  */
 
-
 // Free a file list returned by OScInternal_FileList_Create()
-void OScInternal_FileList_Free(char **files)
-{
-	for (char **pfile = files; *pfile; ++pfile)
-		free(*pfile);
-	free(files);
+void OScInternal_FileList_Free(char **files) {
+    for (char **pfile = files; *pfile; ++pfile)
+        free(*pfile);
+    free(files);
 }
-
 
 // Finds all fils under 'path' that have 'suffix'.
 // Allocates array and element strings and places into 'files'.
-OSc_RichError *OScInternal_FileList_Create(char ***files, const char *path, const char *suffix)
-{
-	// Windows implementation for now
+OSc_RichError *OScInternal_FileList_Create(char ***files, const char *path,
+                                           const char *suffix) {
+    // Windows implementation for now
 
-	DWORD err;
+    DWORD err;
 
-	size_t fileCount = 0;
-	size_t fileCap = 16;
-	*files = malloc(sizeof(void *) * fileCap);
-	memset(*files, 0, fileCap);
+    size_t fileCount = 0;
+    size_t fileCap = 16;
+    *files = malloc(sizeof(void *) * fileCap);
+    memset(*files, 0, fileCap);
 
-	char pattern[512];
-	strncpy(pattern, path, sizeof(pattern) - 1);
-	strncat(pattern, "/*", sizeof(pattern) - 1 - strlen(pattern));
-	strncat(pattern, suffix, sizeof(pattern) - 1 - strlen(pattern));
+    char pattern[512];
+    strncpy(pattern, path, sizeof(pattern) - 1);
+    strncat(pattern, "/*", sizeof(pattern) - 1 - strlen(pattern));
+    strncat(pattern, suffix, sizeof(pattern) - 1 - strlen(pattern));
 
-	WIN32_FIND_DATAA findFileData;
-	HANDLE findHandle = FindFirstFileA(pattern, &findFileData);
-	if (findHandle == INVALID_HANDLE_VALUE)
-	{
-		err = GetLastError();
-		if (err == ERROR_FILE_NOT_FOUND)
-			return OSc_OK;
-		goto error;
-	}
-	for (;;)
-	{
-		size_t nameLen = strlen(findFileData.cFileName);
-		char *name = malloc(nameLen + 1);
-		strcpy(name, findFileData.cFileName);
+    WIN32_FIND_DATAA findFileData;
+    HANDLE findHandle = FindFirstFileA(pattern, &findFileData);
+    if (findHandle == INVALID_HANDLE_VALUE) {
+        err = GetLastError();
+        if (err == ERROR_FILE_NOT_FOUND)
+            return OSc_OK;
+        goto error;
+    }
+    for (;;) {
+        size_t nameLen = strlen(findFileData.cFileName);
+        char *name = malloc(nameLen + 1);
+        strcpy(name, findFileData.cFileName);
 
-		if (fileCap - fileCount < 1)
-		{
-			size_t newFileCap = fileCap * 2;
-			*files = realloc(*files, sizeof(void *) * newFileCap);
-			memset(*files + fileCap, 0, newFileCap - fileCap);
-			fileCap = newFileCap;
-		}
-		(*files)[fileCount++] = name;
+        if (fileCap - fileCount < 1) {
+            size_t newFileCap = fileCap * 2;
+            *files = realloc(*files, sizeof(void *) * newFileCap);
+            memset(*files + fileCap, 0, newFileCap - fileCap);
+            fileCap = newFileCap;
+        }
+        (*files)[fileCount++] = name;
 
-		BOOL ok = FindNextFileA(findHandle, &findFileData);
-		if (!ok)
-		{
-			err = GetLastError();
-			FindClose(findHandle);
-			if (err == ERROR_NO_MORE_FILES)
-			{
-				(*files)[fileCount] = NULL;
-				return OSc_OK;
-			}
-			goto error;
-		}
-	}
+        BOOL ok = FindNextFileA(findHandle, &findFileData);
+        if (!ok) {
+            err = GetLastError();
+            FindClose(findHandle);
+            if (err == ERROR_NO_MORE_FILES) {
+                (*files)[fileCount] = NULL;
+                return OSc_OK;
+            }
+            goto error;
+        }
+    }
 
 error:
-	OScInternal_FileList_Free(*files);
-	*files = NULL;
-	return OScInternal_Error_Create("Failed to list files");
+    OScInternal_FileList_Free(*files);
+    *files = NULL;
+    return OScInternal_Error_Create("Failed to list files");
 }
 
-
-OSc_RichError *OScInternal_Module_Load(OScInternal_Module *module, const char *path)
-{
-	*module = LoadLibraryA(path);
-	if (*module == NULL)
-		return OScInternal_Error_Unknown();
-	return OSc_OK;
+OSc_RichError *OScInternal_Module_Load(OScInternal_Module *module,
+                                       const char *path) {
+    *module = LoadLibraryA(path);
+    if (*module == NULL)
+        return OScInternal_Error_Unknown();
+    return OSc_OK;
 }
 
-
-OSc_RichError *OScInternal_Module_GetEntryPoint(OScInternal_Module module, const char *funcName, void **func)
-{
-	*func = (void *)GetProcAddress(module, funcName);
-	if (!*func)
-		return OScInternal_Error_Unknown();
-	return OSc_OK;
+OSc_RichError *OScInternal_Module_GetEntryPoint(OScInternal_Module module,
+                                                const char *funcName,
+                                                void **func) {
+    *func = (void *)GetProcAddress(module, funcName);
+    if (!*func)
+        return OScInternal_Error_Unknown();
+    return OSc_OK;
 }
 
-
-bool OScInternal_Module_SupportsRichErrors(OScDev_ModuleImpl* modImpl)
-{
-	return modImpl->supportsRichErrors;
+bool OScInternal_Module_SupportsRichErrors(OScDev_ModuleImpl *modImpl) {
+    return modImpl->supportsRichErrors;
 }

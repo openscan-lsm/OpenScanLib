@@ -7,6 +7,15 @@ on:
       - main
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v4
+        with:
+          python-version: 3.x
+      - uses: pre-commit/action@v3.0.0
+
   test:
     runs-on: windows-latest
     steps:
@@ -22,6 +31,7 @@ jobs:
 
   docs:
     needs:
+      - lint
       - test
     concurrency:
       group: publish-gh-pages
