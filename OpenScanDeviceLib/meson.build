@@ -12,7 +12,8 @@ devicelib_doxygen_inputs = [
     join_paths(meson.current_source_dir(), 'OpenScanDeviceLibPrivate.h'),
 ]
 
-device_lib = static_library('OpenScanDeviceLib',
+device_lib = static_library(
+    'OpenScanDeviceLib',
     'OpenScanDeviceLib.c',
     build_by_default: true,
     include_directories: [
@@ -25,7 +26,7 @@ devicelib_dep = declare_dependency(
     link_with: device_lib,
     include_directories: [
         public_device_inc,
-    ]
+    ],
 )
 
 subdir('doc')

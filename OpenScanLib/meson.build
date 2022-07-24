@@ -20,14 +20,15 @@ openscan_src = files(
     'src/DeviceModule.c',
     'src/Error.c',
     'src/InternalErrors.c',
-    'src/Logging.c',
     'src/LSM.c',
+    'src/Logging.c',
     'src/Module.c',
     'src/Setting.c',
     'src/Version.c',
 )
 
-richerrors_dep = dependency('RichErrors',
+richerrors_dep = dependency(
+    'RichErrors',
     fallback: 'RichErrors',
     static: true,
     default_options: [
@@ -36,7 +37,8 @@ richerrors_dep = dependency('RichErrors',
     ],
 )
 
-openscan_lib = library('OpenScanLib',
+openscan_lib = library(
+    'OpenScanLib',
     openscan_src,
     build_by_default: true,
     c_args: [
@@ -50,7 +52,7 @@ openscan_lib = library('OpenScanLib',
     ],
     dependencies: [
         richerrors_dep,
-    ]
+    ],
 )
 
 # Dependency for applications calling OpenScanLib

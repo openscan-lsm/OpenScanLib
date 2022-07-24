@@ -1,10 +1,13 @@
-project('OpenScanLib', 'c',
+project(
+    'OpenScanLib',
+    'c',
     default_options: [
         'warning_level=3',
     ],
 )
 
-doxygen_prog = find_program('doxygen',
+doxygen_prog = find_program(
+    'doxygen',
     required: get_option('docs'),
 )
 
@@ -19,7 +22,8 @@ if get_option('tests').enabled()
 endif
 
 if doxygen_prog.found()
-    alias_target('docs',
+    alias_target(
+        'docs',
         devicelib_doc,
         openscan_doc,
     )

@@ -9,11 +9,14 @@ devicelib_doxyfile = configure_file(
 )
 
 devicelib_docdir = join_paths(
-    get_option('datadir'), 'doc', 'OpenScanDeviceLib'
+    get_option('datadir'),
+    'doc',
+    'OpenScanDeviceLib',
 )
 
 if doxygen_prog.found()
-    devicelib_doc = custom_target('devicelib_doc',
+    devicelib_doc = custom_target(
+        'devicelib_doc',
         command: [doxygen_prog, devicelib_doxyfile],
         depend_files: [devicelib_documented_headers],
         output: ['apidoc'],

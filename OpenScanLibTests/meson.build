@@ -2,7 +2,8 @@ test_src = [
     'OpenScanLibTests.c',
 ]
 
-test_exe = executable('tests',
+test_exe = executable(
+    'tests',
     test_src,
     openscan_src,
     c_args: [

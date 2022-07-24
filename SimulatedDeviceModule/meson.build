@@ -6,7 +6,8 @@ legacy_simulated_osdev_src = [
     'SimulatedDevice_Legacy.c',
 ]
 
-simulated_osdev = shared_module('SimulatedDevice',
+simulated_osdev = shared_module(
+    'SimulatedDevice',
     simulated_osdev_src,
     name_suffix: 'osdev',
     c_args: [
@@ -17,7 +18,8 @@ simulated_osdev = shared_module('SimulatedDevice',
     ],
 )
 
-legacy_simulated_osdev = shared_module('SimulatedDevice-Legacy',
+legacy_simulated_osdev = shared_module(
+    'SimulatedDevice-Legacy',
     legacy_simulated_osdev_src,
     name_suffix: 'osdev',
     c_args: [

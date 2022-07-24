@@ -8,12 +8,11 @@ openscan_doxyfile = configure_file(
     install: false,
 )
 
-openscan_docdir = join_paths(
-    get_option('datadir'), 'doc', 'OpenScanLib'
-)
+openscan_docdir = join_paths(get_option('datadir'), 'doc', 'OpenScanLib')
 
 if doxygen_prog.found()
-    openscan_doc = custom_target('openscan_doc',
+    openscan_doc = custom_target(
+        'openscan_doc',
         command: [doxygen_prog, openscan_doxyfile],
         depend_files: [openscan_documented_headers],
         output: ['apidoc'],

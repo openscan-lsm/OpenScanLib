@@ -2,7 +2,8 @@ test_osdev_src = [
     'TestDevice.c',
 ]
 
-test_osdev = shared_module('TestDevice',
+test_osdev = shared_module(
+    'TestDevice',
     test_osdev_src,
     name_suffix: 'osdev',
     c_args: [
@@ -10,5 +11,5 @@ test_osdev = shared_module('TestDevice',
     ],
     dependencies: [
         devicelib_dep,
-    ]
+    ],
 )

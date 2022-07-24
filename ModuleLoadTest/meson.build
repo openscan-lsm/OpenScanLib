@@ -1,4 +1,5 @@
-module_load_test_exe = executable('module-load-test',
+module_load_test_exe = executable(
+    'module-load-test',
     'main.c',
     c_args: [
         '-D_CRT_SECURE_NO_WARNINGS',
@@ -8,7 +9,9 @@ module_load_test_exe = executable('module-load-test',
     ],
 )
 
-test('ModuleLoadTest', module_load_test_exe,
+test(
+    'ModuleLoadTest',
+    module_load_test_exe,
     args: [
         test_osdev.full_path(),
     ],
