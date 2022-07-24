@@ -138,7 +138,7 @@ static OScDev_Error SimulateImage(OScDev_Device *device, OScDev_Acquisition *acq
 
 	bool shouldContinue;
 	srand((unsigned)time(NULL));
-	for (int i = 0; i < width * height; ++i) {
+	for (uint32_t i = 0; i < width * height; ++i) {
 		buf_frame[i] = rand() % 256;
 	}
 	shouldContinue = OScDev_Acquisition_CallFrameCallback(acq, 0, buf_frame);

@@ -1,4 +1,8 @@
-project('OpenScanLib', 'c')
+project('OpenScanLib', 'c',
+	default_options: [
+		'warning_level=2',
+	],
+)
 
 doxygen_prog = find_program('doxygen',
 	required: get_option('docs'),

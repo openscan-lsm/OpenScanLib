@@ -5,6 +5,9 @@ test_src = [
 test_exe = executable('tests',
 	test_src,
 	openscan_src,
+	c_args: [
+		'-D_CRT_SECURE_NO_WARNINGS',
+	],
 	include_directories: [
 		public_inc,
 		private_inc,

@@ -1,6 +1,6 @@
 [wrap-git]
 url = https://github.com/marktsuchida/RichErrors.git
-revision = cadde7172a8456699f02b2fa25889c929975d7fd
+revision = b64e7f0da55fbbb1e155d62b595e3bb2f2e73899
 depth = 1
 
 [provide]
