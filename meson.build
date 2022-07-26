@@ -13,11 +13,11 @@ doxygen_prog = find_program(
 
 subdir('OpenScanDeviceLib')
 subdir('OpenScanLib')
-subdir('SimulatedDeviceModule')
-subdir('TestDeviceModule')
 
 if get_option('tests').enabled()
     subdir('OpenScanLibTests')
+    subdir('SimulatedDeviceModule')
+    subdir('TestDeviceModule')
     subdir('ModuleLoadTest')
 endif
 
