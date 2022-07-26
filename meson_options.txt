@@ -11,3 +11,17 @@ option(
     value: 'enabled',
     description: 'Build unit tests',
 )
+
+option(
+    'apilib',
+    type: 'feature',
+    value: 'enabled',
+    description: 'Build OpenScanLib, the API library',
+)
+
+option(
+    'devicelib',
+    type: 'feature',
+    value: 'disabled',
+    description: 'Build OpenScanDeviceLib, the device module runtime',
+)

@@ -11,8 +11,15 @@ doxygen_prog = find_program(
     required: get_option('docs'),
 )
 
-subdir('OpenScanDeviceLib')
-subdir('OpenScanLib')
+if get_option('devicelib').enabled() or get_option('tests').enabled()
+    subdir('OpenScanDeviceLib')
+    meson.override_dependency('OpenScanDeviceLib', devicelib_dep)
+endif
+
+if get_option('apilib').enabled() or get_option('tests').enabled()
+    subdir('OpenScanLib')
+    meson.override_dependency('OpenScanLib', openscan_dep)
+endif
 
 if get_option('tests').enabled()
     subdir('OpenScanLibTests')
@@ -28,6 +35,3 @@ if doxygen_prog.found()
         openscan_doc,
     )
 endif
-
-meson.override_dependency('OpenScanLib', openscan_dep)
-meson.override_dependency('OpenScanDeviceLib', devicelib_dep)
