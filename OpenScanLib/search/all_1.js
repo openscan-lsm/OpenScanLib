@@ -1,9 +1,9 @@
 var searchData=
 [
   ['openscan_20c_20api_1',['OpenScan C API',['../group__api.html',1,'']]],
-  ['openscanlib_3a_20openscan_20c_20application_20programming_20interface_2',['OpenScanLib: OpenScan C Application Programming Interface',['../index.html',1,'']]],
-  ['openscanlib_20internals_3',['OpenScanLib Internals',['../group__internal.html',1,'']]],
-  ['openscanlib_2eh_4',['OpenScanLib.h',['../OpenScanLib_8h.html',1,'']]],
+  ['openscanlib_20internals_2',['OpenScanLib Internals',['../group__internal.html',1,'']]],
+  ['openscanlib_2eh_3',['OpenScanLib.h',['../OpenScanLib_8h.html',1,'']]],
+  ['openscanlib_3a_20openscan_20c_20application_20programming_20interface_4',['OpenScanLib: OpenScan C Application Programming Interface',['../index.html',1,'']]],
   ['osc_5facqtemplate_5',['OSc_AcqTemplate',['../group__api.html#ga2550dde267f567e7cebbba756a222692',1,'OpenScanLib.h']]],
   ['osc_5facquisition_6',['OSc_Acquisition',['../group__api.html#ga2aa683dea19db613c74fafa748dcf055',1,'OpenScanLib.h']]],
   ['osc_5fcheck_5ferror_7',['OSc_CHECK_ERROR',['../group__api.html#ga6cb010acf46014f821a10ef72708609e',1,'OpenScanLib.h']]],

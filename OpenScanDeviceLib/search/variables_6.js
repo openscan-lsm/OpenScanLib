@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['isroiscansupported_128',['IsROIScanSupported',['../structOScDev__DeviceImpl.html#aad9802015ab601ebedb290b0b068aacf',1,'OScDev_DeviceImpl']]],
-  ['isrunning_129',['IsRunning',['../structOScDev__DeviceImpl.html#acad2e6a4d48a318b13361e87f91cbb8e',1,'OScDev_DeviceImpl']]]
+  ['isroiscansupported_128',['IsROIScanSupported',['../structOScDev__DeviceImpl.html#a56bfd3a090dc2e3021bb974654a58c75',1,'OScDev_DeviceImpl']]],
+  ['isrunning_129',['IsRunning',['../structOScDev__DeviceImpl.html#a8e8a81257a087cea2f8264fd6bb1157d',1,'OScDev_DeviceImpl']]]
 ];

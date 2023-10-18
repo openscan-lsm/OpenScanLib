@@ -1,10 +1,10 @@
 var searchData=
 [
-  ['openscan_20device_20programming_20interface_24',['OpenScan Device Programming Interface',['../group__dpi.html',1,'']]],
-  ['openscandevicelib_3a_20openscan_20device_20programming_20interface_25',['OpenScanDeviceLib: OpenScan Device Programming Interface',['../index.html',1,'']]],
+  ['open_24',['Open',['../structOScDev__ModuleImpl.html#a0f48fe7c241087eb207abeabacdcf64a',1,'OScDev_ModuleImpl::Open()'],['../structOScDev__DeviceImpl.html#a9866cf8323a1a18cf69186e6e32147b5',1,'OScDev_DeviceImpl::Open()']]],
+  ['openscan_20device_20programming_20interface_25',['OpenScan Device Programming Interface',['../group__dpi.html',1,'']]],
   ['openscandevicelib_20internals_26',['OpenScanDeviceLib Internals',['../group__internal.html',1,'']]],
-  ['open_27',['Open',['../structOScDev__ModuleImpl.html#a1a5d806ab958216c3e80670983a063e2',1,'OScDev_ModuleImpl::Open()'],['../structOScDev__DeviceImpl.html#ac826396521b204b65c8a0094d9aa5a88',1,'OScDev_DeviceImpl::Open()']]],
-  ['openscandevicelib_2eh_28',['OpenScanDeviceLib.h',['../OpenScanDeviceLib_8h.html',1,'']]],
+  ['openscandevicelib_2eh_27',['OpenScanDeviceLib.h',['../OpenScanDeviceLib_8h.html',1,'']]],
+  ['openscandevicelib_3a_20openscan_20device_20programming_20interface_28',['OpenScanDeviceLib: OpenScan Device Programming Interface',['../index.html',1,'']]],
   ['openscandevicelibprivate_2eh_29',['OpenScanDeviceLibPrivate.h',['../OpenScanDeviceLibPrivate_8h.html',1,'']]],
   ['oscdev_5facquisition_5fcallframecallback_30',['OScDev_Acquisition_CallFrameCallback',['../group__dpi.html#ga03dbd43b0a8cbeaaaa8c02d58292a994',1,'OpenScanDeviceLib.h']]],
   ['oscdev_5facquisition_5fgetclocksource_31',['OScDev_Acquisition_GetClockSource',['../group__dpi.html#ga33b2866891a75733e0044f91c2796e14',1,'OpenScanDeviceLib.h']]],

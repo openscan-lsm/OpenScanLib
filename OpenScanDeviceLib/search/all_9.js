@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['release_75',['Release',['../structOScDev__SettingImpl.html#afbafc823e898f1cf4f7e8c1328280a83',1,'OScDev_SettingImpl']]],
-  ['releaseinstance_76',['ReleaseInstance',['../structOScDev__DeviceImpl.html#a1d889d91a3d8e6015e629e120e5b7b44',1,'OScDev_DeviceImpl']]]
+  ['release_75',['Release',['../structOScDev__SettingImpl.html#a74f78aaba7b1cfbfdc34d0c138676c3e',1,'OScDev_SettingImpl']]],
+  ['releaseinstance_76',['ReleaseInstance',['../structOScDev__DeviceImpl.html#a18347601b4ff2bf57e710db8ba080ff5',1,'OScDev_DeviceImpl']]]
 ];

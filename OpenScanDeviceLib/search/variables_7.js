@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['makesettings_130',['MakeSettings',['../structOScDev__DeviceImpl.html#ade97acae0826b5224f8ba295f38bad03',1,'OScDev_DeviceImpl']]]
+  ['makesettings_130',['MakeSettings',['../structOScDev__DeviceImpl.html#a276211503a9d245e1b0507fc855c0201',1,'OScDev_DeviceImpl']]]
 ];
