@@ -1,9 +1,10 @@
 #include "InternalErrors.h"
 #include "OpenScanLibPrivate.h"
 
+#include <ss8str.h>
+
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 // Until we update the API to have proper array memory management, we fill this
 // static array once and never modify it again.
@@ -83,12 +84,12 @@ static OSc_RichError *EnumerateDevices(void) {
         err =
             OScInternal_DeviceModule_GetDeviceImpls(moduleName, &deviceImpls);
         if (err) {
-            char msg[OSc_MAX_STR_LEN + 1] =
-                "Cannot get device implementations from module: ";
-            strncat(msg, moduleName, sizeof(msg) - 1);
-            msg[sizeof(msg) - 1] = '\0';
-            OScInternal_LogWarning(NULL, msg);
-
+            ss8str msg;
+            ss8_init_copy_cstr(
+                &msg, "Cannot get device implementations from module: ");
+            ss8_cat_cstr(&msg, moduleName);
+            OScInternal_LogWarning(NULL, ss8_cstr(&msg));
+            ss8_destroy(&msg);
             continue;
         }
 

@@ -1,9 +1,10 @@
 #include "InternalErrors.h"
 #include "OpenScanLibPrivate.h"
 
+#include <ss8str.h>
+
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
 struct OScInternal_Setting {
     OScDev_ModuleImpl *modImpl;
@@ -15,7 +16,7 @@ struct OScInternal_Setting {
 
     OSc_ValueType valueType;
 
-    char name[OSc_MAX_STR_LEN + 1];
+    ss8str name;
 
     OSc_SettingInvalidateFunc invalidateFunc;
     void *invalidateData;
@@ -29,7 +30,7 @@ struct OScInternal_Setting {
 };
 
 OSc_RichError *OSc_Setting_GetName(OSc_Setting *setting, char *name) {
-    strncpy(name, setting->name, OSc_MAX_STR_LEN);
+    ss8_copy_to_cstr(&setting->name, name, OSc_MAX_STR_SIZE);
     return OSc_OK;
 }
 
@@ -261,7 +262,7 @@ DefaultGetNumericConstraint(OSc_Setting *setting,
 }
 
 static OScDev_Error DefaultGetString(OSc_Setting *setting, char *value) {
-    strcpy(value, "");
+    value[0] = '\0';
     if (setting->valueType != OSc_ValueType_String)
         return OScDev_Error_Wrong_Value_Type;
     return OScDev_OK;
@@ -463,7 +464,7 @@ static OScDev_Error DefaultGetEnumNumValues(OSc_Setting *setting,
 
 static OScDev_Error DefaultGetEnumNameForValue(OSc_Setting *setting,
                                                uint32_t value, char *name) {
-    strcpy(name, "");
+    name[0] = '\0';
 
     if (setting->valueType != OSc_ValueType_Enum)
         return OScDev_Error_Wrong_Value_Type;
@@ -482,9 +483,12 @@ static OScDev_Error DefaultGetEnumValueForName(OSc_Setting *setting,
     if (setting->valueType != OSc_ValueType_Enum)
         return OScDev_Error_Wrong_Value_Type;
 
-    if (strstr(name, "Value-") != 0)
+    ss8str n;
+    ss8_init_copy_cstr(&n, name);
+    static const char *prefix = "Value-";
+    if (!ss8_starts_with_cstr(&n, prefix))
         return OScDev_Error_Unknown_Enum_Value_Name;
-    long parsedNum = atol(name + strlen("Value-"));
+    long parsedNum = atol(ss8_cstr_suffix(&n, strlen(prefix)));
 
     // TODO Check range
 
@@ -547,12 +551,13 @@ OScInternal_Setting_Create(OScDev_ModuleImpl *modImpl, OSc_Setting **setting,
     (*setting)->impl = impl;
     (*setting)->implData = data;
     (*setting)->valueType = valueType;
-    strncpy((*setting)->name, name, OSc_MAX_STR_LEN);
+    ss8_init_copy_cstr(&(*setting)->name, name);
     return OSc_OK;
 }
 
 void OScInternal_Setting_Destroy(OSc_Setting *setting) {
     setting->impl->Release(setting);
+    ss8_destroy(&setting->name);
     free(setting);
 }
 

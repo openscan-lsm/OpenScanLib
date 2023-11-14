@@ -11,6 +11,11 @@ doxygen_prog = find_program(
     required: get_option('docs'),
 )
 
+ssstr_dep = dependency(
+    'ssstr',
+    fallback: 'ssstr',
+)
+
 if get_option('devicelib').enabled() or get_option('tests').enabled()
     subdir('OpenScanDeviceLib')
     meson.override_dependency('OpenScanDeviceLib', devicelib_dep)
