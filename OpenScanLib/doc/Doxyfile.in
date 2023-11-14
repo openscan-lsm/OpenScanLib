@@ -15,3 +15,4 @@ EXPAND_ONLY_PREDEF     = YES
 PREDEFINED             = OSc_API= \
                          OSc_InlineAPI=
 CLASS_GRAPH            = TEXT
+QUIET                  = YES

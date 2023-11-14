@@ -17,7 +17,7 @@ devicelib_docdir = join_paths(
 if doxygen_prog.found()
     devicelib_doc = custom_target(
         'devicelib_doc',
-        command: [doxygen_prog, '-q', devicelib_doxyfile],
+        command: [doxygen_prog, devicelib_doxyfile],
         depend_files: [devicelib_documented_headers],
         output: ['apidoc'],
         install: true,

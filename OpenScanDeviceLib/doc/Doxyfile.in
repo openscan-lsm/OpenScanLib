@@ -13,3 +13,4 @@ MACRO_EXPANSION        = YES
 EXPAND_ONLY_PREDEF     = YES
 PREDEFINED             = OScDev_API=
 CLASS_GRAPH            = TEXT
+QUIET                  = YES
