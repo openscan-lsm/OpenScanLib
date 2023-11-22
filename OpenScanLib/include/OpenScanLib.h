@@ -356,7 +356,7 @@ OSc_API void OSc_Error_Destroy(OSc_RichError *error);
  *
  * \param paths pointer to array of pointers to path strings
  */
-OSc_API void OSc_SetDeviceModuleSearchPaths(char **paths);
+OSc_API void OSc_SetDeviceModuleSearchPaths(const char **paths);
 
 OSc_API OSc_RichError *OSc_LSM_Create(OSc_LSM **lsm);
 

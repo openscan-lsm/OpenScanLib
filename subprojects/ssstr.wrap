@@ -1,0 +1,7 @@
+[wrap-git]
+url = https://github.com/marktsuchida/ssstr.git
+revision = 480f88cf2a3e4eebd87541607708509d9a3f93c8
+depth = 1
+
+[provide]
+dependency_names = ssstr

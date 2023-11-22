@@ -1,7 +1,7 @@
 #include "Module.h"
 #include "InternalErrors.h"
 
-#include <string.h>
+#include <ss8str.h>
 
 /*
  * This file contains platform-dependent utility functions for finding and
@@ -9,15 +9,17 @@
  */
 
 // Free a file list returned by OScInternal_FileList_Create()
-void OScInternal_FileList_Free(char **files) {
-    for (char **pfile = files; *pfile; ++pfile)
-        free(*pfile);
+void OScInternal_FileList_Free(ss8str *files) {
+    ss8str *f = files;
+    while (!ss8_is_empty(f))
+        ss8_destroy(f++);
+    ss8_destroy(f); // Sentinel
     free(files);
 }
 
 // Finds all fils under 'path' that have 'suffix'.
 // Allocates array and element strings and places into 'files'.
-OSc_RichError *OScInternal_FileList_Create(char ***files, const char *path,
+OSc_RichError *OScInternal_FileList_Create(ss8str **files, const char *path,
                                            const char *suffix) {
     // Windows implementation for now
 
@@ -25,43 +27,39 @@ OSc_RichError *OScInternal_FileList_Create(char ***files, const char *path,
 
     size_t fileCount = 0;
     size_t fileCap = 16;
-    *files = malloc(sizeof(void *) * fileCap);
-    memset(*files, 0, fileCap);
+    *files = malloc(sizeof(ss8str) * fileCap);
 
-    char pattern[512];
-    strncpy(pattern, path, sizeof(pattern) - 1);
-    strncat(pattern, "/*", sizeof(pattern) - 1 - strlen(pattern));
-    strncat(pattern, suffix, sizeof(pattern) - 1 - strlen(pattern));
+    ss8str pattern;
+    ss8_init_copy_cstr(&pattern, path);
+    ss8_cat_cstr(&pattern, "/*");
+    ss8_cat_cstr(&pattern, suffix);
 
     WIN32_FIND_DATAA findFileData;
-    HANDLE findHandle = FindFirstFileA(pattern, &findFileData);
+    HANDLE findHandle = FindFirstFileA(ss8_cstr(&pattern), &findFileData);
+    ss8_destroy(&pattern);
     if (findHandle == INVALID_HANDLE_VALUE) {
         err = GetLastError();
+        ss8_init(&(*files)[0]); // Sentinel
         if (err == ERROR_FILE_NOT_FOUND)
             return OSc_OK;
         goto error;
     }
-    for (;;) {
-        size_t nameLen = strlen(findFileData.cFileName);
-        char *name = malloc(nameLen + 1);
-        strcpy(name, findFileData.cFileName);
 
+    for (;;) {
         if (fileCap - fileCount < 1) {
             size_t newFileCap = fileCap * 2;
-            *files = realloc(*files, sizeof(void *) * newFileCap);
-            memset(*files + fileCap, 0, newFileCap - fileCap);
+            *files = realloc(*files, sizeof(ss8str) * newFileCap);
             fileCap = newFileCap;
         }
-        (*files)[fileCount++] = name;
+        ss8_init_copy_cstr(&(*files)[fileCount++], findFileData.cFileName);
 
         BOOL ok = FindNextFileA(findHandle, &findFileData);
         if (!ok) {
             err = GetLastError();
             FindClose(findHandle);
-            if (err == ERROR_NO_MORE_FILES) {
-                (*files)[fileCount] = NULL;
+            ss8_init(&(*files)[fileCount]); // Sentinel
+            if (err == ERROR_NO_MORE_FILES)
                 return OSc_OK;
-            }
             goto error;
         }
     }

@@ -43,7 +43,6 @@ openscan_lib = library(
     build_by_default: true,
     c_args: [
         '-DOPENSCANLIB_EXPORTS',
-        '-D_CRT_SECURE_NO_WARNINGS',
     ],
     include_directories: [
         public_inc,
@@ -52,6 +51,7 @@ openscan_lib = library(
     ],
     dependencies: [
         richerrors_dep,
+        ssstr_dep,
     ],
 )
 

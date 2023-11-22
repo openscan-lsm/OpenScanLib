@@ -1,8 +1,9 @@
 #include "InternalErrors.h"
 #include "OpenScanLibPrivate.h"
 
+#include <ss8str.h>
+
 #include <stdlib.h>
-#include <string.h>
 
 struct OScInternal_LSM {
     OSc_Device *clockDevice;
@@ -36,11 +37,13 @@ OSc_RichError *OSc_LSM_Destroy(OSc_LSM *lsm) {
     for (int i = 0; i < nDevices; ++i) {
         OSc_Device *device = devicesToClose[i];
         if (OSc_CHECK_ERROR(err, OSc_Device_Close(device))) {
-            char msg[OSc_MAX_STR_LEN + 1] = "Error while closing device ";
+            ss8str msg;
+            ss8_init_copy_cstr(&msg, "Error while closing device ");
             const char *name = NULL;
             OSc_Device_GetName(device, &name);
-            strcat(msg, name ? name : "(unknown)");
-            OScInternal_LogError(device, msg);
+            ss8_cat_cstr(&msg, name ? name : "(unknown)");
+            OScInternal_LogError(device, ss8_cstr(&msg));
+            ss8_destroy(&msg);
         }
     }
 
