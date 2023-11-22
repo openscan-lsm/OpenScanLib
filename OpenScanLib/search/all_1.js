@@ -32,7 +32,7 @@ var searchData=
   ['osc_5fmax_5fstr_5fsize_30',['OSc_MAX_STR_SIZE',['../group__api.html#ga20ddec6fe671b2f799ffc189878fcc0a',1,'OpenScanLib.h']]],
   ['osc_5fok_31',['OSc_OK',['../group__api.html#ga69477457227779272f9234d04a0245c5',1,'OpenScanLib.h']]],
   ['osc_5fricherror_32',['OSc_RichError',['../group__api.html#ga6bffbd8d07d5c78c7f67186e34c3fdff',1,'OpenScanLib.h']]],
-  ['osc_5fsetdevicemodulesearchpaths_33',['OSc_SetDeviceModuleSearchPaths',['../group__api.html#gac40303ea45ddd2f1333e0cde0a0183c7',1,'OpenScanLib.h']]],
+  ['osc_5fsetdevicemodulesearchpaths_33',['OSc_SetDeviceModuleSearchPaths',['../group__api.html#ga3ba454200d4f57971be15cc402445349',1,'OpenScanLib.h']]],
   ['osc_5fsetting_34',['OSc_Setting',['../group__api.html#ga58cc85811c2b2114f57980cb10f1b6a6',1,'OpenScanLib.h']]],
   ['osc_5fsetting_5fgetname_35',['OSc_Setting_GetName',['../group__api.html#ga0e3b0616843b8c7daa8e5fd66c68174e',1,'OpenScanLib.h']]],
   ['osc_5fsettinginvalidatefunc_36',['OSc_SettingInvalidateFunc',['../group__api.html#gaa09a6605db91fc63b11ff2ebd95c2aa4',1,'OpenScanLib.h']]],

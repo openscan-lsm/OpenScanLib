@@ -16,7 +16,7 @@ var searchData=
   ['osc_5flogfunc_5fset_57',['OSc_LogFunc_Set',['../group__api.html#ga533fa846012b32c99d919372abee3700',1,'OpenScanLib.h']]],
   ['osc_5flsm_5fdestroy_58',['OSc_LSM_Destroy',['../group__api.html#ga26c3bf88adfb43d03e591ca300e08c54',1,'OpenScanLib.h']]],
   ['osc_5flsm_5fisrunningacquisition_59',['OSc_LSM_IsRunningAcquisition',['../group__api.html#ga9696470df4835131df69c469179c1047',1,'OpenScanLib.h']]],
-  ['osc_5fsetdevicemodulesearchpaths_60',['OSc_SetDeviceModuleSearchPaths',['../group__api.html#gac40303ea45ddd2f1333e0cde0a0183c7',1,'OpenScanLib.h']]],
+  ['osc_5fsetdevicemodulesearchpaths_60',['OSc_SetDeviceModuleSearchPaths',['../group__api.html#ga3ba454200d4f57971be15cc402445349',1,'OpenScanLib.h']]],
   ['osc_5fsetting_5fgetname_61',['OSc_Setting_GetName',['../group__api.html#ga0e3b0616843b8c7daa8e5fd66c68174e',1,'OpenScanLib.h']]],
   ['oscinternal_5fcheckversion_62',['OScInternal_CheckVersion',['../group__internal.html#ga4863a89b60daa348b83155491bdc3a82',1,'OpenScanLib.h']]]
 ];
