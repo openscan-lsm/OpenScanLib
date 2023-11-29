@@ -10,12 +10,13 @@ struct OScInternal_LSM {
     OSc_Device *scannerDevice;
     OSc_Device *detectorDevice;
 
-    OSc_Device **associatedDevices;
-    size_t associatedDeviceCount;
+    // OSc_Device pointers opened for this LSM; no duplicates.
+    OScInternal_PtrArray *associatedDevices;
 };
 
 OSc_RichError *OSc_LSM_Create(OSc_LSM **lsm) {
     *lsm = calloc(1, sizeof(OSc_LSM));
+    (*lsm)->associatedDevices = OScInternal_PtrArray_Create();
     return OSc_OK;
 }
 
@@ -28,14 +29,10 @@ OSc_RichError *OSc_LSM_Destroy(OSc_LSM *lsm) {
     // We need to close each associated device, but doing so in turn
     // dissociates that device, so we need to make a copy of the list of
     // associated devices first.
-    size_t nDevices = lsm->associatedDeviceCount;
-    OSc_Device **devicesToClose = malloc(nDevices * sizeof(OSc_Device *));
-    for (int i = 0; i < lsm->associatedDeviceCount; ++i) {
-        devicesToClose[i] = lsm->associatedDevices[i];
-    }
-
-    for (int i = 0; i < nDevices; ++i) {
-        OSc_Device *device = devicesToClose[i];
+    OScInternal_PtrArray *devicesToClose =
+        OScInternal_PtrArray_Copy(lsm->associatedDevices);
+    for (size_t i = 0; i < OScInternal_PtrArray_Size(devicesToClose); ++i) {
+        OSc_Device *device = OScInternal_PtrArray_At(devicesToClose, i);
         if (OSc_CHECK_ERROR(err, OSc_Device_Close(device))) {
             ss8str msg;
             ss8_init_copy_cstr(&msg, "Error while closing device ");
@@ -46,8 +43,9 @@ OSc_RichError *OSc_LSM_Destroy(OSc_LSM *lsm) {
             ss8_destroy(&msg);
         }
     }
+    OScInternal_PtrArray_Destroy(devicesToClose);
 
-    free(devicesToClose);
+    OScInternal_PtrArray_Destroy(lsm->associatedDevices);
     free(lsm);
     return OSc_OK;
 }
@@ -133,49 +131,29 @@ OSc_RichError *OScInternal_LSM_Associate_Device(OSc_LSM *lsm,
     if (isAssociated)
         return OScInternal_Error_DeviceAlreadyOpen();
 
-    if (!lsm->associatedDevices) {
-        lsm->associatedDevices = malloc(sizeof(OSc_Device *));
-        lsm->associatedDeviceCount = 1;
-    } else {
-        lsm->associatedDevices =
-            realloc(lsm->associatedDevices,
-                    (++lsm->associatedDeviceCount) * sizeof(OSc_Device *));
-    }
-    lsm->associatedDevices[lsm->associatedDeviceCount - 1] = device;
-
+    OScInternal_PtrArray_Append(lsm->associatedDevices, device);
     return OSc_OK;
 }
 
 OSc_RichError *OScInternal_LSM_Dissociate_Device(OSc_LSM *lsm,
                                                  OSc_Device *device) {
-    bool found = false;
-    OSc_Device **newList =
-        malloc(lsm->associatedDeviceCount * sizeof(OSc_Device *));
-    for (int i = 0; i < lsm->associatedDeviceCount; ++i) {
-        if (lsm->associatedDevices[i] == device) {
-            found = true;
-            continue;
+    for (size_t i = 0; i < OScInternal_PtrArray_Size(lsm->associatedDevices);
+         ++i) {
+        if (OScInternal_PtrArray_At(lsm->associatedDevices, i) == device) {
+            OScInternal_PtrArray_Remove(lsm->associatedDevices, i);
+            return OSc_OK;
         }
-        newList[found ? i - 1 : i] = lsm->associatedDevices[i];
     }
-
-    if (!found) {
-        free(newList);
-        return OScInternal_Error_DeviceNotOpenedForLSM();
-    }
-
-    free(lsm->associatedDevices);
-    lsm->associatedDevices = newList;
-    --lsm->associatedDeviceCount;
-    return OSc_OK;
+    return OScInternal_Error_DeviceNotOpenedForLSM();
 }
 
 OSc_RichError *OScInternal_LSM_Is_Device_Associated(OSc_LSM *lsm,
                                                     OSc_Device *device,
                                                     bool *isAssociated) {
     *isAssociated = false;
-    for (int i = 0; i < lsm->associatedDeviceCount; ++i) {
-        if (lsm->associatedDevices[i] == device) {
+    for (size_t i = 0; i < OScInternal_PtrArray_Size(lsm->associatedDevices);
+         ++i) {
+        if (OScInternal_PtrArray_At(lsm->associatedDevices, i) == device) {
             *isAssociated = true;
             break;
         }
@@ -186,8 +164,10 @@ OSc_RichError *OScInternal_LSM_Is_Device_Associated(OSc_LSM *lsm,
 
 OSc_RichError *OSc_LSM_IsRunningAcquisition(OSc_LSM *lsm, bool *isRunning) {
     *isRunning = false;
-    for (int i = 0; i < lsm->associatedDeviceCount; ++i) {
-        OSc_Device *device = lsm->associatedDevices[i];
+    for (size_t i = 0; i < OScInternal_PtrArray_Size(lsm->associatedDevices);
+         ++i) {
+        OSc_Device *device =
+            OScInternal_PtrArray_At(lsm->associatedDevices, i);
         OSc_RichError *err;
         if (OSc_CHECK_ERROR(err,
                             OScInternal_Device_IsRunning(device, isRunning)))

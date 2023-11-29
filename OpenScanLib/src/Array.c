@@ -104,6 +104,16 @@ OScInternal_NumRange *OScInternal_NumRange_CreateDiscreteFromNaNTerminated(
     return ret;
 }
 
+OScInternal_PtrArray *
+OScInternal_PtrArray_Copy(const OScInternal_PtrArray *src) {
+    OScInternal_PtrArray *ret = OScInternal_PtrArray_Create();
+    ret->capacity = src->size;
+    ret->ptr = malloc(src->size * sizeof(void *));
+    memcpy(ret->ptr, src->ptr, src->size * sizeof(void *));
+    ret->size = src->size;
+    return ret;
+}
+
 OScInternal_NumArray *
 OScInternal_NumArray_Copy(const OScInternal_NumArray *src) {
     OScInternal_NumArray *ret = OScInternal_NumArray_Create();
@@ -204,6 +214,14 @@ void OScInternal_NumRange_AppendDiscrete(OScInternal_NumRange *range,
         return; // Programming error
     }
     OScInternal_NumArray_Append(&range->rep.list, val);
+}
+
+void OScInternal_PtrArray_Remove(OScInternal_PtrArray *arr, size_t index) {
+    if (index >= arr->size)
+        return;
+    memmove(&arr->ptr[index], &arr->ptr[index + 1],
+            (arr->size - index - 1) * sizeof(void *));
+    --(arr->size);
 }
 
 static int CompareDouble(const void *pLhs, const void *pRhs) {

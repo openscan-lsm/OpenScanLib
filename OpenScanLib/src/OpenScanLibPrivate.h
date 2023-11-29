@@ -91,8 +91,11 @@ typedef struct OScInternal_NumRange OScInternal_NumRange;
 OScInternal_PtrArray *OScInternal_PtrArray_Create(void);
 OScInternal_PtrArray *OScInternal_PtrArray_CreateFromNullTerminated(
     void *const *nullTerminatedArray);
+OScInternal_PtrArray *
+OScInternal_PtrArray_Copy(const OScInternal_PtrArray *arr);
 void OScInternal_PtrArray_Destroy(const OScInternal_PtrArray *arr);
 void OScInternal_PtrArray_Append(OScInternal_PtrArray *arr, void *obj);
+void OScInternal_PtrArray_Remove(OScInternal_PtrArray *arr, size_t index);
 size_t OScInternal_PtrArray_Size(const OScInternal_PtrArray *arr);
 bool OScInternal_PtrArray_Empty(const OScInternal_PtrArray *arr);
 void *OScInternal_PtrArray_At(const OScInternal_PtrArray *arr, size_t index);
