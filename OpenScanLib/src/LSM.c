@@ -8,7 +8,7 @@
 struct OScInternal_LSM {
     OSc_Device *clockDevice;
     OSc_Device *scannerDevice;
-    OSc_Device *detectorDevice;
+    OScInternal_PtrArray *detectorDevices;
 
     // OSc_Device pointers opened for this LSM; no duplicates.
     OScInternal_PtrArray *associatedDevices;
@@ -16,6 +16,7 @@ struct OScInternal_LSM {
 
 OSc_RichError *OSc_LSM_Create(OSc_LSM **lsm) {
     *lsm = calloc(1, sizeof(OSc_LSM));
+    (*lsm)->detectorDevices = OScInternal_PtrArray_Create();
     (*lsm)->associatedDevices = OScInternal_PtrArray_Create();
     return OSc_OK;
 }
@@ -46,6 +47,7 @@ OSc_RichError *OSc_LSM_Destroy(OSc_LSM *lsm) {
     OScInternal_PtrArray_Destroy(devicesToClose);
 
     OScInternal_PtrArray_Destroy(lsm->associatedDevices);
+    OScInternal_PtrArray_Destroy(lsm->detectorDevices);
     free(lsm);
     return OSc_OK;
 }
@@ -62,10 +64,16 @@ OSc_Device *OSc_LSM_GetScannerDevice(OSc_LSM *lsm) {
     return lsm->scannerDevice;
 }
 
-OSc_Device *OSc_LSM_GetDetectorDevice(OSc_LSM *lsm) {
+size_t OSc_LSM_GetNumberOfDetectorDevices(OSc_LSM *lsm) {
+    if (!lsm)
+        return 0;
+    return OScInternal_PtrArray_Size(lsm->detectorDevices);
+}
+
+OSc_Device *OSc_LSM_GetDetectorDevice(OSc_LSM *lsm, size_t index) {
     if (!lsm)
         return NULL;
-    return lsm->detectorDevice;
+    return OScInternal_PtrArray_At(lsm->detectorDevices, index);
 }
 
 OSc_RichError *OSc_LSM_SetClockDevice(OSc_LSM *lsm, OSc_Device *clockDevice) {
@@ -103,9 +111,8 @@ OSc_RichError *OSc_LSM_SetScannerDevice(OSc_LSM *lsm,
     return OSc_OK;
 }
 
-OSc_RichError *OSc_LSM_SetDetectorDevice(OSc_LSM *lsm,
+OSc_RichError *OSc_LSM_AddDetectorDevice(OSc_LSM *lsm,
                                          OSc_Device *detectorDevice) {
-    // TODO Should allow null device
     if (!lsm || !detectorDevice)
         return OScInternal_Error_IllegalArgument();
 
@@ -117,7 +124,17 @@ OSc_RichError *OSc_LSM_SetDetectorDevice(OSc_LSM *lsm,
     if (!isAssociated)
         return OScInternal_Error_DeviceNotOpenedForLSM();
 
-    lsm->detectorDevice = detectorDevice;
+    for (size_t i = 0; i < OScInternal_PtrArray_Size(lsm->detectorDevices);
+         ++i) {
+        if (OScInternal_PtrArray_At(lsm->detectorDevices, i) == detectorDevice)
+            return OScInternal_Error_DeviceAlreadyInUseAsDetector();
+    }
+
+    // Limit to 32 since we use bitmask to enable detector devices
+    if (OScInternal_PtrArray_Size(lsm->detectorDevices) >= 32)
+        return OScInternal_Error_TooManyDetectorDevices();
+
+    OScInternal_PtrArray_Append(lsm->detectorDevices, detectorDevice);
     return OSc_OK;
 }
 

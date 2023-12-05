@@ -18,7 +18,17 @@ OSc_RichError *OScInternal_Error_EmptyRaster();
 
 OSc_RichError *OScInternal_Error_DeviceAlreadyOpen();
 
+OSc_RichError *OScInternal_Error_DeviceAlreadyInUseAsDetector();
+
 OSc_RichError *OScInternal_Error_DeviceDoesNotSupportDetector();
+
+OSc_RichError *OScInternal_Error_TooManyDetectorDevices();
+
+OSc_RichError *OScInternal_Error_NoDetectorDeviceEnabled();
+
+OSc_RichError *OScInternal_Error_NoDetectorChannelEnabled();
+
+OSc_RichError *OScInternal_Error_NonUniformBytesPerSample();
 
 OSc_RichError *OScInternal_Error_DeviceModuleAlreadyExists();
 

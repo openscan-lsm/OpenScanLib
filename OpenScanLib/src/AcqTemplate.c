@@ -7,6 +7,8 @@ struct OScInternal_AcqTemplate {
     OSc_LSM *lsm;
     uint32_t numberOfFrames;
 
+    uint32_t detectorMask;
+
     OSc_Setting *pixelRateSetting;
     OSc_Setting *resolutionSetting;
     OSc_Setting *zoomFactorSetting;
@@ -22,27 +24,28 @@ struct OScInternal_AcqTemplate {
     uint32_t height;
 };
 
-static OScDev_NumRange *GetPixelRates(OSc_AcqTemplate *tmpl) {
-    OSc_Device *clockDevice = OSc_LSM_GetClockDevice(tmpl->lsm);
-    OSc_Device *scannerDevice = OSc_LSM_GetScannerDevice(tmpl->lsm);
-    OSc_Device *detectorDevice = OSc_LSM_GetDetectorDevice(tmpl->lsm);
-
-    OScDev_NumRange *clockRange =
-        OScInternal_Device_GetPixelRates(clockDevice);
-    OScDev_NumRange *scannerRange =
-        OScInternal_Device_GetPixelRates(scannerDevice);
-    OScDev_NumRange *detectorRange =
-        OScInternal_Device_GetPixelRates(detectorDevice);
-    OScDev_NumRange *maxRange =
+static OScInternal_NumRange *GetPixelRates(OSc_AcqTemplate *tmpl) {
+    OScInternal_NumRange *maxRange =
         OScInternal_NumRange_CreateContinuous(1e-3, 1e10);
-
-    OScDev_NumRange *range = OScInternal_NumRange_Intersection4(
-        clockRange, scannerRange, detectorRange, maxRange);
-
-    OScInternal_NumRange_Destroy(maxRange);
-    OScInternal_NumRange_Destroy(detectorRange);
+    OScInternal_NumRange *clockRange =
+        OScInternal_Device_GetPixelRates(OSc_LSM_GetClockDevice(tmpl->lsm));
+    OScInternal_NumRange *scannerRange =
+        OScInternal_Device_GetPixelRates(OSc_LSM_GetScannerDevice(tmpl->lsm));
+    OScInternal_NumRange *range =
+        OScInternal_NumRange_Intersection3(maxRange, clockRange, scannerRange);
     OScInternal_NumRange_Destroy(scannerRange);
     OScInternal_NumRange_Destroy(clockRange);
+    OScInternal_NumRange_Destroy(maxRange);
+
+    for (size_t i = 0; i < OSc_LSM_GetNumberOfDetectorDevices(tmpl->lsm);
+         ++i) {
+        OScInternal_NumRange *detectorRange = OScInternal_Device_GetPixelRates(
+            OSc_LSM_GetDetectorDevice(tmpl->lsm, i));
+        OScInternal_NumRange *tmp = range;
+        range = OScInternal_NumRange_Intersection(tmp, detectorRange);
+        OScInternal_NumRange_Destroy(tmp);
+        OScInternal_NumRange_Destroy(detectorRange);
+    }
 
     return range;
 }
@@ -115,37 +118,42 @@ static OScDev_SettingImpl PixelRateSettingImpl = {
     .GetFloat64DiscreteValues = GetPixelRateDiscreteValues,
 };
 
-static OScDev_NumRange *GetResolutions(OSc_AcqTemplate *tmpl) {
+static OScInternal_NumRange *GetResolutions(OSc_AcqTemplate *tmpl) {
     // A full-frame scan (ROI = [0, 0, res, res]) must always be possible, so
     // resolutions are limited by both scanner resolutions and clock/detector
     // raster width/height.
 
     OSc_Device *clockDevice = OSc_LSM_GetClockDevice(tmpl->lsm);
     OSc_Device *scannerDevice = OSc_LSM_GetScannerDevice(tmpl->lsm);
-    OSc_Device *detectorDevice = OSc_LSM_GetDetectorDevice(tmpl->lsm);
-    OScDev_NumRange *clockWidthRange =
-        OScInternal_Device_GetRasterWidths(clockDevice);
-    OScDev_NumRange *clockHeightRange =
-        OScInternal_Device_GetRasterHeights(clockDevice);
-    OScDev_NumRange *scannerRange =
-        OScInternal_Device_GetResolutions(scannerDevice);
-    OScDev_NumRange *detectorWidthRange =
-        OScInternal_Device_GetRasterWidths(detectorDevice);
-    OScDev_NumRange *detectorHeightRange =
-        OScInternal_Device_GetRasterHeights(detectorDevice);
-    OScDev_NumRange *maxRange =
+    OScInternal_NumRange *maxRange =
         OScInternal_NumRange_CreateContinuous(1, INT32_MAX);
-
-    OScDev_NumRange *range = OScInternal_NumRange_Intersection6(
-        clockWidthRange, clockHeightRange, scannerRange, detectorWidthRange,
-        detectorHeightRange, maxRange);
-
-    OScInternal_NumRange_Destroy(maxRange);
-    OScInternal_NumRange_Destroy(detectorHeightRange);
-    OScInternal_NumRange_Destroy(detectorWidthRange);
+    OScInternal_NumRange *clockWidthRange =
+        OScInternal_Device_GetRasterWidths(clockDevice);
+    OScInternal_NumRange *clockHeightRange =
+        OScInternal_Device_GetRasterHeights(clockDevice);
+    OScInternal_NumRange *scannerRange =
+        OScInternal_Device_GetResolutions(scannerDevice);
+    OScInternal_NumRange *range = OScInternal_NumRange_Intersection4(
+        maxRange, clockWidthRange, clockHeightRange, scannerRange);
     OScInternal_NumRange_Destroy(scannerRange);
     OScInternal_NumRange_Destroy(clockHeightRange);
     OScInternal_NumRange_Destroy(clockWidthRange);
+    OScInternal_NumRange_Destroy(maxRange);
+
+    for (size_t i = 0; i < OSc_LSM_GetNumberOfDetectorDevices(tmpl->lsm);
+         ++i) {
+        OSc_Device *detectorDevice = OSc_LSM_GetDetectorDevice(tmpl->lsm, i);
+        OScInternal_NumRange *detectorWidthRange =
+            OScInternal_Device_GetRasterWidths(detectorDevice);
+        OScInternal_NumRange *detectorHeightRange =
+            OScInternal_Device_GetRasterHeights(detectorDevice);
+        OScInternal_NumRange *tmp = range;
+        range = OScInternal_NumRange_Intersection3(tmp, detectorWidthRange,
+                                                   detectorHeightRange);
+        OScInternal_NumRange_Destroy(tmp);
+        OScInternal_NumRange_Destroy(detectorHeightRange);
+        OScInternal_NumRange_Destroy(detectorWidthRange);
+    }
 
     return range;
 }
@@ -337,6 +345,7 @@ OSc_RichError *OSc_AcqTemplate_Create(OSc_AcqTemplate **tmpl, OSc_LSM *lsm) {
 
     (*tmpl)->lsm = lsm;
     (*tmpl)->numberOfFrames = UINT32_MAX; // Infinite
+    (*tmpl)->detectorMask = 1;            // Enable first detector by default
 
     OSc_RichError *err;
     OSc_Setting *setting;
@@ -395,6 +404,22 @@ OSc_LSM *OSc_AcqTemplate_GetLSM(OSc_AcqTemplate *tmpl) {
     if (!tmpl)
         return NULL;
     return tmpl->lsm;
+}
+
+void OSc_AcqTemplate_SetDetectorDeviceEnabled(OSc_AcqTemplate *tmpl,
+                                              size_t index, bool enable) {
+    if (!tmpl || index > 32)
+        return;
+    uint32_t mask = 1 << index;
+    tmpl->detectorMask = (tmpl->detectorMask & ~mask) | (enable ? mask : 0);
+}
+
+bool OSc_AcqTemplate_IsDetectorDeviceEnabled(OSc_AcqTemplate *tmpl,
+                                             size_t index) {
+    if (!tmpl || index > 32)
+        return false;
+    uint32_t mask = 1 << index;
+    return (tmpl->detectorMask & mask) != 0;
 }
 
 OSc_RichError *OSc_AcqTemplate_SetNumberOfFrames(OSc_AcqTemplate *tmpl,
@@ -483,19 +508,22 @@ OSc_RichError *OSc_AcqTemplate_SetROI(OSc_AcqTemplate *tmpl, uint32_t xOffset,
     }
     OScInternal_NumRange_Destroy(clockHeightRange);
 
-    OSc_Device *detectorDevice = OSc_LSM_GetDetectorDevice(tmpl->lsm);
-    OScInternal_NumRange *detectorWidthRange =
-        OScInternal_Device_GetRasterWidths(detectorDevice);
-    if (!OScInternal_NumRange_Contains(detectorWidthRange, width)) {
-        rasterSizeOk = false;
+    for (size_t i = 0; i < OSc_LSM_GetNumberOfDetectorDevices(tmpl->lsm);
+         ++i) {
+        OSc_Device *detectorDevice = OSc_LSM_GetDetectorDevice(tmpl->lsm, i);
+        OScInternal_NumRange *detectorWidthRange =
+            OScInternal_Device_GetRasterWidths(detectorDevice);
+        if (!OScInternal_NumRange_Contains(detectorWidthRange, width)) {
+            rasterSizeOk = false;
+        }
+        OScInternal_NumRange_Destroy(detectorWidthRange);
+        OScInternal_NumRange *detectorHeightRange =
+            OScInternal_Device_GetRasterHeights(detectorDevice);
+        if (!OScInternal_NumRange_Contains(detectorHeightRange, height)) {
+            rasterSizeOk = false;
+        }
+        OScInternal_NumRange_Destroy(detectorHeightRange);
     }
-    OScInternal_NumRange_Destroy(detectorWidthRange);
-    OScInternal_NumRange *detectorHeightRange =
-        OScInternal_Device_GetRasterHeights(detectorDevice);
-    if (!OScInternal_NumRange_Contains(detectorHeightRange, height)) {
-        rasterSizeOk = false;
-    }
-    OScInternal_NumRange_Destroy(detectorHeightRange);
 
     if (!rasterSizeOk) {
         return OScInternal_Error_UnsupportedOperation();
@@ -537,9 +565,20 @@ OSc_AcqTemplate_GetNumberOfChannels(OSc_AcqTemplate *tmpl,
     // the number of channels should belong to the AcqTemplate and we need a
     // mechanism to allow the device implementation to compute the number of
     // channels with the AcqTemplate settings as sole input.
-    OSc_Device *detectorDevice = OSc_LSM_GetDetectorDevice(tmpl->lsm);
-    return OScInternal_Device_GetNumberOfChannels(detectorDevice,
-                                                  numberOfChannels);
+    *numberOfChannels = 0;
+    for (size_t i = 0; i < OSc_LSM_GetNumberOfDetectorDevices(tmpl->lsm);
+         ++i) {
+        if (!OSc_AcqTemplate_IsDetectorDeviceEnabled(tmpl, i))
+            continue;
+        OSc_Device *detectorDevice = OSc_LSM_GetDetectorDevice(tmpl->lsm, i);
+        uint32_t nch = 0;
+        OSc_RichError *err =
+            OScInternal_Device_GetNumberOfChannels(detectorDevice, &nch);
+        if (err != OSc_OK)
+            return err;
+        *numberOfChannels += nch;
+    }
+    return OSc_OK;
 }
 
 OSc_RichError *OSc_AcqTemplate_GetBytesPerSample(OSc_AcqTemplate *tmpl,
@@ -551,7 +590,23 @@ OSc_RichError *OSc_AcqTemplate_GetBytesPerSample(OSc_AcqTemplate *tmpl,
     // the sample format should belong to the AcqTemplate and we need a
     // mechanism to allow the device implementation to compute the sample
     // format with the AcqTemplate settings as sole input.
-    OSc_Device *detectorDevice = OSc_LSM_GetDetectorDevice(tmpl->lsm);
-    return OScInternal_Device_GetBytesPerSample(detectorDevice,
-                                                bytesPerSample);
+    *bytesPerSample = 0;
+    for (size_t i = 0; i < OSc_LSM_GetNumberOfDetectorDevices(tmpl->lsm);
+         ++i) {
+        if (!OSc_AcqTemplate_IsDetectorDeviceEnabled(tmpl, i))
+            continue;
+        OSc_Device *detectorDevice = OSc_LSM_GetDetectorDevice(tmpl->lsm, i);
+        uint32_t bps = 0;
+        OSc_RichError *err =
+            OScInternal_Device_GetBytesPerSample(detectorDevice, &bps);
+        if (err != OSc_OK)
+            return err;
+        if (*bytesPerSample == 0 || *bytesPerSample == bps)
+            *bytesPerSample = bps;
+        else
+            return OScInternal_Error_NonUniformBytesPerSample();
+    }
+    if (*bytesPerSample == 0)
+        return OScInternal_Error_NoDetectorDeviceEnabled();
+    return OSc_OK;
 }

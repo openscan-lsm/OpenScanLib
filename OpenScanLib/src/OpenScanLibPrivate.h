@@ -206,14 +206,20 @@ bool OScInternal_Module_SupportsRichErrors(OScDev_ModuleImpl *modImpl);
 
 OSc_Device *
 OScInternal_AcquisitionForDevice_GetDevice(OScDev_Acquisition *devAcq);
+size_t OScInternal_AcquisitionForDevice_GetDetectorDeviceIndex(
+    OScDev_Acquisition *devAcq);
 OSc_Acquisition *
 OScInternal_AcquisitionForDevice_GetAcquisition(OScDev_Acquisition *devAcq);
 
 uint32_t OScInternal_Acquisition_GetNumberOfFrames(OSc_Acquisition *acq);
 OSc_Device *OScInternal_Acquisition_GetClockDevice(OSc_Acquisition *acq);
 OSc_Device *OScInternal_Acquisition_GetScannerDevice(OSc_Acquisition *acq);
-OSc_Device *OScInternal_Acquisition_GetDetectorDevice(OSc_Acquisition *acq);
+size_t
+OScInternal_Acquisition_GetNumberOfDetectorDevices(OSc_Acquisition *acq);
+OSc_Device *OScInternal_Acquisition_GetDetectorDevice(OSc_Acquisition *acq,
+                                                      size_t index);
 OScDev_Acquisition *OScInternal_Acquisition_GetForDevice(OSc_Acquisition *acq,
                                                          OSc_Device *device);
 bool OScInternal_Acquisition_CallFrameCallback(OSc_Acquisition *acq,
+                                               size_t detectorIndex,
                                                uint32_t channel, void *pixels);
