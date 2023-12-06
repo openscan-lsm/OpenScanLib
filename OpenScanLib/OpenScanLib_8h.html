@@ -112,7 +112,7 @@ Macros</h2></td></tr>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__api.html#ga69477457227779272f9234d04a0245c5">OSc_OK</a>&#160;&#160;&#160;NULL</td></tr>
 <tr class="memdesc:ga69477457227779272f9234d04a0245c5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Error return value for success. <br /></td></tr>
 <tr class="separator:ga69477457227779272f9234d04a0245c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga95810a53ca4492cad45fe94eb51c94fa"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__internal.html#ga95810a53ca4492cad45fe94eb51c94fa">OScInternal_ABI_VERSION</a>&#160;&#160;&#160;<a class="el" href="group__internal.html#gac3434dd0cdd8990ea793e6c625e984a0">OScInternal_MAKE_VERSION</a>(4, 0)</td></tr>
+<tr class="memitem:ga95810a53ca4492cad45fe94eb51c94fa"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__internal.html#ga95810a53ca4492cad45fe94eb51c94fa">OScInternal_ABI_VERSION</a>&#160;&#160;&#160;<a class="el" href="group__internal.html#gac3434dd0cdd8990ea793e6c625e984a0">OScInternal_MAKE_VERSION</a>(5, 0)</td></tr>
 <tr class="memdesc:ga95810a53ca4492cad45fe94eb51c94fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">ABI version.  <a href="group__internal.html#ga95810a53ca4492cad45fe94eb51c94fa">More...</a><br /></td></tr>
 <tr class="separator:ga95810a53ca4492cad45fe94eb51c94fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gac3434dd0cdd8990ea793e6c625e984a0"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__internal.html#gac3434dd0cdd8990ea793e6c625e984a0">OScInternal_MAKE_VERSION</a>(major,  minor)&#160;&#160;&#160;    (((uint32_t)(major) &lt;&lt; 16) | (uint16_t)(minor))</td></tr>
@@ -224,9 +224,15 @@ uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>OSc_AcqTemplate_G
 <tr class="memitem:ga4524b9cf8453f258284979937dbaa476"><td class="memItemLeft" align="right" valign="top">
 <a class="el" href="group__api.html#ga6bffbd8d07d5c78c7f67186e34c3fdff">OSc_RichError</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>OSc_AcqTemplate_GetZoomFactorSetting</b> (<a class="el" href="group__api.html#ga2550dde267f567e7cebbba756a222692">OSc_AcqTemplate</a> *tmpl, <a class="el" href="group__api.html#ga58cc85811c2b2114f57980cb10f1b6a6">OSc_Setting</a> **setting)</td></tr>
 <tr class="separator:ga4524b9cf8453f258284979937dbaa476"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gabe05cde0a2f263d0569ec76479503ec7"><td class="memItemLeft" align="right" valign="top">
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>OSc_AcqTemplate_IsDetectorDeviceEnabled</b> (<a class="el" href="group__api.html#ga2550dde267f567e7cebbba756a222692">OSc_AcqTemplate</a> *tmpl, size_t index)</td></tr>
+<tr class="separator:gabe05cde0a2f263d0569ec76479503ec7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gadfe902deae2653f58d8b582fe4c7f313"><td class="memItemLeft" align="right" valign="top">
 void&#160;</td><td class="memItemRight" valign="bottom"><b>OSc_AcqTemplate_ResetROI</b> (<a class="el" href="group__api.html#ga2550dde267f567e7cebbba756a222692">OSc_AcqTemplate</a> *tmpl)</td></tr>
 <tr class="separator:gadfe902deae2653f58d8b582fe4c7f313"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga484063f9dcb3b02f72b0ffa3c12ca959"><td class="memItemLeft" align="right" valign="top">
+void&#160;</td><td class="memItemRight" valign="bottom"><b>OSc_AcqTemplate_SetDetectorDeviceEnabled</b> (<a class="el" href="group__api.html#ga2550dde267f567e7cebbba756a222692">OSc_AcqTemplate</a> *tmpl, size_t index, bool enable)</td></tr>
+<tr class="separator:ga484063f9dcb3b02f72b0ffa3c12ca959"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga34561b0456fc5e99479dd5f7e96a91dc"><td class="memItemLeft" align="right" valign="top">
 <a class="el" href="group__api.html#ga6bffbd8d07d5c78c7f67186e34c3fdff">OSc_RichError</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>OSc_AcqTemplate_SetNumberOfFrames</b> (<a class="el" href="group__api.html#ga2550dde267f567e7cebbba756a222692">OSc_AcqTemplate</a> *tmpl, uint32_t numberOfFrames)</td></tr>
 <tr class="separator:ga34561b0456fc5e99479dd5f7e96a91dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -343,6 +349,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>OSc_Error_FormatRecur
 <tr class="memitem:ga533fa846012b32c99d919372abee3700"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__api.html#ga533fa846012b32c99d919372abee3700">OSc_LogFunc_Set</a> (<a class="el" href="group__api.html#ga34749a7cefbb4568047ba55b4b1bf394">OSc_LogFunc</a> func, void *data)</td></tr>
 <tr class="memdesc:ga533fa846012b32c99d919372abee3700"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set the logger for OpenScan.  <a href="group__api.html#ga533fa846012b32c99d919372abee3700">More...</a><br /></td></tr>
 <tr class="separator:ga533fa846012b32c99d919372abee3700"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaf8b15109380ac7a5eb62023cb2088338"><td class="memItemLeft" align="right" valign="top">
+<a class="el" href="group__api.html#ga6bffbd8d07d5c78c7f67186e34c3fdff">OSc_RichError</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>OSc_LSM_AddDetectorDevice</b> (<a class="el" href="group__api.html#ga978b7e19d8869bef42e34d29659549c1">OSc_LSM</a> *lsm, <a class="el" href="group__api.html#gaf1f2f9fbcb5ae14c71c8cf6bf105fbce">OSc_Device</a> *detectorDevice)</td></tr>
+<tr class="separator:gaf8b15109380ac7a5eb62023cb2088338"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gabf29559dfee38b409e4557fbdfe58e3f"><td class="memItemLeft" align="right" valign="top">
 <a class="el" href="group__api.html#ga6bffbd8d07d5c78c7f67186e34c3fdff">OSc_RichError</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>OSc_LSM_Create</b> (<a class="el" href="group__api.html#ga978b7e19d8869bef42e34d29659549c1">OSc_LSM</a> **lsm)</td></tr>
 <tr class="separator:gabf29559dfee38b409e4557fbdfe58e3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -351,9 +360,12 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>OSc_Error_FormatRecur
 <tr class="memitem:gabb3700660f6c32e9a6b967854e728d20"><td class="memItemLeft" align="right" valign="top">
 <a class="el" href="group__api.html#gaf1f2f9fbcb5ae14c71c8cf6bf105fbce">OSc_Device</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>OSc_LSM_GetClockDevice</b> (<a class="el" href="group__api.html#ga978b7e19d8869bef42e34d29659549c1">OSc_LSM</a> *lsm)</td></tr>
 <tr class="separator:gabb3700660f6c32e9a6b967854e728d20"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaef25e8eac74684979641e773d88ca5cf"><td class="memItemLeft" align="right" valign="top">
-<a class="el" href="group__api.html#gaf1f2f9fbcb5ae14c71c8cf6bf105fbce">OSc_Device</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>OSc_LSM_GetDetectorDevice</b> (<a class="el" href="group__api.html#ga978b7e19d8869bef42e34d29659549c1">OSc_LSM</a> *lsm)</td></tr>
-<tr class="separator:gaef25e8eac74684979641e773d88ca5cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga9be57b748d788eee964a1a87baf0d130"><td class="memItemLeft" align="right" valign="top">
+<a class="el" href="group__api.html#gaf1f2f9fbcb5ae14c71c8cf6bf105fbce">OSc_Device</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>OSc_LSM_GetDetectorDevice</b> (<a class="el" href="group__api.html#ga978b7e19d8869bef42e34d29659549c1">OSc_LSM</a> *lsm, size_t index)</td></tr>
+<tr class="separator:ga9be57b748d788eee964a1a87baf0d130"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga06e05c0af4488a9cb8300e285f83e132"><td class="memItemLeft" align="right" valign="top">
+size_t&#160;</td><td class="memItemRight" valign="bottom"><b>OSc_LSM_GetNumberOfDetectorDevices</b> (<a class="el" href="group__api.html#ga978b7e19d8869bef42e34d29659549c1">OSc_LSM</a> *lsm)</td></tr>
+<tr class="separator:ga06e05c0af4488a9cb8300e285f83e132"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga1ca66896b96e5b6ef6cd49ee4134c219"><td class="memItemLeft" align="right" valign="top">
 <a class="el" href="group__api.html#gaf1f2f9fbcb5ae14c71c8cf6bf105fbce">OSc_Device</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>OSc_LSM_GetScannerDevice</b> (<a class="el" href="group__api.html#ga978b7e19d8869bef42e34d29659549c1">OSc_LSM</a> *lsm)</td></tr>
 <tr class="separator:ga1ca66896b96e5b6ef6cd49ee4134c219"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -362,9 +374,6 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>OSc_Error_FormatRecur
 <tr class="memitem:ga9331677b3d812ff3945c63d3a1a71960"><td class="memItemLeft" align="right" valign="top">
 <a class="el" href="group__api.html#ga6bffbd8d07d5c78c7f67186e34c3fdff">OSc_RichError</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>OSc_LSM_SetClockDevice</b> (<a class="el" href="group__api.html#ga978b7e19d8869bef42e34d29659549c1">OSc_LSM</a> *lsm, <a class="el" href="group__api.html#gaf1f2f9fbcb5ae14c71c8cf6bf105fbce">OSc_Device</a> *clockDevice)</td></tr>
 <tr class="separator:ga9331677b3d812ff3945c63d3a1a71960"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga0b7dbe8edfb223d1af0cf2b7ce5cc1c6"><td class="memItemLeft" align="right" valign="top">
-<a class="el" href="group__api.html#ga6bffbd8d07d5c78c7f67186e34c3fdff">OSc_RichError</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>OSc_LSM_SetDetectorDevice</b> (<a class="el" href="group__api.html#ga978b7e19d8869bef42e34d29659549c1">OSc_LSM</a> *lsm, <a class="el" href="group__api.html#gaf1f2f9fbcb5ae14c71c8cf6bf105fbce">OSc_Device</a> *detectorDevice)</td></tr>
-<tr class="separator:ga0b7dbe8edfb223d1af0cf2b7ce5cc1c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga74fc55774499048d482fed7958bc0be2"><td class="memItemLeft" align="right" valign="top">
 <a class="el" href="group__api.html#ga6bffbd8d07d5c78c7f67186e34c3fdff">OSc_RichError</a> *&#160;</td><td class="memItemRight" valign="bottom"><b>OSc_LSM_SetScannerDevice</b> (<a class="el" href="group__api.html#ga978b7e19d8869bef42e34d29659549c1">OSc_LSM</a> *lsm, <a class="el" href="group__api.html#gaf1f2f9fbcb5ae14c71c8cf6bf105fbce">OSc_Device</a> *scannerDevice)</td></tr>
 <tr class="separator:ga74fc55774499048d482fed7958bc0be2"><td class="memSeparator" colspan="2">&#160;</td></tr>
