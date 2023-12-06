@@ -91,8 +91,11 @@ typedef struct OScInternal_NumRange OScInternal_NumRange;
 OScInternal_PtrArray *OScInternal_PtrArray_Create(void);
 OScInternal_PtrArray *OScInternal_PtrArray_CreateFromNullTerminated(
     void *const *nullTerminatedArray);
+OScInternal_PtrArray *
+OScInternal_PtrArray_Copy(const OScInternal_PtrArray *arr);
 void OScInternal_PtrArray_Destroy(const OScInternal_PtrArray *arr);
 void OScInternal_PtrArray_Append(OScInternal_PtrArray *arr, void *obj);
+void OScInternal_PtrArray_Remove(OScInternal_PtrArray *arr, size_t index);
 size_t OScInternal_PtrArray_Size(const OScInternal_PtrArray *arr);
 bool OScInternal_PtrArray_Empty(const OScInternal_PtrArray *arr);
 void *OScInternal_PtrArray_At(const OScInternal_PtrArray *arr, size_t index);
@@ -203,14 +206,20 @@ bool OScInternal_Module_SupportsRichErrors(OScDev_ModuleImpl *modImpl);
 
 OSc_Device *
 OScInternal_AcquisitionForDevice_GetDevice(OScDev_Acquisition *devAcq);
+size_t OScInternal_AcquisitionForDevice_GetDetectorDeviceIndex(
+    OScDev_Acquisition *devAcq);
 OSc_Acquisition *
 OScInternal_AcquisitionForDevice_GetAcquisition(OScDev_Acquisition *devAcq);
 
 uint32_t OScInternal_Acquisition_GetNumberOfFrames(OSc_Acquisition *acq);
 OSc_Device *OScInternal_Acquisition_GetClockDevice(OSc_Acquisition *acq);
 OSc_Device *OScInternal_Acquisition_GetScannerDevice(OSc_Acquisition *acq);
-OSc_Device *OScInternal_Acquisition_GetDetectorDevice(OSc_Acquisition *acq);
+size_t
+OScInternal_Acquisition_GetNumberOfDetectorDevices(OSc_Acquisition *acq);
+OSc_Device *OScInternal_Acquisition_GetDetectorDevice(OSc_Acquisition *acq,
+                                                      size_t index);
 OScDev_Acquisition *OScInternal_Acquisition_GetForDevice(OSc_Acquisition *acq,
                                                          OSc_Device *device);
 bool OScInternal_Acquisition_CallFrameCallback(OSc_Acquisition *acq,
+                                               size_t detectorIndex,
                                                uint32_t channel, void *pixels);

@@ -33,8 +33,30 @@ OSc_RichError *OScInternal_Error_DeviceAlreadyOpen() {
     return OScInternal_Error_Create("Device already open");
 }
 
+OSc_RichError *OScInternal_Error_DeviceAlreadyInUseAsDetector() {
+    return OScInternal_Error_Create("Device already in use as detector");
+}
+
 OSc_RichError *OScInternal_Error_DeviceDoesNotSupportDetector() {
     return OScInternal_Error_Create("Device does not support detector");
+}
+
+OSc_RichError *OScInternal_Error_TooManyDetectorDevices() {
+    return OScInternal_Error_Create(
+        "Number of allowed detector devices has been exceeded");
+}
+
+OSc_RichError *OScInternal_Error_NoDetectorDeviceEnabled() {
+    return OScInternal_Error_Create("No detector device enabled");
+}
+
+OSc_RichError *OScInternal_Error_NoDetectorChannelEnabled() {
+    return OScInternal_Error_Create("No channel in any detector enabled");
+}
+
+OSc_RichError *OScInternal_Error_NonUniformBytesPerSample() {
+    return OScInternal_Error_Create(
+        "Differing bytes-per-sample among enabled detector devices");
 }
 
 OSc_RichError *OScInternal_Error_DeviceModuleAlreadyExists() {

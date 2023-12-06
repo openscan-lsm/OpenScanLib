@@ -281,12 +281,17 @@ static OScDev_Error Acquisition_IsDetectorRequested(OScDev_ModuleImpl *modImpl,
                                                     OScDev_Acquisition *devAcq,
                                                     bool *isRequested) {
     (void)modImpl;
+    *isRequested = false;
     OSc_Device *device = OScInternal_AcquisitionForDevice_GetDevice(devAcq);
     OSc_Acquisition *acq =
         OScInternal_AcquisitionForDevice_GetAcquisition(devAcq);
-    OSc_Device *detectorDevice =
-        OScInternal_Acquisition_GetDetectorDevice(acq);
-    *isRequested = device == detectorDevice;
+    for (size_t i = 0;
+         i < OScInternal_Acquisition_GetNumberOfDetectorDevices(acq); ++i) {
+        if (device == OScInternal_Acquisition_GetDetectorDevice(acq, i)) {
+            *isRequested = true;
+            return OScDev_OK;
+        }
+    }
     return OScDev_OK;
 }
 
@@ -363,9 +368,12 @@ static bool Acquisition_CallFrameCallback(OScDev_ModuleImpl *modImpl,
                                           OScDev_Acquisition *devAcq,
                                           uint32_t channel, void *pixels) {
     (void)modImpl;
+    size_t detIdx =
+        OScInternal_AcquisitionForDevice_GetDetectorDeviceIndex(devAcq);
     OSc_Acquisition *acq =
         OScInternal_AcquisitionForDevice_GetAcquisition(devAcq);
-    return OScInternal_Acquisition_CallFrameCallback(acq, channel, pixels);
+    return OScInternal_Acquisition_CallFrameCallback(acq, detIdx, channel,
+                                                     pixels);
 }
 
 struct OScDevInternal_Interface DeviceInterfaceFunctionTable = {

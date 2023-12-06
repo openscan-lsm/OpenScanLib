@@ -91,7 +91,7 @@ extern "C" {
  *
  * The above list is not comprehensive.
  */
-#define OScInternal_ABI_VERSION OScInternal_MAKE_VERSION(4, 0)
+#define OScInternal_ABI_VERSION OScInternal_MAKE_VERSION(5, 0)
 
 /**
  * \addtogroup api
@@ -369,7 +369,10 @@ OSc_API OSc_Device *OSc_LSM_GetClockDevice(OSc_LSM *lsm);
 
 OSc_API OSc_Device *OSc_LSM_GetScannerDevice(OSc_LSM *lsm);
 
-OSc_API OSc_Device *OSc_LSM_GetDetectorDevice(OSc_LSM *lsm);
+OSc_API size_t OSc_LSM_GetNumberOfDetectorDevices(OSc_LSM *lsm);
+
+// Returns null if index out of range
+OSc_API OSc_Device *OSc_LSM_GetDetectorDevice(OSc_LSM *lsm, size_t index);
 
 OSc_API OSc_RichError *OSc_LSM_SetClockDevice(OSc_LSM *lsm,
                                               OSc_Device *clockDevice);
@@ -377,7 +380,7 @@ OSc_API OSc_RichError *OSc_LSM_SetClockDevice(OSc_LSM *lsm,
 OSc_API OSc_RichError *OSc_LSM_SetScannerDevice(OSc_LSM *lsm,
                                                 OSc_Device *scannerDevice);
 
-OSc_API OSc_RichError *OSc_LSM_SetDetectorDevice(OSc_LSM *lsm,
+OSc_API OSc_RichError *OSc_LSM_AddDetectorDevice(OSc_LSM *lsm,
                                                  OSc_Device *detectorDevice);
 
 /**
@@ -545,7 +548,17 @@ OSc_API OSc_RichError *OSc_Setting_GetEnumValueForName(OSc_Setting *setting,
 OSc_API OSc_RichError *OSc_AcqTemplate_Create(OSc_AcqTemplate **tmpl,
                                               OSc_LSM *lsm);
 OSc_API void OSc_AcqTemplate_Destroy(OSc_AcqTemplate *tmpl);
+
 OSc_API OSc_LSM *OSc_AcqTemplate_GetLSM(OSc_AcqTemplate *tmpl);
+
+// Does nothing if index out of range
+OSc_API void OSc_AcqTemplate_SetDetectorDeviceEnabled(OSc_AcqTemplate *tmpl,
+                                                      size_t index,
+                                                      bool enable);
+// Returns indefinite value if index out of range
+OSc_API bool OSc_AcqTemplate_IsDetectorDeviceEnabled(OSc_AcqTemplate *tmpl,
+                                                     size_t index);
+
 OSc_API OSc_RichError *
 OSc_AcqTemplate_SetNumberOfFrames(OSc_AcqTemplate *tmpl,
                                   uint32_t numberOfFrames);
