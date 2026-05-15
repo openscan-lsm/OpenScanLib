@@ -17,7 +17,7 @@ void OScInternal_FileList_Free(ss8str *files) {
     free(files);
 }
 
-// Finds all fils under 'path' that have 'suffix'.
+// Finds all files under 'path' that have 'suffix'.
 // Allocates array and element strings and places into 'files'.
 OSc_RichError *OScInternal_FileList_Create(ss8str **files, const char *path,
                                            const char *suffix) {
