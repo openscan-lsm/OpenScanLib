@@ -72,7 +72,11 @@ error:
 
 OSc_RichError *OScInternal_Module_Load(OScInternal_Module *module,
                                        const char *path) {
-    *module = LoadLibraryA(path);
+    *module = LoadLibraryExA(
+        path,
+        NULL,
+        LOAD_LIBRARY_SEARCH_DEFAULT_DIRS | LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR
+    );
     if (*module == NULL)
         return OScInternal_Error_Unknown();
     return OSc_OK;
