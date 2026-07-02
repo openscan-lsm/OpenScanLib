@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['deprecated_20list_0',['Deprecated List',['../deprecated.html',1,'']]]
+  ['api_0',['OpenScan C API',['../group__api.html',1,'']]],
+  ['application_20programming_20interface_1',['OpenScanLib: OpenScan C Application Programming Interface',['../index.html',1,'']]]
 ];
