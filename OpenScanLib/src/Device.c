@@ -1,6 +1,7 @@
 #include "InternalErrors.h"
 #include "OpenScanLibPrivate.h"
 
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -233,7 +234,8 @@ OScDev_NumRange *OScInternal_Device_GetZooms(OSc_Device *device) {
         }
         return ret;
     }
-    return OScInternal_NumRange_CreateContinuous(1e-6, 1e6);
+    return OScInternal_NumRange_CreateDiscreteFromNaNTerminated(
+        (double[]){1.0, NAN});
 }
 
 bool OScInternal_Device_IsROIScanSupported(OSc_Device *device) {
