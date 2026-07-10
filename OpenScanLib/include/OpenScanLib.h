@@ -212,6 +212,20 @@ typedef struct OScInternal_AcqTemplate OSc_AcqTemplate;
 /**
  * \brief An acquisition object, managing the state and data transfer for
  * data acquisition.
+ *
+ * An acquisition is created from an OSc_AcqTemplate by
+ * OSc_Acquisition_Create(). The only supported sequence of operations is
+ * OSc_Acquisition_Arm(), then OSc_Acquisition_Start(), then (once the
+ * acquisition has been stopped with OSc_Acquisition_Stop() or has completed
+ * on its own) OSc_Acquisition_Wait(), and finally OSc_Acquisition_Destroy().
+ *
+ * At most one acquisition may be live (armed or running) at any given time
+ * for a given device, and therefore in practice for a given LSM. OpenScanLib
+ * does not currently enforce this.
+ *
+ * The acquisition holds non-owning references to the LSM's devices, so the
+ * devices (and the LSM) must remain valid for the lifetime of the
+ * acquisition object.
  */
 typedef struct OScInternal_Acquisition OSc_Acquisition;
 
@@ -231,6 +245,19 @@ typedef void (*OSc_SettingInvalidateFunc)(OSc_Setting *setting, void *data);
 
 /**
  * \brief Pointer to function that receives acquired frame data.
+ *
+ * The callback is invoked on device-module-internal threads, potentially
+ * concurrently with application calls into OpenScanLib and (when multiple
+ * detector devices or channels are involved) concurrently with itself. It
+ * must copy the pixel data before returning.
+ *
+ * The callback must not call OSc_Acquisition_Stop(), OSc_Acquisition_Wait(),
+ * or OSc_Acquisition_Destroy(); doing so may deadlock. To cancel the
+ * acquisition from the callback, return `false`.
+ *
+ * For a given acquisition, no calls to the callback occur after
+ * OSc_Acquisition_Stop() or OSc_Acquisition_Wait() has returned.
+ *
  * \sa OSc_Acquisition_SetFrameCallback()
  * \param acq the acquisition
  * \param channel the channel number (zero-based)
@@ -361,6 +388,11 @@ OSc_API void OSc_SetDeviceModuleSearchPaths(const char **paths);
 OSc_API OSc_RichError *OSc_LSM_Create(OSc_LSM **lsm);
 
 /**
+ * \brief Destroy an LSM, closing all devices associated with it.
+ *
+ * The same precondition as OSc_Device_Close() applies: no device associated
+ * with the LSM may be participating in an armed or running acquisition.
+ *
  * \todo Return value should be `void`.
  */
 OSc_API OSc_RichError *OSc_LSM_Destroy(OSc_LSM *lsm);
@@ -449,6 +481,16 @@ OSc_API OSc_RichError *OSc_Device_GetDisplayName(OSc_Device *device,
 OSc_API OSc_RichError *OSc_Device_Open(OSc_Device *device, OSc_LSM *lsm);
 
 /**
+ * \brief Close a device.
+ *
+ * The device must not be participating in an armed or running acquisition;
+ * stop the acquisition (and have OSc_Acquisition_Stop() or
+ * OSc_Acquisition_Wait() return) before closing. As a safety net, device
+ * modules are required to stop and wait for any live acquisition when
+ * closing, but an OSc_Acquisition object that outlives this call then
+ * references a closed device, and the only operation that remains valid on
+ * it is OSc_Acquisition_Destroy().
+ *
  * \todo Return value should be `void`.
  */
 OSc_API OSc_RichError *OSc_Device_Close(OSc_Device *device);
@@ -595,8 +637,42 @@ OSc_API OSc_RichError *
 OSc_AcqTemplate_GetBytesPerSample(OSc_AcqTemplate *tmpl,
                                   uint32_t *bytesPerSample);
 
+/**
+ * \brief Create a new acquisition from the current settings of a template.
+ *
+ * The acquisition takes a snapshot of the template's settings; subsequent
+ * changes to the template do not affect it.
+ *
+ * The acquisition holds non-owning references to the LSM's clock and scanner
+ * devices and its enabled detector devices. These devices, and the LSM, must
+ * remain valid (open and not destroyed) for the lifetime of the acquisition
+ * object.
+ *
+ * The caller owns the returned acquisition and must destroy it with
+ * OSc_Acquisition_Destroy().
+ *
+ * \param[out] acq location where the pointer to the new acquisition will be
+ * written
+ * \param tmpl the acquisition template
+ */
 OSc_API OSc_RichError *OSc_Acquisition_Create(OSc_Acquisition **acq,
                                               OSc_AcqTemplate *tmpl);
+
+/**
+ * \brief Destroy an acquisition.
+ *
+ * This frees the acquisition object, including the per-device handles that
+ * were passed to the participating device modules.
+ *
+ * The acquisition must not be armed or running: a call to
+ * OSc_Acquisition_Stop() (or, if the acquisition completed on its own,
+ * OSc_Acquisition_Wait()) must have returned before this function is called.
+ * Destroying an armed or running acquisition results in undefined behavior,
+ * because device modules may still access the acquisition from their
+ * internal threads. OpenScanLib does not currently detect this misuse.
+ *
+ * The participating devices are not affected by this function.
+ */
 OSc_API OSc_RichError *OSc_Acquisition_Destroy(OSc_Acquisition *acq);
 OSc_API OSc_RichError *
 OSc_Acquisition_SetNumberOfFrames(OSc_Acquisition *acq,
@@ -621,9 +697,71 @@ OSc_Acquisition_GetNumberOfChannels(OSc_Acquisition *acq,
 OSc_API OSc_RichError *
 OSc_Acquisition_GetBytesPerSample(OSc_Acquisition *acq,
                                   uint32_t *bytesPerSample);
+/**
+ * \brief Arm an acquisition, preparing all participating devices.
+ *
+ * Each device participating in the acquisition (clock, scanner, and
+ * detectors) is armed exactly once, even if it serves multiple roles. This
+ * function must be called, and succeed, before OSc_Acquisition_Start().
+ *
+ * If arming any device fails, the devices already armed for this acquisition
+ * are stopped before the error is returned, leaving all of the devices
+ * disarmed.
+ *
+ * No participating device may be armed or running for another acquisition.
+ * OpenScanLib does not currently detect violations of this precondition, and
+ * behavior in that case is undefined (dependent on the device modules).
+ */
 OSc_API OSc_RichError *OSc_Acquisition_Arm(OSc_Acquisition *acq);
+
+/**
+ * \brief Start an armed acquisition.
+ *
+ * This delivers the software start trigger to the device providing the
+ * clock. Call it exactly once per acquisition, after OSc_Acquisition_Arm()
+ * has succeeded. OpenScanLib does not currently check this ordering;
+ * starting an acquisition that is not armed is rejected only by some device
+ * modules.
+ */
 OSc_API OSc_RichError *OSc_Acquisition_Start(OSc_Acquisition *acq);
+
+/**
+ * \brief Stop an acquisition.
+ *
+ * This requests every participating device to stop, and blocks until all of
+ * them have fully stopped and are ready to be armed again. Once this
+ * function returns, no further frame callbacks occur and the acquisition may
+ * be destroyed.
+ *
+ * This function is idempotent, and is safe to call on an acquisition that
+ * was never armed.
+ *
+ * This function must not be called from within the frame callback (see
+ * OSc_FrameCallback).
+ *
+ * \attention Stopping acts on the participating devices, not on this
+ * acquisition object specifically. Calling this function on an acquisition
+ * whose devices are participating in a different live acquisition will stop
+ * that acquisition.
+ */
 OSc_API OSc_RichError *OSc_Acquisition_Stop(OSc_Acquisition *acq);
+
+/**
+ * \brief Wait for an acquisition to finish.
+ *
+ * This blocks until the acquisition has finished on all participating
+ * devices, whether by a call to OSc_Acquisition_Stop() or by completing the
+ * requested number of frames; it returns immediately if the acquisition is
+ * not armed or running. Once this function returns, no further frame
+ * callbacks occur and the acquisition may be destroyed.
+ *
+ * This function does not itself request a stop, so waiting for an
+ * acquisition that does not finish on its own will not return until
+ * OSc_Acquisition_Stop() is called from another thread.
+ *
+ * This function must not be called from within the frame callback (see
+ * OSc_FrameCallback).
+ */
 OSc_API OSc_RichError *OSc_Acquisition_Wait(OSc_Acquisition *acq);
 
 /** @} */ // addtogroup api

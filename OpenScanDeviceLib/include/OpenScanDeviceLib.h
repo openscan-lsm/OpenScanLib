@@ -111,6 +111,20 @@ typedef struct OScDev_SettingImpl OScDev_SettingImpl;
 // functions.
 typedef struct OScInternal_Device OScDev_Device;
 typedef struct OScInternal_Setting OScDev_Setting;
+
+/// Handle to an acquisition, for use by one participating device.
+/**
+ * Each device participating in an acquisition receives its own distinct
+ * handle to the same acquisition, in the call to its `Arm` function.
+ *
+ * The handle is owned by the host application. The device module may store
+ * it and use it from any of its threads, but only until the module indicates
+ * that the acquisition is finished on this device; that is, until it returns
+ * from a `Stop` call with the device idle, returns from `Wait`, or lets
+ * `IsRunning` report false. From that instant on, the host is allowed to
+ * free the handle, so no code in the module (including background threads)
+ * may access it.
+ */
 typedef struct OScInternal_AcquisitionForDevice OScDev_Acquisition;
 typedef struct RERR_Error OScDev_RichError;
 #define OScDev_RichError_OK ((OScDev_RichError *)NULL)
@@ -556,6 +570,13 @@ struct OScDev_DeviceImpl {
      */
     OScDev_Error (*Open)(OScDev_Device *device);
 
+    /// Close the connection to the device.
+    /**
+     * If an acquisition is armed or running on this device, this function
+     * must stop it and wait for all acquisition activity (including any
+     * module threads that use the `OScDev_Acquisition` handle) to complete
+     * before returning, exactly as if `Stop` had been called.
+     */
     OScDev_Error (*Close)(OScDev_Device *device);
 
     /// Return true if this device can provide the clock for scanning and
@@ -736,6 +757,15 @@ struct OScDev_DeviceImpl {
      * and detector may not be clear. The implementation should behave _as if_
      * the three components were separate and behaved as specified above.
      *
+     * This function is called at most once per device per acquisition, even
+     * when the device serves multiple roles. The handle `acq` may be stored
+     * and used for the duration of the acquisition, subject to the validity
+     * window documented at `OScDev_Acquisition`.
+     *
+     * If the device is already armed or running a previous acquisition, this
+     * function must fail with an error, leaving the previous acquisition
+     * undisturbed. OpenScanLib does not currently prevent such calls.
+     *
      * \todo Currently, state change after the device is armed is handled in a
      * variable way depending on what triggers the state change (especially
      * stop of acquisition). We should replace this with a simpler interface
@@ -782,6 +812,19 @@ struct OScDev_DeviceImpl {
      * and return only when the device is ready to be armed again with a new
      * acquisition.
      *
+     * This function may be called multiple times in succession: OpenScanLib
+     * calls it once for each role (clock, scanner, detector) that the device
+     * serves in the acquisition, and also calls it to clean up when arming
+     * another device fails.
+     *
+     * This function must also handle the case where the device is armed but
+     * the acquisition was never started, by disarming and returning; it must
+     * not block waiting for a start trigger that will never arrive.
+     *
+     * Once this function returns with the device idle, the host may free the
+     * acquisition handle (see `OScDev_Acquisition`), so all use of the
+     * handle by the module must have ceased by that point.
+     *
      * \todo This function should be split into two separate functions,
      * `SoftwareTriggerStop()` and `Disarm()`, with very different roles.
      * The former should merely be an asynchronous signal that the device
@@ -806,7 +849,11 @@ struct OScDev_DeviceImpl {
      *
      * In all cases, this function should not return `false` until all aspects
      * of the acquisition have completed and the device is ready to arm for a
-     * new acquisition.
+     * new acquisition. In particular, reporting false is a release point for
+     * the acquisition handle: once this function returns `false`, the host
+     * may free the handle (see `OScDev_Acquisition`), so the module must not
+     * report false while any of its threads may still use the handle (for
+     * example, to deliver frame callbacks).
      *
      * \todo This function should be replaced with a callback-based interface
      * to avoid polling and simplify device module implementation.
@@ -820,6 +867,10 @@ struct OScDev_DeviceImpl {
      *
      * This function should return immediately if `IsRunning()` is already
      * false.
+     *
+     * After this function returns, the host may free the acquisition handle
+     * (see `OScDev_Acquisition`); no module thread may use the handle or
+     * deliver further frame callbacks.
      *
      * \todo This function should be removed, because it leads to reinvention
      * of condition variable code in each device module. Better to report state
@@ -1286,12 +1337,18 @@ OScDev_API void OScDev_Acquisition_GetROI(OScDev_Acquisition *acq,
  * This function must be called during an acquisition by the device that owns
  * the detector for the acquisition.
  *
+ * It may be called from any thread of the device module, but only while the
+ * acquisition handle is valid (see `OScDev_Acquisition`).
+ *
  * The data pointed to by `pixels` must not change during the call to this
- * function.
+ * function. The call blocks while the application processes the frame data.
  *
  * \param[in] acq the acquisition that was given when arming this device
  * \param[in] channel the channel index
  * \param[in] pixels the raw pixel data for the channel
+ * \return `true` normally, or `false` if the application requests
+ * cancellation of the acquisition, in which case the module should stop the
+ * acquisition as soon as practical
  */
 OScDev_API bool OScDev_Acquisition_CallFrameCallback(OScDev_Acquisition *acq,
                                                      uint32_t channel,
