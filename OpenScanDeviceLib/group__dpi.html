@@ -106,6 +106,7 @@ Macros</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="typedef-members" name="typedef-members"></a>
 Typedefs</h2></td></tr>
 <tr class="memitem:ga82de122ecb4a3a83c77f59a74420aeab" id="r_ga82de122ecb4a3a83c77f59a74420aeab"><td class="memItemLeft" align="right" valign="top">typedef struct OScInternal_AcquisitionForDevice&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dpi.html#ga82de122ecb4a3a83c77f59a74420aeab">OScDev_Acquisition</a></td></tr>
+<tr class="memdesc:ga82de122ecb4a3a83c77f59a74420aeab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Handle to an acquisition, for use by one participating device.  <br /></td></tr>
 <tr class="separator:ga82de122ecb4a3a83c77f59a74420aeab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga10c759e69dfbd56105a3ec1e5ffe4310" id="r_ga10c759e69dfbd56105a3ec1e5ffe4310"><td class="memItemLeft" align="right" valign="top">typedef int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dpi.html#ga10c759e69dfbd56105a3ec1e5ffe4310">OScDev_ClockSource</a></td></tr>
 <tr class="separator:ga10c759e69dfbd56105a3ec1e5ffe4310"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -222,31 +223,31 @@ Enumerations</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="func-members" name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ga03dbd43b0a8cbeaaaa8c02d58292a994" id="r_ga03dbd43b0a8cbeaaaa8c02d58292a994"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dpi.html#ga03dbd43b0a8cbeaaaa8c02d58292a994">OScDev_Acquisition_CallFrameCallback</a> (OScDev_Acquisition *acq, uint32_t channel, void *pixels)</td></tr>
+<tr class="memitem:ga03dbd43b0a8cbeaaaa8c02d58292a994" id="r_ga03dbd43b0a8cbeaaaa8c02d58292a994"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dpi.html#ga03dbd43b0a8cbeaaaa8c02d58292a994">OScDev_Acquisition_CallFrameCallback</a> (<a class="el" href="group__dpi.html#ga82de122ecb4a3a83c77f59a74420aeab">OScDev_Acquisition</a> *acq, uint32_t channel, void *pixels)</td></tr>
 <tr class="memdesc:ga03dbd43b0a8cbeaaaa8c02d58292a994"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send acquired data for one channel of a frame.  <br /></td></tr>
 <tr class="separator:ga03dbd43b0a8cbeaaaa8c02d58292a994"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga33b2866891a75733e0044f91c2796e14" id="r_ga33b2866891a75733e0044f91c2796e14"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__dpi.html#ga946e0f935b49cfd20c0c8f3dc6346311">OScDev_Error</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dpi.html#ga33b2866891a75733e0044f91c2796e14">OScDev_Acquisition_GetClockSource</a> (OScDev_Acquisition *acq, OScDev_ClockSource *clock)</td></tr>
+<tr class="memitem:ga33b2866891a75733e0044f91c2796e14" id="r_ga33b2866891a75733e0044f91c2796e14"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__dpi.html#ga946e0f935b49cfd20c0c8f3dc6346311">OScDev_Error</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dpi.html#ga33b2866891a75733e0044f91c2796e14">OScDev_Acquisition_GetClockSource</a> (<a class="el" href="group__dpi.html#ga82de122ecb4a3a83c77f59a74420aeab">OScDev_Acquisition</a> *acq, OScDev_ClockSource *clock)</td></tr>
 <tr class="memdesc:ga33b2866891a75733e0044f91c2796e14"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determine the scanner and detector clock source for the given acquisition.  <br /></td></tr>
 <tr class="separator:ga33b2866891a75733e0044f91c2796e14"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga4b7482fb4bbe9bd00f3839bca46c30a1" id="r_ga4b7482fb4bbe9bd00f3839bca46c30a1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__dpi.html#ga946e0f935b49cfd20c0c8f3dc6346311">OScDev_Error</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dpi.html#ga4b7482fb4bbe9bd00f3839bca46c30a1">OScDev_Acquisition_GetClockStartTriggerSource</a> (OScDev_Acquisition *acq, OScDev_TriggerSource *startTrigger)</td></tr>
+<tr class="memitem:ga4b7482fb4bbe9bd00f3839bca46c30a1" id="r_ga4b7482fb4bbe9bd00f3839bca46c30a1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__dpi.html#ga946e0f935b49cfd20c0c8f3dc6346311">OScDev_Error</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dpi.html#ga4b7482fb4bbe9bd00f3839bca46c30a1">OScDev_Acquisition_GetClockStartTriggerSource</a> (<a class="el" href="group__dpi.html#ga82de122ecb4a3a83c77f59a74420aeab">OScDev_Acquisition</a> *acq, OScDev_TriggerSource *startTrigger)</td></tr>
 <tr class="memdesc:ga4b7482fb4bbe9bd00f3839bca46c30a1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determine the start trigger source for the clock for the given acquisition.  <br /></td></tr>
 <tr class="separator:ga4b7482fb4bbe9bd00f3839bca46c30a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gab974e5f1c58f0b276c09e1dcce6af66c" id="r_gab974e5f1c58f0b276c09e1dcce6af66c"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dpi.html#gab974e5f1c58f0b276c09e1dcce6af66c">OScDev_Acquisition_GetNumberOfFrames</a> (OScDev_Acquisition *acq)</td></tr>
+<tr class="memitem:gab974e5f1c58f0b276c09e1dcce6af66c" id="r_gab974e5f1c58f0b276c09e1dcce6af66c"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dpi.html#gab974e5f1c58f0b276c09e1dcce6af66c">OScDev_Acquisition_GetNumberOfFrames</a> (<a class="el" href="group__dpi.html#ga82de122ecb4a3a83c77f59a74420aeab">OScDev_Acquisition</a> *acq)</td></tr>
 <tr class="memdesc:gab974e5f1c58f0b276c09e1dcce6af66c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determine the requested number of frames for the given acquisition.  <br /></td></tr>
 <tr class="separator:gab974e5f1c58f0b276c09e1dcce6af66c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaa7c3478d434ed79171ade902b517cd43" id="r_gaa7c3478d434ed79171ade902b517cd43"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dpi.html#gaa7c3478d434ed79171ade902b517cd43">OScDev_Acquisition_GetPixelRate</a> (OScDev_Acquisition *acq)</td></tr>
+<tr class="memitem:gaa7c3478d434ed79171ade902b517cd43" id="r_gaa7c3478d434ed79171ade902b517cd43"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dpi.html#gaa7c3478d434ed79171ade902b517cd43">OScDev_Acquisition_GetPixelRate</a> (<a class="el" href="group__dpi.html#ga82de122ecb4a3a83c77f59a74420aeab">OScDev_Acquisition</a> *acq)</td></tr>
 <tr class="separator:gaa7c3478d434ed79171ade902b517cd43"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga558411d570f5ce647568a8152da647f8" id="r_ga558411d570f5ce647568a8152da647f8"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dpi.html#ga558411d570f5ce647568a8152da647f8">OScDev_Acquisition_GetResolution</a> (OScDev_Acquisition *acq)</td></tr>
+<tr class="memitem:ga558411d570f5ce647568a8152da647f8" id="r_ga558411d570f5ce647568a8152da647f8"><td class="memItemLeft" align="right" valign="top">uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dpi.html#ga558411d570f5ce647568a8152da647f8">OScDev_Acquisition_GetResolution</a> (<a class="el" href="group__dpi.html#ga82de122ecb4a3a83c77f59a74420aeab">OScDev_Acquisition</a> *acq)</td></tr>
 <tr class="separator:ga558411d570f5ce647568a8152da647f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga0cd47066cc4d2aa21ebffc8c1156055a" id="r_ga0cd47066cc4d2aa21ebffc8c1156055a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dpi.html#ga0cd47066cc4d2aa21ebffc8c1156055a">OScDev_Acquisition_GetROI</a> (OScDev_Acquisition *acq, uint32_t *xOffset, uint32_t *yOffset, uint32_t *width, uint32_t *height)</td></tr>
+<tr class="memitem:ga0cd47066cc4d2aa21ebffc8c1156055a" id="r_ga0cd47066cc4d2aa21ebffc8c1156055a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dpi.html#ga0cd47066cc4d2aa21ebffc8c1156055a">OScDev_Acquisition_GetROI</a> (<a class="el" href="group__dpi.html#ga82de122ecb4a3a83c77f59a74420aeab">OScDev_Acquisition</a> *acq, uint32_t *xOffset, uint32_t *yOffset, uint32_t *width, uint32_t *height)</td></tr>
 <tr class="separator:ga0cd47066cc4d2aa21ebffc8c1156055a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga3ea6e791284139e904e0902a5b0508d9" id="r_ga3ea6e791284139e904e0902a5b0508d9"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dpi.html#ga3ea6e791284139e904e0902a5b0508d9">OScDev_Acquisition_GetZoomFactor</a> (OScDev_Acquisition *acq)</td></tr>
+<tr class="memitem:ga3ea6e791284139e904e0902a5b0508d9" id="r_ga3ea6e791284139e904e0902a5b0508d9"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dpi.html#ga3ea6e791284139e904e0902a5b0508d9">OScDev_Acquisition_GetZoomFactor</a> (<a class="el" href="group__dpi.html#ga82de122ecb4a3a83c77f59a74420aeab">OScDev_Acquisition</a> *acq)</td></tr>
 <tr class="separator:ga3ea6e791284139e904e0902a5b0508d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gae1bfbb2ac399b32557e27f0c3bd94bc3" id="r_gae1bfbb2ac399b32557e27f0c3bd94bc3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__dpi.html#ga946e0f935b49cfd20c0c8f3dc6346311">OScDev_Error</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dpi.html#gae1bfbb2ac399b32557e27f0c3bd94bc3">OScDev_Acquisition_IsClockRequested</a> (OScDev_Acquisition *acq, bool *isRequested)</td></tr>
+<tr class="memitem:gae1bfbb2ac399b32557e27f0c3bd94bc3" id="r_gae1bfbb2ac399b32557e27f0c3bd94bc3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__dpi.html#ga946e0f935b49cfd20c0c8f3dc6346311">OScDev_Error</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dpi.html#gae1bfbb2ac399b32557e27f0c3bd94bc3">OScDev_Acquisition_IsClockRequested</a> (<a class="el" href="group__dpi.html#ga82de122ecb4a3a83c77f59a74420aeab">OScDev_Acquisition</a> *acq, bool *isRequested)</td></tr>
 <tr class="separator:gae1bfbb2ac399b32557e27f0c3bd94bc3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga0c9eac1d0f8f0713d80d15eb0dc68a0b" id="r_ga0c9eac1d0f8f0713d80d15eb0dc68a0b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__dpi.html#ga946e0f935b49cfd20c0c8f3dc6346311">OScDev_Error</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dpi.html#ga0c9eac1d0f8f0713d80d15eb0dc68a0b">OScDev_Acquisition_IsDetectorRequested</a> (OScDev_Acquisition *acq, bool *isRequested)</td></tr>
+<tr class="memitem:ga0c9eac1d0f8f0713d80d15eb0dc68a0b" id="r_ga0c9eac1d0f8f0713d80d15eb0dc68a0b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__dpi.html#ga946e0f935b49cfd20c0c8f3dc6346311">OScDev_Error</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dpi.html#ga0c9eac1d0f8f0713d80d15eb0dc68a0b">OScDev_Acquisition_IsDetectorRequested</a> (<a class="el" href="group__dpi.html#ga82de122ecb4a3a83c77f59a74420aeab">OScDev_Acquisition</a> *acq, bool *isRequested)</td></tr>
 <tr class="separator:ga0c9eac1d0f8f0713d80d15eb0dc68a0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga9c405d2a690c2bb3dc82b41e784e8242" id="r_ga9c405d2a690c2bb3dc82b41e784e8242"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__dpi.html#ga946e0f935b49cfd20c0c8f3dc6346311">OScDev_Error</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dpi.html#ga9c405d2a690c2bb3dc82b41e784e8242">OScDev_Acquisition_IsScannerRequested</a> (OScDev_Acquisition *acq, bool *isRequested)</td></tr>
+<tr class="memitem:ga9c405d2a690c2bb3dc82b41e784e8242" id="r_ga9c405d2a690c2bb3dc82b41e784e8242"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__dpi.html#ga946e0f935b49cfd20c0c8f3dc6346311">OScDev_Error</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dpi.html#ga9c405d2a690c2bb3dc82b41e784e8242">OScDev_Acquisition_IsScannerRequested</a> (<a class="el" href="group__dpi.html#ga82de122ecb4a3a83c77f59a74420aeab">OScDev_Acquisition</a> *acq, bool *isRequested)</td></tr>
 <tr class="separator:ga9c405d2a690c2bb3dc82b41e784e8242"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga36f4161f2ba8ed4b75c8d29a50ff7ee6" id="r_ga36f4161f2ba8ed4b75c8d29a50ff7ee6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__dpi.html#ga946e0f935b49cfd20c0c8f3dc6346311">OScDev_Error</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__dpi.html#ga36f4161f2ba8ed4b75c8d29a50ff7ee6">OScDev_Device_Create</a> (OScDev_Device **device, <a class="el" href="structOScDev__DeviceImpl.html">OScDev_DeviceImpl</a> *impl, void *data)</td></tr>
 <tr class="separator:ga36f4161f2ba8ed4b75c8d29a50ff7ee6"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -398,7 +399,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00116">116</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00130">130</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -436,7 +437,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
     return err;
 }
 </pre> 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00188">188</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00202">202</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -464,7 +465,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
 </pre><p> Within the braces, all required fields (and any desired optional fields) of <a class="el" href="structOScDev__ModuleImpl.html" title="The module implementation function table.">OScDev_ModuleImpl</a> must be initialized.</p>
 <dl class="section see"><dt>See also</dt><dd><a class="el" href="structOScDev__ModuleImpl.html" title="The module implementation function table.">OScDev_ModuleImpl</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00301">301</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00315">315</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -556,12 +557,16 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">typedef struct OScInternal_AcquisitionForDevice OScDev_Acquisition</td>
+          <td class="memname">typedef struct OScInternal_AcquisitionForDevice <a class="el" href="group__dpi.html#ga82de122ecb4a3a83c77f59a74420aeab">OScDev_Acquisition</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00114">114</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p>Handle to an acquisition, for use by one participating device. </p>
+<p>Each device participating in an acquisition receives its own distinct handle to the same acquisition, in the call to its <code>Arm</code> function.</p>
+<p>The handle is owned by the host application. The device module may store it and use it from any of its threads, but only until the module indicates that the acquisition is finished on this device; that is, until it returns from a <code>Stop</code> call with the device idle, returns from <code>Wait</code>, or lets <code>IsRunning</code> report false. From that instant on, the host is allowed to free the handle, so no code in the module (including background threads) may access it. </p>
+
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00128">128</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -577,7 +582,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00115">115</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00129">129</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -595,7 +600,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
 
 <p>Log level. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00119">119</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00133">133</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -611,7 +616,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00129">129</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00143">143</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -631,7 +636,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
 <p>Zero (<code>OScDev_OK</code>) indicates success.</p>
 <p>This will be replaced with an opaque type in the future. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00149">149</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00163">163</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -647,7 +652,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00194">194</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00208">208</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -663,7 +668,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00200">200</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00214">214</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -679,7 +684,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00206">206</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00220">220</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -695,7 +700,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00215">215</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00229">229</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -717,7 +722,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
 <p>An array can be created dynamically by calling <a class="el" href="group__dpi.html#ga54578bfb7228aa82d6d7103450f89c8f" title="Create an array of objects.">OScDev_PtrArray_Create()</a>.</p>
 <p>(Because this type is intended solely for passing short lists, the only available operation is appending elements.) </p>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00237">237</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00251">251</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -739,7 +744,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
 <p>An array can be created dynamically by calling <a class="el" href="group__dpi.html#ga5fc9b29ae5e6acbc9f091c9f71ee51f2" title="Create an array of numbers.">OScDev_NumArray_Create()</a>.</p>
 <p>(Because this type is intended solely for passing short lists, the only available operation is appending elements.) </p>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00252">252</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00266">266</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -759,7 +764,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
 <p>This data type is used to mass numerical ranges from device modules to OpenScanLib.</p>
 <p>A range can be created dynamically by calling OScDev_NumRange_CreateContinuous() or OScDev_NumRange_CreateDiscrete(). </p>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00262">262</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00276">276</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -778,7 +783,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
 
 <p>Constants for <a class="el" href="group__dpi.html#gaaad961015e22abd8c0dd27da19063c1b" title="Log level.">OScDev_LogLevel</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00122">122</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00136">136</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -810,7 +815,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
 </td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00130">130</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00144">144</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -826,7 +831,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00150">150</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00164">164</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -842,7 +847,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00195">195</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00209">209</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -858,7 +863,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00201">201</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00215">215</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -874,7 +879,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00207">207</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00221">221</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -890,7 +895,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00216">216</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00230">230</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -929,7 +934,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
 
 <p>Log a message. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00955">955</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01006">1006</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -961,7 +966,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
 
 <p>Log a debug-level message. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00962">962</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01013">1013</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -993,7 +998,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
 
 <p>Log an info-level message. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00967">967</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01018">1018</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -1025,7 +1030,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
 
 <p>Log a warning-level message. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00972">972</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01023">1023</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -1057,7 +1062,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
 
 <p>Log an error-level message. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00978">978</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01029">1029</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -1087,7 +1092,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00983">983</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01034">1034</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -1107,7 +1112,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00989">989</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01040">1040</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -1127,7 +1132,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00994">994</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01045">1045</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -1163,7 +1168,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01000">1000</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01051">1051</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -1193,7 +1198,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01006">1006</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01057">1057</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -1235,7 +1240,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01012">1012</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01063">1063</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -1255,7 +1260,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01020">1020</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01071">1071</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -1275,7 +1280,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01025">1025</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01076">1076</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -1295,7 +1300,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01030">1030</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01081">1081</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -1315,7 +1320,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01035">1035</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01086">1086</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -1351,7 +1356,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01040">1040</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01091">1091</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -1387,7 +1392,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01046">1046</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01097">1097</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -1407,7 +1412,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01052">1052</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01103">1103</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -1427,7 +1432,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01057">1057</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01108">1108</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -1449,7 +1454,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
 
 <p>Create an array of objects. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01063">1063</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01114">1114</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -1469,7 +1474,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01069">1069</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01120">1120</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -1491,7 +1496,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
 
 <p>Destroy (free) an array of objects. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01075">1075</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01126">1126</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -1523,7 +1528,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
 
 <p>Append an object to an array. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01081">1081</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01132">1132</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -1543,7 +1548,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01086">1086</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01137">1137</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -1563,7 +1568,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01091">1091</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01142">1142</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -1593,7 +1598,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01096">1096</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01147">1147</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -1615,7 +1620,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
 
 <p>Create an array of numbers. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01102">1102</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01153">1153</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -1635,7 +1640,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01108">1108</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01159">1159</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -1657,7 +1662,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
 
 <p>Destroy (free) an array of numbers. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01114">1114</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01165">1165</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -1689,7 +1694,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
 
 <p>Append a value to an array. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01120">1120</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01171">1171</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -1709,7 +1714,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01125">1125</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01176">1176</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -1729,7 +1734,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01130">1130</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01181">1181</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -1759,7 +1764,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01135">1135</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01186">1186</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -1789,7 +1794,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01141">1141</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01192">1192</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -1809,7 +1814,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01147">1147</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01198">1198</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -1829,7 +1834,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01152">1152</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01203">1203</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -1849,7 +1854,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01159">1159</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01210">1210</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -1879,7 +1884,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01164">1164</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01215">1215</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -1915,7 +1920,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01170">1170</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01221">1221</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -1935,7 +1940,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01177">1177</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01228">1228</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -1983,7 +1988,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01182">1182</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01233">1233</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -2003,7 +2008,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01191">1191</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01242">1242</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -2023,7 +2028,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01196">1196</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01247">1247</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -2036,7 +2041,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
         <tr>
           <td class="memname"><a class="el" href="group__dpi.html#ga946e0f935b49cfd20c0c8f3dc6346311">OScDev_Error</a> OScDev_Acquisition_IsClockRequested </td>
           <td>(</td>
-          <td class="paramtype">OScDev_Acquisition *&#160;</td>
+          <td class="paramtype"><a class="el" href="group__dpi.html#ga82de122ecb4a3a83c77f59a74420aeab">OScDev_Acquisition</a> *&#160;</td>
           <td class="paramname"><em>acq</em>, </td>
         </tr>
         <tr>
@@ -2054,7 +2059,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
 </div><div class="memdoc">
 <p>Determine whether this device should provide the clock for the given acquisition. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01203">1203</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01254">1254</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -2067,7 +2072,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
         <tr>
           <td class="memname"><a class="el" href="group__dpi.html#ga946e0f935b49cfd20c0c8f3dc6346311">OScDev_Error</a> OScDev_Acquisition_IsScannerRequested </td>
           <td>(</td>
-          <td class="paramtype">OScDev_Acquisition *&#160;</td>
+          <td class="paramtype"><a class="el" href="group__dpi.html#ga82de122ecb4a3a83c77f59a74420aeab">OScDev_Acquisition</a> *&#160;</td>
           <td class="paramname"><em>acq</em>, </td>
         </tr>
         <tr>
@@ -2085,7 +2090,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
 </div><div class="memdoc">
 <p>Determine whether this device should perform scanning for the given acquisition. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01211">1211</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01262">1262</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -2098,7 +2103,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
         <tr>
           <td class="memname"><a class="el" href="group__dpi.html#ga946e0f935b49cfd20c0c8f3dc6346311">OScDev_Error</a> OScDev_Acquisition_IsDetectorRequested </td>
           <td>(</td>
-          <td class="paramtype">OScDev_Acquisition *&#160;</td>
+          <td class="paramtype"><a class="el" href="group__dpi.html#ga82de122ecb4a3a83c77f59a74420aeab">OScDev_Acquisition</a> *&#160;</td>
           <td class="paramname"><em>acq</em>, </td>
         </tr>
         <tr>
@@ -2116,7 +2121,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
 </div><div class="memdoc">
 <p>Determine whether this device should perform detection for the given acquisition. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01219">1219</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01270">1270</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -2129,7 +2134,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
         <tr>
           <td class="memname"><a class="el" href="group__dpi.html#ga946e0f935b49cfd20c0c8f3dc6346311">OScDev_Error</a> OScDev_Acquisition_GetClockStartTriggerSource </td>
           <td>(</td>
-          <td class="paramtype">OScDev_Acquisition *&#160;</td>
+          <td class="paramtype"><a class="el" href="group__dpi.html#ga82de122ecb4a3a83c77f59a74420aeab">OScDev_Acquisition</a> *&#160;</td>
           <td class="paramname"><em>acq</em>, </td>
         </tr>
         <tr>
@@ -2156,7 +2161,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01234">1234</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01285">1285</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -2169,7 +2174,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
         <tr>
           <td class="memname"><a class="el" href="group__dpi.html#ga946e0f935b49cfd20c0c8f3dc6346311">OScDev_Error</a> OScDev_Acquisition_GetClockSource </td>
           <td>(</td>
-          <td class="paramtype">OScDev_Acquisition *&#160;</td>
+          <td class="paramtype"><a class="el" href="group__dpi.html#ga82de122ecb4a3a83c77f59a74420aeab">OScDev_Acquisition</a> *&#160;</td>
           <td class="paramname"><em>acq</em>, </td>
         </tr>
         <tr>
@@ -2190,7 +2195,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
 <p>This function is only useful when the scanner and/or detector is requested for the acquisition (see <code><a class="el" href="group__dpi.html#ga9c405d2a690c2bb3dc82b41e784e8242">OScDev_Acquisition_IsScannerRequested()</a></code> and <code><a class="el" href="group__dpi.html#ga0c9eac1d0f8f0713d80d15eb0dc68a0b">OScDev_Acquisition_IsDetectorRequested()</a></code>).</p>
 <dl class="todo"><dt><b><a class="el" href="todo.html#_todo000001">Todo:</a></b></dt><dd>This is redundant with <a class="el" href="group__dpi.html#gae1bfbb2ac399b32557e27f0c3bd94bc3">OScDev_Acquisition_IsClockRequested()</a>. Remove. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01249">1249</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01300">1300</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -2203,7 +2208,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
         <tr>
           <td class="memname">uint32_t OScDev_Acquisition_GetNumberOfFrames </td>
           <td>(</td>
-          <td class="paramtype">OScDev_Acquisition *&#160;</td>
+          <td class="paramtype"><a class="el" href="group__dpi.html#ga82de122ecb4a3a83c77f59a74420aeab">OScDev_Acquisition</a> *&#160;</td>
           <td class="paramname"><em>acq</em></td><td>)</td>
           <td></td>
         </tr>
@@ -2212,7 +2217,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
 
 <p>Determine the requested number of frames for the given acquisition. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01257">1257</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01308">1308</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -2225,14 +2230,14 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
         <tr>
           <td class="memname">double OScDev_Acquisition_GetPixelRate </td>
           <td>(</td>
-          <td class="paramtype">OScDev_Acquisition *&#160;</td>
+          <td class="paramtype"><a class="el" href="group__dpi.html#ga82de122ecb4a3a83c77f59a74420aeab">OScDev_Acquisition</a> *&#160;</td>
           <td class="paramname"><em>acq</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01262">1262</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01313">1313</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -2245,14 +2250,14 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
         <tr>
           <td class="memname">uint32_t OScDev_Acquisition_GetResolution </td>
           <td>(</td>
-          <td class="paramtype">OScDev_Acquisition *&#160;</td>
+          <td class="paramtype"><a class="el" href="group__dpi.html#ga82de122ecb4a3a83c77f59a74420aeab">OScDev_Acquisition</a> *&#160;</td>
           <td class="paramname"><em>acq</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01267">1267</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01318">1318</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -2265,14 +2270,14 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
         <tr>
           <td class="memname">double OScDev_Acquisition_GetZoomFactor </td>
           <td>(</td>
-          <td class="paramtype">OScDev_Acquisition *&#160;</td>
+          <td class="paramtype"><a class="el" href="group__dpi.html#ga82de122ecb4a3a83c77f59a74420aeab">OScDev_Acquisition</a> *&#160;</td>
           <td class="paramname"><em>acq</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01272">1272</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01323">1323</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -2285,7 +2290,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
         <tr>
           <td class="memname">void OScDev_Acquisition_GetROI </td>
           <td>(</td>
-          <td class="paramtype">OScDev_Acquisition *&#160;</td>
+          <td class="paramtype"><a class="el" href="group__dpi.html#ga82de122ecb4a3a83c77f59a74420aeab">OScDev_Acquisition</a> *&#160;</td>
           <td class="paramname"><em>acq</em>, </td>
         </tr>
         <tr>
@@ -2320,7 +2325,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01277">1277</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01328">1328</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -2333,7 +2338,7 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
         <tr>
           <td class="memname">bool OScDev_Acquisition_CallFrameCallback </td>
           <td>(</td>
-          <td class="paramtype">OScDev_Acquisition *&#160;</td>
+          <td class="paramtype"><a class="el" href="group__dpi.html#ga82de122ecb4a3a83c77f59a74420aeab">OScDev_Acquisition</a> *&#160;</td>
           <td class="paramname"><em>acq</em>, </td>
         </tr>
         <tr>
@@ -2358,7 +2363,8 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
 
 <p>Send acquired data for one channel of a frame. </p>
 <p>This function must be called during an acquisition by the device that owns the detector for the acquisition.</p>
-<p>The data pointed to by <code>pixels</code> must not change during the call to this function.</p>
+<p>It may be called from any thread of the device module, but only while the acquisition handle is valid (see <code>OScDev_Acquisition</code>).</p>
+<p>The data pointed to by <code>pixels</code> must not change during the call to this function. The call blocks while the application processes the frame data.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">acq</td><td>the acquisition that was given when arming this device </td></tr>
@@ -2367,8 +2373,9 @@ if (OScDev_CHECK(err, OScDev_Device_Create(...)))
   </table>
   </dd>
 </dl>
+<dl class="section return"><dt>Returns</dt><dd><code>true</code> normally, or <code>false</code> if the application requests cancellation of the acquisition, in which case the module should stop the acquisition as soon as practical </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01296">1296</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l01353">1353</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>

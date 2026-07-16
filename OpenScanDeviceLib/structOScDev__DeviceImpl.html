@@ -78,10 +78,11 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Data Fields</h2></td></tr>
-<tr class="memitem:a388ac2c5408480d096a15386df36be24" id="r_a388ac2c5408480d096a15386df36be24"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__dpi.html#ga946e0f935b49cfd20c0c8f3dc6346311">OScDev_Error</a>(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structOScDev__DeviceImpl.html#a388ac2c5408480d096a15386df36be24">Arm</a> )(OScDev_Device *device, OScDev_Acquisition *acq)</td></tr>
+<tr class="memitem:a388ac2c5408480d096a15386df36be24" id="r_a388ac2c5408480d096a15386df36be24"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__dpi.html#ga946e0f935b49cfd20c0c8f3dc6346311">OScDev_Error</a>(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structOScDev__DeviceImpl.html#a388ac2c5408480d096a15386df36be24">Arm</a> )(OScDev_Device *device, <a class="el" href="group__dpi.html#ga82de122ecb4a3a83c77f59a74420aeab">OScDev_Acquisition</a> *acq)</td></tr>
 <tr class="memdesc:a388ac2c5408480d096a15386df36be24"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prepare the clock, scanner, and/or detector for an acquisition.  <br /></td></tr>
 <tr class="separator:a388ac2c5408480d096a15386df36be24"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae2ca752c0e7f4b753673080909e842ed" id="r_ae2ca752c0e7f4b753673080909e842ed"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__dpi.html#ga946e0f935b49cfd20c0c8f3dc6346311">OScDev_Error</a>(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structOScDev__DeviceImpl.html#ae2ca752c0e7f4b753673080909e842ed">Close</a> )(OScDev_Device *device)</td></tr>
+<tr class="memdesc:ae2ca752c0e7f4b753673080909e842ed"><td class="mdescLeft">&#160;</td><td class="mdescRight">Close the connection to the device.  <br /></td></tr>
 <tr class="separator:ae2ca752c0e7f4b753673080909e842ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a97f1571686a588291bd8fb391fdfe92b" id="r_a97f1571686a588291bd8fb391fdfe92b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__dpi.html#ga946e0f935b49cfd20c0c8f3dc6346311">OScDev_Error</a>(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structOScDev__DeviceImpl.html#a97f1571686a588291bd8fb391fdfe92b">EnumerateInstances</a> )(<a class="el" href="group__dpi.html#ga7f45df9a945ed52f55a683f3c223f2aa">OScDev_PtrArray</a> **devices)</td></tr>
 <tr class="memdesc:a97f1571686a588291bd8fb391fdfe92b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Create instances for each physically available device.  <br /></td></tr>
@@ -149,7 +150,7 @@ Data Fields</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock">
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00507">507</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00521">521</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 </div><h2 class="groupheader">Field Documentation</h2>
 <a id="aad6bc556d368f7226e2047b4f0b6d282" name="aad6bc556d368f7226e2047b4f0b6d282"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aad6bc556d368f7226e2047b4f0b6d282">&#9670;&#160;</a></span>GetModelName</h2>
@@ -163,7 +164,7 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00508">508</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00522">522</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -186,7 +187,7 @@ Data Fields</h2></td></tr>
 <p><code>devices</code> must be an array of OScDev_Device objects. OpenScanLib takes ownership of the array (unless the array is statically defined) as well as the device instances. Therefore, the device instances must be created newly every time this function is called, and ReleaseInstance must be correctly implemented.</p>
 <p>It is OpenScanLib's responsibility to ensure that no more than 1 instance of the same device (as identified by <code>GetName</code>) is ever opened at the same time. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00534">534</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00548">548</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -207,7 +208,7 @@ Data Fields</h2></td></tr>
 <p>OpenScanLib ensures that the device is closed (if it was ever opened) before this function is called.</p>
 <p><b>Conditionally required</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00547">547</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00561">561</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -223,7 +224,7 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00549">549</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00563">563</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -242,7 +243,7 @@ Data Fields</h2></td></tr>
 <p>Establish a connection to the device. </p>
 <p>Importantly, a device instance must not connect to the physical device until this function is called. This is because multiple instances may be created (but not opened) for the same device. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00557">557</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00571">571</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -258,7 +259,10 @@ Data Fields</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00559">559</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p>Close the connection to the device. </p>
+<p>If an acquisition is armed or running on this device, this function must stop it and wait for all acquisition activity (including any module threads that use the <code>OScDev_Acquisition</code> handle) to complete before returning, exactly as if <code>Stop</code> had been called. </p>
+
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00580">580</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -275,7 +279,7 @@ Data Fields</h2></td></tr>
 </div><div class="memdoc">
 <p>Return true if this device can provide the clock for scanning and detection. The clock can be any reference against which the scanning and detection are synchronized. When the scanner and detector belong to the same device, the clock can be entirely internal. When the scanner and detector belong to separate devices, typically one or the other device also provides the clock, and the other device receives the clock through a hardware connection (most commonly a TTL line clock, but this need not be the case). </p>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00572">572</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00593">593</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -293,7 +297,7 @@ Data Fields</h2></td></tr>
 
 <p>Return true if this device can perform scanning. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00575">575</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00596">596</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -311,7 +315,7 @@ Data Fields</h2></td></tr>
 
 <p>Return true if this device can perform detection. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00578">578</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00599">599</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -329,7 +333,7 @@ Data Fields</h2></td></tr>
 
 <p>Create the settings for a device. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00581">581</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00602">602</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -350,7 +354,7 @@ Data Fields</h2></td></tr>
 <p>Pixel rate applies to the clock, scanner, and detector.</p>
 <p><b>Required</b> </p>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00593">593</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00614">614</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -372,7 +376,7 @@ Data Fields</h2></td></tr>
 <p><b>Optional</b>; if not implemented, it is assumed that the device can operate at the exact requested pixel rate, up to a reasonable precision, or that matching of pixel rate is not critical because a hardware (internal or external) pixel clock signal (or equivalent) is used.</p>
 <dl class="todo"><dt><b><a class="el" href="todo.html#_todo000003">Todo:</a></b></dt><dd>It is not clear if this is the best method of matching pixel rates. At the very least, this does allow OpenScanLib to quantify the error, so that the user might establish a discrete set of usable rates. That's probably better than any sort of poorly thought-through automagical matching. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00618">618</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00639">639</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -393,7 +397,7 @@ Data Fields</h2></td></tr>
 <p>Resolution only applies to the scanner. (The clock and detector operate based on raster size, not resolution.)</p>
 <p><b>Required</b> if the device has a scanner. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00632">632</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00653">653</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -414,7 +418,7 @@ Data Fields</h2></td></tr>
 <p>Zoom factor only applies to the scanner.</p>
 <p><b>Optional</b>; the default implementation will allow only a zoom of 1.0. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00645">645</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00666">666</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -436,7 +440,7 @@ Data Fields</h2></td></tr>
 <p>A scanner that supports ROI scans must allow the ROI to start at an arbitrary offset (<code>0</code> to <code>(resolution - 1)</code> in both X and Y). The size (width and height) of the ROI conforms to ranges returned by <a class="el" href="structOScDev__DeviceImpl.html#a5b71ffcc84a3dfa05f4ad443885bb64f" title="Return the allowed widths of the raster ROI.">GetRasterWidths()</a> and <a class="el" href="structOScDev__DeviceImpl.html#a7fb7ca93c61178e676b0169ad7108b0c" title="Return the allowed heights of the raster ROI.">GetRasterHeights()</a>, limited by the resolution.</p>
 <p><b>Optional</b>; the default implementation will return false. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00665">665</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00686">686</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -457,7 +461,7 @@ Data Fields</h2></td></tr>
 <p>Raster size applies to the clock, scanner, and detector.</p>
 <p><b>Optional</b>; the default implementation will allow all positive integer widths. If the device only works with an internal scanner, the range will be limited by the scanner resolution. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00678">678</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00699">699</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -478,7 +482,7 @@ Data Fields</h2></td></tr>
 <p>Raster size applies to the clock, scanner, and detector.</p>
 <p><b>Optional</b>; the default implementation will allow all positive integer widths. If the device only works with an internal scanner, the range will be limited by the scanner resolution. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00692">692</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00713">713</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -498,7 +502,7 @@ Data Fields</h2></td></tr>
 <p>Currently, only simultaneous multi-channel imaging is supported, so this function is only called for the device providing the detector.</p>
 <p><b>Required</b> if this device has a detector. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00702">702</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00723">723</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -518,7 +522,7 @@ Data Fields</h2></td></tr>
 <p>Values other than 2 (16-bit) are not currently supported.</p>
 <p><b>Required</b> if this device has a detector. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00711">711</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00732">732</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -529,7 +533,7 @@ Data Fields</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="group__dpi.html#ga946e0f935b49cfd20c0c8f3dc6346311">OScDev_Error</a>(* Arm) (OScDev_Device *device, OScDev_Acquisition *acq)</td>
+          <td class="memname"><a class="el" href="group__dpi.html#ga946e0f935b49cfd20c0c8f3dc6346311">OScDev_Error</a>(* Arm) (OScDev_Device *device, <a class="el" href="group__dpi.html#ga82de122ecb4a3a83c77f59a74420aeab">OScDev_Acquisition</a> *acq)</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -540,10 +544,12 @@ Data Fields</h2></td></tr>
 <p>If providing the scanner, the scanner should be set up to scan according to clock signals. The clock may be internal (i.e. provided by this same device) or external (hardware input); call <a class="el" href="group__dpi.html#ga33b2866891a75733e0044f91c2796e14" title="Determine the scanner and detector clock source for the given acquisition.">OScDev_Acquisition_GetClockSource()</a> to determine which.</p>
 <p>If providing the detector, the detector should be set up to acquire according to clock signals. The clock may be internal (i.e. provided by this same device) or external (hardware input); call <a class="el" href="group__dpi.html#ga33b2866891a75733e0044f91c2796e14" title="Determine the scanner and detector clock source for the given acquisition.">OScDev_Acquisition_GetClockSource()</a> to determine which.</p>
 <p>In some integrated devices, the separation between the clock, scanner, and detector may not be clear. The implementation should behave <em>as if</em> the three components were separate and behaved as specified above.</p>
+<p>This function is called at most once per device per acquisition, even when the device serves multiple roles. The handle <code>acq</code> may be stored and used for the duration of the acquisition, subject to the validity window documented at <code>OScDev_Acquisition</code>.</p>
+<p>If the device is already armed or running a previous acquisition, this function must fail with an error, leaving the previous acquisition undisturbed. OpenScanLib does not currently prevent such calls.</p>
 <dl class="todo"><dt><b><a class="el" href="todo.html#_todo000004">Todo:</a></b></dt><dd>Currently, state change after the device is armed is handled in a variable way depending on what triggers the state change (especially stop of acquisition). We should replace this with a simpler interface where the device calls new functions <code>OScDev_Acquisition_NotifyStart()</code> and <code>OScDev_Acquisition_NotifyStop()</code>. The start notification will be purely informational, used e.g. so that the GUI can show "waiting for
 start trigger" vs "acquisition running". The stop trigger will indicate that all action has finished and the device is ready to be disarmed. (<code>Disarm()</code> should be a mandatory function distinct from <code><a class="el" href="structOScDev__DeviceImpl.html#afe6cfb187f14abbf97b38c88da1fa6a3" title="Stop the current acquisition and disarm.">Stop()</a></code>, which should behave as a software trigger for cancellation.) There should also be a way for a device to declare that it is not capable of issuing a start notification (in which case arrival of data can be used as a proxy for display purposes). <code><a class="el" href="structOScDev__DeviceImpl.html#afe6cfb187f14abbf97b38c88da1fa6a3" title="Stop the current acquisition and disarm.">Stop()</a></code>, unlike <code>Disarm()</code>, need not be called when OpenScanLib has already received a stop notification. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00754">754</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00784">784</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -565,7 +571,7 @@ start trigger" vs "acquisition running". The stop trigger will indicate that all
 <p>It should be noted that a device that is not providing the clock will <em>not</em> receive a call to this function.</p>
 <dl class="todo"><dt><b><a class="el" href="todo.html#_todo000005">Todo:</a></b></dt><dd>Better to rename to <code>SoftwareTriggerStart()</code>? </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00770">770</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00800">800</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -585,11 +591,14 @@ start trigger" vs "acquisition running". The stop trigger will indicate that all
 <p>Unlike <code>Start</code>, this function is called for all devices participating in an acquisition, not just the device providing the clock. In this sense, <code>Stop</code> is the counterpart of <code>Arm</code>, not <code>Start</code>.</p>
 <p>If there is no acquisition running and the device is not armed, then this function must succeed with no effect.</p>
 <p>Currently, this function must wait for the stopping process to complete and return only when the device is ready to be armed again with a new acquisition.</p>
+<p>This function may be called multiple times in succession: OpenScanLib calls it once for each role (clock, scanner, detector) that the device serves in the acquisition, and also calls it to clean up when arming another device fails.</p>
+<p>This function must also handle the case where the device is armed but the acquisition was never started, by disarming and returning; it must not block waiting for a start trigger that will never arrive.</p>
+<p>Once this function returns with the device idle, the host may free the acquisition handle (see <code>OScDev_Acquisition</code>), so all use of the handle by the module must have ceased by that point.</p>
 <dl class="todo"><dt><b><a class="el" href="todo.html#_todo000006">Todo:</a></b></dt><dd><p class="startdd">This function should be split into two separate functions, <code>SoftwareTriggerStop()</code> and <code>Disarm()</code>, with very different roles. The former should merely be an asynchronous signal that the device should ignore any subsequent start triggers and stop as soon as possible. Actual completion of stopping should be notified via a callback (see Todo at Arm). The latter (<code>Disarm()</code>) should mainly handle cleanup, and should be guaranteed to be called exactly once per armed acquisition, after all processes have stopped. </p>
 <p class="enddd"><code>SoftwareTriggerStop()</code> can be optional to implement; we should additionally provide <code>bool OScDev_Acquisition_SoftwareStopTriggered()</code> which can be called any time between <code><a class="el" href="structOScDev__DeviceImpl.html#a388ac2c5408480d096a15386df36be24" title="Prepare the clock, scanner, and/or detector for an acquisition.">Arm()</a></code> and <code>Disarm()</code>; this will supersede the <code>bool</code> return value of <code>OScDev_Acquisition_CallFrameCalback()</code>. </p>
 </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00799">799</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00842">842</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -607,10 +616,10 @@ start trigger" vs "acquisition running". The stop trigger will indicate that all
 
 <p>Return true if this device is armed or running an acquisition. </p>
 <p>Note that the device may exit the "running" state on its own (e.g. after completing a specified number of frames), or as the result of a call to <code>StopAcquisition()</code>.</p>
-<p>In all cases, this function should not return <code>false</code> until all aspects of the acquisition have completed and the device is ready to arm for a new acquisition.</p>
+<p>In all cases, this function should not return <code>false</code> until all aspects of the acquisition have completed and the device is ready to arm for a new acquisition. In particular, reporting false is a release point for the acquisition handle: once this function returns <code>false</code>, the host may free the handle (see <code>OScDev_Acquisition</code>), so the module must not report false while any of its threads may still use the handle (for example, to deliver frame callbacks).</p>
 <dl class="todo"><dt><b><a class="el" href="todo.html#_todo000007">Todo:</a></b></dt><dd>This function should be replaced with a callback-based interface to avoid polling and simplify device module implementation. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00814">814</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00861">861</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
@@ -629,9 +638,10 @@ start trigger" vs "acquisition running". The stop trigger will indicate that all
 <p>Wait for any current acquisition to finish. </p>
 <p>As soon as this function returns, <code><a class="el" href="structOScDev__DeviceImpl.html#a8e8a81257a087cea2f8264fd6bb1157d" title="Return true if this device is armed or running an acquisition.">IsRunning()</a></code> must return <code>false</code> until <code><a class="el" href="structOScDev__DeviceImpl.html#a388ac2c5408480d096a15386df36be24" title="Prepare the clock, scanner, and/or detector for an acquisition.">Arm()</a></code> is called again.</p>
 <p>This function should return immediately if <code><a class="el" href="structOScDev__DeviceImpl.html#a8e8a81257a087cea2f8264fd6bb1157d" title="Return true if this device is armed or running an acquisition.">IsRunning()</a></code> is already false.</p>
+<p>After this function returns, the host may free the acquisition handle (see <code>OScDev_Acquisition</code>); no module thread may use the handle or deliver further frame callbacks.</p>
 <dl class="todo"><dt><b><a class="el" href="todo.html#_todo000008">Todo:</a></b></dt><dd>This function should be removed, because it leads to reinvention of condition variable code in each device module. Better to report state changes using a callback interface. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00828">828</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpenScanDeviceLib_8h_source.html#l00879">879</a> of file <a class="el" href="OpenScanDeviceLib_8h_source.html">OpenScanDeviceLib.h</a>.</p>
 
 </div>
 </div>
