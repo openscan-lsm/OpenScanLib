@@ -89,7 +89,7 @@ OSc_RichError *OSc_Acquisition_Create(OSc_Acquisition **acq,
             uint32_t nch;
             err = OScInternal_Device_GetNumberOfChannels(detectorDevice, &nch);
             assert(err == OSc_OK); // Given earlier GetNumberOfChannels
-            if (nch >= 0) {
+            if (nch > 0) {
                 OScInternal_PtrArray_Append((*acq)->detectorDevices,
                                             detectorDevice);
                 OScInternal_NumArray_Append((*acq)->channelOffsets,
